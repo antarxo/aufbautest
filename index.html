@@ -1,113 +1,51 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-  <meta charset="UTF-8">
-  <title>Απεικόνιση Aufbau</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      margin: 20px;
-    }
-    .container {
-      max-width: 500px;
-      margin: auto;
-    }
-    .output {
-      margin-top: 20px;
-      border: 1px solid #ccc;
-      padding: 10px;
-      min-height: 100px;
-      background: #f9f9f9;
-    }
-    h1 {
-      text-align: center;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-    }
-    input, button {
-      padding: 8px;
-      font-size: 1rem;
-      margin-bottom: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aufbau Διάγραμμα</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+        .grid { display: grid; grid-template-columns: repeat(4, 100px); gap: 10px; justify-content: center; }
+        .cell { width: 100px; height: 50px; border: 1px solid black; display: flex; align-items: center; justify-content: center; font-size: 20px; position: relative; }
+        .arrow { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 20px; }
+        .filled { background-color: lightblue; }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Απεικόνιση Aufbau</h1>
-    <label for="atomicNumber">Εισάγετε τον ατομικό αριθμό:</label>
-    <input type="number" id="atomicNumber" min="1" placeholder="π.χ. 20" />
-    <button id="startButton">Έναρξη</button>
-    <div class="output" id="output"></div>
-  </div>
-
-  <script>
-    // Ορισμός της σειράς πλήρωσης των orbital σύμφωνα με τον κανόνα Aufbau
-    const orbitalSequence = [
-      { name: "1s", capacity: 2 },
-      { name: "2s", capacity: 2 },
-      { name: "2p", capacity: 6 },
-      { name: "3s", capacity: 2 },
-      { name: "3p", capacity: 6 },
-      { name: "4s", capacity: 2 },
-      { name: "3d", capacity: 10 },
-      { name: "4p", capacity: 6 },
-      { name: "5s", capacity: 2 },
-      { name: "4d", capacity: 10 },
-      { name: "5p", capacity: 6 },
-      { name: "6s", capacity: 2 },
-      { name: "4f", capacity: 14 },
-      { name: "5d", capacity: 10 },
-      { name: "6p", capacity: 6 },
-      { name: "7s", capacity: 2 },
-      { name: "5f", capacity: 14 },
-      { name: "6d", capacity: 10 },
-      { name: "7p", capacity: 6 }
-    ];
-
-    // Συνάρτηση υπολογισμού διάταξης ηλεκτρονίων βάσει του ατομικού αριθμού
-    function computeConfiguration(atomicNumber) {
-      let config = [];
-      let remaining = atomicNumber;
-      for (let orbital of orbitalSequence) {
-        if (remaining <= 0) break;
-        const electronsInOrbital = Math.min(orbital.capacity, remaining);
-        config.push({
-          name: orbital.name,
-          electrons: electronsInOrbital
+    <h1>Aufbau Διάγραμμα</h1>
+    <div class="grid" id="aufbauGrid"></div>
+    <button onclick="startFilling()">Ξεκίνα Δόμηση</button>
+    <script>
+        const orbitals = [
+            { name: "1s", row: 0 },
+            { name: "2s", row: 1 }, { name: "2p", row: 1 },
+            { name: "3s", row: 2 }, { name: "3p", row: 2 }, { name: "4s", row: 2 },
+            { name: "3d", row: 3 }, { name: "4p", row: 3 }, { name: "5s", row: 3 },
+            { name: "4d", row: 4 }, { name: "5p", row: 4 }, { name: "6s", row: 4 },
+            { name: "4f", row: 5 }, { name: "5d", row: 5 }, { name: "6p", row: 5 }, { name: "7s", row: 5 }
+        ];
+        
+        const grid = document.getElementById("aufbauGrid");
+        orbitals.forEach((orbital, index) => {
+            const cell = document.createElement("div");
+            cell.classList.add("cell");
+            cell.textContent = orbital.name;
+            cell.id = "cell-" + index;
+            grid.appendChild(cell);
         });
-        remaining -= electronsInOrbital;
-      }
-      return config;
-    }
-
-    // Εκκίνηση της "animation" όταν πατηθεί το κουμπί
-    document.getElementById('startButton').addEventListener('click', function() {
-      const atomicNumber = parseInt(document.getElementById('atomicNumber').value);
-      if (isNaN(atomicNumber) || atomicNumber <= 0) {
-        alert("Παρακαλώ εισάγετε έγκυρο ατομικό αριθμό.");
-        return;
-      }
-      
-      const config = computeConfiguration(atomicNumber);
-      const outputDiv = document.getElementById('output');
-      outputDiv.innerHTML = ""; // Καθαρισμός προηγούμενων αποτελεσμάτων
-
-      let currentIndex = 0;
-      const interval = setInterval(function() {
-        if (currentIndex < config.length) {
-          const orb = config[currentIndex];
-          // Δημιουργία στοιχείου <p> για κάθε orbital
-          const p = document.createElement('p');
-          p.textContent = `${orb.name} ^ ${orb.electrons}`;
-          outputDiv.appendChild(p);
-          currentIndex++;
-        } else {
-          clearInterval(interval);
+        
+        function startFilling() {
+            let index = 0;
+            function fillNext() {
+                if (index < orbitals.length) {
+                    document.getElementById("cell-" + index).classList.add("filled");
+                    index++;
+                    setTimeout(fillNext, 1000);
+                }
+            }
+            fillNext();
         }
-      }, 1000); // Προσθήκη κάθε γραμμής κάθε 1 δευτερόλεπτο
-    });
-  </script>
+    </script>
 </body>
 </html>
