@@ -6,16 +6,19 @@
     <title>Aufbau Διάγραμμα</title>
     <style>
         body { text-align: center; font-family: Arial, sans-serif; }
-        .grid { display: grid; grid-template-columns: repeat(4, 100px); gap: 10px; justify-content: center; }
+        .grid { display: grid; grid-template-columns: repeat(4, 100px); gap: 10px; justify-content: center; position: relative; }
         .cell { width: 100px; height: 50px; border: 1px solid black; display: flex; align-items: center; justify-content: center; font-size: 20px; position: relative; }
-        .arrow { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 20px; }
+        .arrow { position: absolute; font-size: 20px; color: red; }
         .filled { background-color: lightblue; }
+        .electron { color: blue; font-weight: bold; }
     </style>
 </head>
 <body>
     <h1>Aufbau Διάγραμμα</h1>
-    <div class="grid" id="aufbauGrid"></div>
+    <label for="atomicNumber">Ατομικός Αριθμός:</label>
+    <input type="number" id="atomicNumber" min="1" max="118" value="1">
     <button onclick="startFilling()">Ξεκίνα Δόμηση</button>
+    <div class="grid" id="aufbauGrid"></div>
     <script>
         const orbitals = [
             { name: "1s", row: 0 },
@@ -36,12 +39,20 @@
         });
         
         function startFilling() {
+            let atomicNumber = parseInt(document.getElementById("atomicNumber").value);
+            let electrons = atomicNumber;
             let index = 0;
             function fillNext() {
-                if (index < orbitals.length) {
-                    document.getElementById("cell-" + index).classList.add("filled");
+                if (index < orbitals.length && electrons > 0) {
+                    let cell = document.getElementById("cell-" + index);
+                    cell.classList.add("filled");
+                    let e = document.createElement("span");
+                    e.classList.add("electron");
+                    e.textContent = "●";
+                    cell.appendChild(e);
+                    electrons--;
                     index++;
-                    setTimeout(fillNext, 1000);
+                    setTimeout(fillNext, 500);
                 }
             }
             fillNext();
@@ -49,3 +60,4 @@
     </script>
 </body>
 </html>
+
