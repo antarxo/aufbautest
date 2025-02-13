@@ -1,104 +1,167 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aufbau Διάγραμμα</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <style>
-        body { text-align: center; font-family: Arial, sans-serif; }
-        canvas { display: block; margin: auto; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aufbau Διάγραμμα</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <style>
+    body { text-align: center; font-family: Arial, sans-serif; }
+    canvas { display: block; margin: auto; }
+  </style>
 </head>
 <body>
-    <h1>Aufbau Διάγραμμα</h1>
-    <label for="atomicNumber">Ατομικός Αριθμός:</label>
-    <input type="number" id="atomicNumber" min="1" max="118" value="1">
-    <button onclick="startFilling()">Ξεκίνα Δόμηση</button>
-    <script>
-        let orbitals = [
-            ["1s"],
-            ["2s", "2p"],
-            ["3s", "3p", "4s"],
-            ["3d", "4p", "5s"],
-            ["4d", "5p", "6s"],
-            ["4f", "5d", "6p", "7s"],
-            ["5f", "6d", "7p"]
-        ];
-        
-        let positions = [];
-        let electrons = 0;
-        let maxElectrons = { "s": 2, "p": 6, "d": 10, "f": 14 };
-        let order = [];
-        let index = 0;
-        
-        function setup() {
-            createCanvas(500, 500);
-            textSize(16);
-            calculatePositions();
-            noLoop();
+  <h1>Aufbau Διάγραμμα</h1>
+  <label for="atomicNumber">Ατομικός Αριθμός:</label>
+  <input type="number" id="atomicNumber" min="1" max="118" value="1">
+  <button onclick="startFilling()">Ξεκίνα Δόμηση</button>
+  
+  <script>
+    // Ορισμός των υποστιβάδων σε πυραμιδοειδή διάταξη:
+    // 1η σειρά: 1s
+    // 2η σειρά: 2s, 2p
+    // 3η σειρά: 3s, 3p, 3d
+    // 4η σειρά: 4s, 4p, 4d, 4f
+    // 5η σειρά: 5s, 5p, 5d, 5f
+    // 6η σειρά: 6s, 6p, 6d
+    // 7η σειρά: 7s, 7p
+    let orbitals = [
+      ["1s"],
+      ["2s", "2p"],
+      ["3s", "3p", "3d"],
+      ["4s", "4p", "4d", "4f"],
+      ["5s", "5p", "5d", "5f"],
+      ["6s", "6p", "6d"],
+      ["7s", "7p"]
+    ];
+    
+    // Η σειρά συμπλήρωσης σύμφωνα με την αρχή Aufbau
+    // (δηλαδή, τα orbitals γεμίζονται με τη σειρά: 1s, 2s, 2p, 3s, 3p, 3d, 4s, 4p, 4d, 4f, 5s, 5p, 5d, 5f, 6s, 6p, 6d, 7s, 7p)
+    const fillOrder = [
+      {row: 0, col: 0}, // 1s
+      {row: 1, col: 0}, // 2s
+      {row: 1, col: 1}, // 2p
+      {row: 2, col: 0}, // 3s
+      {row: 2, col: 1}, // 3p
+      {row: 2, col: 2}, // 3d
+      {row: 3, col: 0}, // 4s
+      {row: 3, col: 1}, // 4p
+      {row: 3, col: 2}, // 4d
+      {row: 3, col: 3}, // 4f
+      {row: 4, col: 0}, // 5s
+      {row: 4, col: 1}, // 5p
+      {row: 4, col: 2}, // 5d
+      {row: 4, col: 3}, // 5f
+      {row: 5, col: 0}, // 6s
+      {row: 5, col: 1}, // 6p
+      {row: 5, col: 2}, // 6d
+      {row: 6, col: 0}, // 7s
+      {row: 6, col: 1}  // 7p
+    ];
+    
+    let positions = [];  // Θα περιέχει τις θέσεις (x,y) για κάθε orbital
+    let electrons = 0;
+    let maxElectrons = { "s": 2, "p": 6, "d": 10, "f": 14 };
+    
+    // Συνάρτηση για να επιστρέφει το index στο positions για το δεδομένο (row, col)
+    function getPositionIndex(row, col) {
+      let index = 0;
+      for (let i = 0; i < row; i++) {
+        index += orbitals[i].length;
+      }
+      return index + col;
+    }
+    
+    function setup() {
+      createCanvas(600, 600);
+      textSize(16);
+      calculatePositions();
+      noLoop();
+    }
+    
+    // Υπολογισμός των θέσεων για κάθε κελί της πυραμίδας ώστε να είναι κεντραρισμένα
+    function calculatePositions() {
+      positions = [];
+      let startY = 50;
+      let yOffset = 70;
+      for (let i = 0; i < orbitals.length; i++) {
+        let row = orbitals[i];
+        // Υπολογισμός συνολικού πλάτους της σειράς (κάθε κελί έχει πλάτος 50, αλλά χρησιμοποιούμε διάστημα 60)
+        let totalRowWidth = row.length * 60;
+        let startX = (width - totalRowWidth) / 2 + 30; // Το 30 είναι το μισό του 60 για κεντράρισμα του πρώτου κελιού
+        for (let j = 0; j < row.length; j++) {
+          let x = startX + j * 60;
+          let y = startY + i * yOffset;
+          positions.push({ x, y, label: row[j], filled: 0 });
         }
-        
-        function calculatePositions() {
-            positions = [];
-            order = [];
-            let startX = width / 2;
-            let startY = 50;
-            let yOffset = 50;
-            for (let i = 0; i < orbitals.length; i++) {
-                let row = orbitals[i];
-                let xOffset = (row.length - 1) * -30;
-                for (let j = 0; j < row.length; j++) {
-                    let x = startX + xOffset + j * 60;
-                    let y = startY + i * yOffset;
-                    positions.push({ x, y, label: row[j], filled: 0 });
-                    order.push({ i, j });
-                }
-            }
-        }
-        
-        function draw() {
-            background(255);
-            textAlign(CENTER, CENTER);
-            
-            // Σχεδίαση γραμμών (βέλη Aufbau)
-            stroke(200, 0, 0);
-            strokeWeight(2);
-            for (let i = 0; i < positions.length - 1; i++) {
-                let start = positions[i];
-                let end = positions[i + 1];
-                if (start.y < end.y) {
-                    let midX = (start.x + end.x) / 2;
-                    let midY = (start.y + end.y) / 2;
-                    line(start.x, start.y, midX, midY);
-                    line(midX, midY, end.x, end.y);
-                }
-            }
-            
-            noStroke();
-            fill(0);
-            for (let pos of positions) {
-                rectMode(CENTER);
-                fill(200);
-                rect(pos.x, pos.y, 50, 30);
-                fill(0);
-                text(`${pos.label} (${pos.filled})`, pos.x, pos.y);
-            }
-        }
-        
-        function startFilling() {
-            let atomicNumber = parseInt(document.getElementById("atomicNumber").value);
-            electrons = atomicNumber;
-            for (let i = 0; i < positions.length; i++) {
-                let orbitalType = positions[i].label.slice(-1);
-                let maxFill = maxElectrons[orbitalType] || 2;
-                let fillAmount = Math.min(electrons, maxFill);
-                positions[i].filled = fillAmount;
-                electrons -= fillAmount;
-                if (electrons <= 0) break;
-            }
-            redraw();
-        }
-    </script>
+      }
+    }
+    
+    // Συνάρτηση για σχεδίαση βέλους μεταξύ δύο σημείων
+    function drawArrow(x1, y1, x2, y2, myColor) {
+      push();
+      stroke(myColor);
+      strokeWeight(2);
+      fill(myColor);
+      let base = createVector(x1, y1);
+      let target = createVector(x2, y2);
+      let dir = p5.Vector.sub(target, base);
+      line(x1, y1, x2, y2);
+      // Σχεδίαση κεφαλής βέλους
+      push();
+      translate(x2, y2);
+      rotate(dir.heading());
+      let arrowSize = 7;
+      translate(-arrowSize, 0);
+      triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);
+      pop();
+      pop();
+    }
+    
+    function draw() {
+      background(255);
+      textAlign(CENTER, CENTER);
+      
+      // Σχεδίαση βελών σύμφωνα με τη σειρά συμπλήρωσης (fillOrder)
+      for (let i = 0; i < fillOrder.length - 1; i++) {
+        let idx1 = getPositionIndex(fillOrder[i].row, fillOrder[i].col);
+        let idx2 = getPositionIndex(fillOrder[i + 1].row, fillOrder[i + 1].col);
+        let pos1 = positions[idx1];
+        let pos2 = positions[idx2];
+        drawArrow(pos1.x, pos1.y, pos2.x, pos2.y, color(200, 0, 0));
+      }
+      
+      // Σχεδίαση των κελιών (orbitals)
+      noStroke();
+      for (let pos of positions) {
+        fill(200);
+        rectMode(CENTER);
+        rect(pos.x, pos.y, 50, 30);
+        fill(0);
+        text(`${pos.label} (${pos.filled})`, pos.x, pos.y);
+      }
+    }
+    
+    // Συνάρτηση για τη δόμηση (συμπλήρωση) σύμφωνα με τον ατομικό αριθμό και το fillOrder
+    function startFilling() {
+      let atomicNumber = parseInt(document.getElementById("atomicNumber").value);
+      electrons = atomicNumber;
+      // Επαναφορά των τιμών συμπλήρωσης
+      for (let pos of positions) {
+        pos.filled = 0;
+      }
+      for (let cell of fillOrder) {
+        let idx = getPositionIndex(cell.row, cell.col);
+        let orbitalLabel = positions[idx].label;
+        let orbitalType = orbitalLabel.slice(-1);
+        let maxFill = maxElectrons[orbitalType] || 2;
+        let fillAmount = Math.min(electrons, maxFill);
+        positions[idx].filled = fillAmount;
+        electrons -= fillAmount;
+        if (electrons <= 0) break;
+      }
+      redraw();
+    }
+  </script>
 </body>
 </html>
