@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aufbau Διάγραμμα</title>
+  <!-- Χρήση της βιβλιοθήκης p5.js για γραφική απεικόνιση -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <style>
     body { text-align: center; font-family: Verdana, sans-serif; }
@@ -17,14 +18,17 @@
   <button onclick="startFilling()">Ξεκίνα Δόμηση</button>
   
   <script>
-    // Ορισμός των περιόδων σύμφωνα με το ζητούμενο σχήμα:
-    // K:  1s
-    // L:  2s   2p
-    // M:  3s   3p   3d
-    // N:  4s   4p   4d   4f
-    // O:  5s   5p   5d   5f
-    // P:  6s   6p   6d
-    // Q:  7s   7p
+    /* 
+      Ορισμός των περιόδων σύμφωνα με το ζητούμενο σχήμα:
+      
+        K:  1s
+        L:  2s   2p
+        M:  3s   3p   3d
+        N:  4s   4p   4d   4f
+        O:  5s   5p   5d   5f
+        P:  6s   6p   6d
+        Q:  7s   7p
+    */
     let periods = [
       { label: "K", orbitals: ["1s"] },
       { label: "L", orbitals: ["2s", "2p"] },
@@ -41,11 +45,13 @@
     // Σταθερές σχεδίασης
     let boxWidth = 60, boxHeight = 40, verticalSpacing = 70;
     let canvasWidth = 800, canvasHeight = 500;
+    let leftMargin = 120;  // Σταθερή αριστερή στοίχιση για τα orbitals
     
-    // Οι θέσεις και τα δεδομένα κάθε orbital (επίπεδη δομή)
+    // Array για αποθήκευση των δεδομένων κάθε orbital (σε επίπεδη δομή)
+    // Κάθε στοιχείο έχει: x, y, label, filled και col (στήλη μέσα στην περίοδο)
     let positions = [];
     /* 
-      Οι σειρές καταγράφονται ως εξής:
+      Διάταξη:
       Row K: index 0           → "1s"
       Row L: index 1,2         → "2s", "2p"
       Row M: index 3,4,5       → "3s", "3p", "3d"
@@ -54,6 +60,7 @@
       Row P: index 14,15,16     → "6s", "6p", "6d"
       Row Q: index 17,18        → "7s", "7p"
     */
+    
     // Η σειρά συμπλήρωσης (Aufbau order) (ως indices στα positions):
     // 1s, 2s, 2p, 3s, 3p, 4s, 3d, 4p, 5s, 4d, 5p, 6s, 4f, 5d, 6p, 7s, 5f, 6d, 7p
     let fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18];
@@ -62,23 +69,22 @@
     let columnColors = [];
     function initColumnColors() {
       columnColors = [
-        color("#FFCDD2"), // 1η στήλη
-        color("#C8E6C9"), // 2η στήλη
-        color("#BBDEFB"), // 3η στήλη
-        color("#FFF9C4"), // 4η στήλη
-        color("#D1C4E9")  // 5η στήλη (αν υπάρχουν παραπάνω)
+        color("#FFCDD2"), // στήλη 0
+        color("#C8E6C9"), // στήλη 1
+        color("#BBDEFB"), // στήλη 2
+        color("#FFF9C4"), // στήλη 3
+        color("#D1C4E9")  // στήλη 4 (αν υπάρχουν περισσότερες)
       ];
     }
     
-    // Υπολογισμός θέσεων: Κάθε περίοδος κεντράρεται οριζόντια στο canvas.
+    // Υπολογισμός θέσεων: Κάθε περίοδος (γραμμή) στοιχίζεται αριστερά, ξεκινώντας από το leftMargin.
     function calculatePositions() {
       positions = [];
       let startY = 50;
       for (let i = 0; i < periods.length; i++) {
         let rowOrbitals = periods[i].orbitals;
         let gap = 10;
-        let totalRowWidth = rowOrbitals.length * boxWidth + (rowOrbitals.length - 1) * gap;
-        let startX = (canvasWidth - totalRowWidth) / 2 + boxWidth / 2;
+        let startX = leftMargin; // Αριστερή στοίχιση για όλα τα κουτιά
         let y = startY + i * verticalSpacing;
         for (let j = 0; j < rowOrbitals.length; j++) {
           let x = startX + j * (boxWidth + gap);
@@ -87,8 +93,7 @@
       }
     }
     
-    // Σχεδίαση των βελών: ΔΕΝ σχεδιάζονται "ανόδικα" (δηλαδή, αν το επόμενο κουτί είναι πιο πάνω, το βέλος παραλείπεται).
-    // Χρησιμοποιείται ένα απαλό γαλάζιο (light blue) χρώμα.
+    // Σχεδίαση των βελών: Διατηρούνται οι προηγούμενες ρυθμίσεις (από πάνω δεξιά προς κάτω αριστερά)
     function drawArrows() {
       let arrowColor = color(200, 230, 255); // απαλό γαλάζιο
       stroke(arrowColor);
@@ -98,7 +103,8 @@
         let idx2 = fillOrder[i+1];
         let pos1 = positions[idx1];
         let pos2 = positions[idx2];
-        if (pos2.y > pos1.y) {  // σχεδίασε μόνο αν το επόμενο κουτί είναι χαμηλότερα
+        // Σχεδιάζουμε το βέλος μόνο αν το επόμενο κουτί βρίσκεται χαμηλότερα (κατακόρυφα προς τα κάτω)
+        if (pos2.y > pos1.y) {
           let x1 = pos1.x;
           let y1 = pos1.y;
           let x2 = pos2.x;
@@ -112,69 +118,4 @@
       line(x1, y1, x2, y2);
       let angle = atan2(y2 - y1, x2 - x1);
       push();
-      translate(x2, y2);
-      rotate(angle);
-      let arrowSize = 7;
-      triangle(0, 0, -arrowSize, arrowSize/2, -arrowSize, -arrowSize/2);
-      pop();
-    }
-    
-    function setup() {
-      createCanvas(canvasWidth, canvasHeight);
-      textSize(12);
-      textFont("Verdana");
-      initColumnColors();
-      calculatePositions();
-      noLoop();
-    }
-    
-    function draw() {
-      background(255);
-      
-      // Σχεδίαση ονομάτων περιόδων (K, L, M, ...) στα αριστερά
-      textAlign(RIGHT, CENTER);
-      let periodLabels = ["K", "L", "M", "N", "O", "P", "Q"];
-      for (let i = 0; i < periodLabels.length; i++) {
-        let y = 50 + i * verticalSpacing;
-        text(periodLabels[i], 100, y);
-      }
-      
-      // Σχεδίαση των ορθογωνίων (orbitals) – κάθε στήλη παίρνει διαφορετικό χρώμα
-      noStroke();
-      textAlign(CENTER, CENTER);
-      for (let pos of positions) {
-        let colIndex = pos.col;
-        let colColor = columnColors[colIndex % columnColors.length];
-        fill(colColor);
-        rectMode(CENTER);
-        rect(pos.x, pos.y, boxWidth, boxHeight);
-        fill(0);
-        text(pos.label + " (" + pos.filled + ")", pos.x, pos.y);
-      }
-      
-      // Σχεδίαση των βελών σύμφωνα με το fillOrder (μόνο προς τα κάτω)
-      drawArrows();
-    }
-    
-    // Δόμηση: Κατανέμει τα ηλεκτρόνια στα orbitals σύμφωνα με τον ατομικό αριθμό και τη σειρά Aufbau.
-    function startFilling() {
-      for (let pos of positions) {
-        pos.filled = 0;
-      }
-      let atomicNumber = parseInt(document.getElementById("atomicNumber").value);
-      let remaining = atomicNumber;
-      for (let i = 0; i < fillOrder.length; i++) {
-        let idx = fillOrder[i];
-        let orbital = positions[idx];
-        let orbType = orbital.label.slice(-1);  // παίρνουμε το τέλος του label (s, p, d, ή f)
-        let capacity = maxElectrons[orbType] || 2;
-        let fillAmount = min(remaining, capacity);
-        orbital.filled = fillAmount;
-        remaining -= fillAmount;
-        if (remaining <= 0) break;
-      }
-      redraw();
-    }
-  </script>
-</body>
-</html>
+      trans
