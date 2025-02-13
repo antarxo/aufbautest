@@ -18,7 +18,17 @@
   <button onclick="startFilling()">Ξεκίνα Δόμηση</button>
   
   <script>
-    // Ορισμός των περιόδων με τα αντίστοιχα orbitals
+    /* 
+      Ορισμός των περιόδων σύμφωνα με το σχήμα που έδωσες:
+      
+        K:  1s
+        L:  2s   2p
+        M:  3s   3p   3d
+        N:  4s   4p   4d   4f
+        O:  5s   5p   5d   5f
+        P:  6s   6p   6d
+        Q:  7s   7p
+    */
     let periods = [
       { label: "K", orbitals: ["1s"] },
       { label: "L", orbitals: ["2s", "2p"] },
@@ -29,43 +39,43 @@
       { label: "Q", orbitals: ["7s", "7p"] }
     ];
     
-    // Οι μέγιστοι αριθμοί ηλεκτρονίων για κάθε orbital
+    // Μέγιστος αριθμός ηλεκτρονίων για κάθε orbital
     let maxElectrons = { "s": 2, "p": 6, "d": 10, "f": 14 };
     
     // Σταθερές σχεδίασης
     let boxWidth = 60;
     let boxHeight = 40;
     let verticalSpacing = 70;
-    let canvasWidth = 600;
-    let canvasHeight = 600;
+    let canvasWidth = 800;
+    let canvasHeight = 500;
+    let leftMargin = 120;  // αριστερό περιθώριο για τα κουτιά
     
-    // Array για αποθήκευση των θέσεων και δεδομένων κάθε orbital
+    // positions: αποθηκεύει τα δεδομένα κάθε orbital (στοιχείο, θέση κλπ.) σε επίπεδη δομή
     let positions = [];
-    /*
-      Τα στοιχεία αποθηκεύονται με την εξής σειρά (flattened):
-        Row K: index 0           → "1s"
-        Row L: index 1,2         → "2s", "2p"
-        Row M: index 3,4,5       → "3s", "3p", "3d"
-        Row N: index 6,7,8,9     → "4s", "4p", "4d", "4f"
-        Row O: index 10,11,12,13  → "5s", "5p", "5d", "5f"
-        Row P: index 14,15,16     → "6s", "6p", "6d"
-        Row Q: index 17,18        → "7s", "7p"
+    /* 
+      Οι σειρές αποθηκεύονται ως εξής:
+      - Row K: index 0           → "1s"
+      - Row L: index 1,2         → "2s", "2p"
+      - Row M: index 3,4,5       → "3s", "3p", "3d"
+      - Row N: index 6,7,8,9     → "4s", "4p", "4d", "4f"
+      - Row O: index 10,11,12,13  → "5s", "5p", "5d", "5f"
+      - Row P: index 14,15,16     → "6s", "6p", "6d"
+      - Row Q: index 17,18        → "7s", "7p"
     */
     
-    // Η σωστή σειρά συμπλήρωσης σύμφωνα με την αρχή Aufbau:
+    // Η σειρά συμπλήρωσης σύμφωνα με την αρχή Aufbau:
     // 1s, 2s, 2p, 3s, 3p, 4s, 3d, 4p, 5s, 4d, 5p, 6s, 4f, 5d, 6p, 7s, 5f, 6d, 7p
-    // Σε επίπεδο indices: [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18]
+    // Δηλαδή, ως indices: [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18]
     let fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18];
     
-    // Υπολογισμός θέσεων: κάθε περίοδος (γραμμή) κεντραρίζεται οριζόντια
+    // Υπολογισμός θέσεων: κάθε γραμμή στοιχίζεται αριστερά, ξεκινώντας από το leftMargin.
     function calculatePositions() {
       positions = [];
       let startY = 50;
       for (let i = 0; i < periods.length; i++) {
         let rowOrbitals = periods[i].orbitals;
         let gap = 10;
-        let totalRowWidth = rowOrbitals.length * boxWidth + (rowOrbitals.length - 1) * gap;
-        let startX = (canvasWidth - totalRowWidth) / 2 + boxWidth / 2;
+        let startX = leftMargin; // αριστερή στοίχιση
         let y = startY + i * verticalSpacing;
         for (let j = 0; j < rowOrbitals.length; j++) {
           let x = startX + j * (boxWidth + gap);
@@ -74,32 +84,38 @@
       }
     }
     
-    // Σχεδίαση βελών: Όλα τα βέλη θα είναι οριζόντια (παράλληλα)
-    // Θα χρησιμοποιήσουμε μια σταθερή οριζόντια γραμμή για τα βέλη (arrowY)
+    // Σχεδίαση των βελών:
+    // Από κάθε orbital, σχεδιάζεται κατακόρυφη γραμμή από το κάτω κέντρο του κουτιού μέχρι την καθορισμένη οριζόντια γραμμή (baseline).
+    // Στη συνέχεια, σχεδιάζονται οριζόντιες γραμμές που ενώνουν τα σημεία αυτά με βελάκια στο τέλος, όλα τα βέλη είναι παράλληλα.
     function drawArrows() {
-      let arrowY = canvasHeight - 50; // οριζόντια γραμμή στο κάτω μέρος του καμβά
+      let arrowBaseline = canvasHeight - 50; // οριζόντια γραμμή στο κάτω μέρος του καμβά
       stroke(200, 0, 0);
       strokeWeight(2);
-      // Για κάθε orbital στο fillOrder, σχεδιάζουμε έναν κατακόρυφο σύνδεσμο από το κέντρο του κουτιού μέχρι την arrowY
+      
+      let arrowPoints = [];
+      // Για κάθε orbital σύμφωνα με το fillOrder, σχεδιάζουμε κατακόρυφη γραμμή
       for (let idx of fillOrder) {
         let pos = positions[idx];
-        line(pos.x, pos.y + boxHeight/2, pos.x, arrowY);
+        // Το κάτω κέντρο του κουτιού
+        let xCenter = pos.x;
+        let yBottom = pos.y + boxHeight/2;
+        line(xCenter, yBottom, xCenter, arrowBaseline);
+        arrowPoints.push({ x: xCenter, y: arrowBaseline });
       }
-      // Σχεδιάζουμε τα οριζόντια βέλη μεταξύ των διαδοχικών orbital στη σειρά συμπλήρωσης
-      for (let i = 0; i < fillOrder.length - 1; i++) {
-        let pos1 = positions[fillOrder[i]];
-        let pos2 = positions[fillOrder[i+1]];
-        let x1 = pos1.x;
-        let x2 = pos2.x;
-        // Οριζόντια γραμμή από το ένα κουτί στο επόμενο, όλα στο arrowY
-        line(x1, arrowY, x2, arrowY);
-        // Σχεδίαση κεφαλής βέλους στο τέλος της γραμμής
-        push();
-        translate(x2, arrowY);
-        let arrowSize = 7;
-        triangle(0, 0, -arrowSize, arrowSize/2, -arrowSize, -arrowSize/2);
-        pop();
+      
+      // Σχεδίαση οριζόντιας γραμμής που ενώνει τα σημεία αυτά και τοποθέτηση βελόνων στο τέλος
+      for (let i = 0; i < arrowPoints.length - 1; i++) {
+        let pt1 = arrowPoints[i];
+        let pt2 = arrowPoints[i+1];
+        line(pt1.x, pt1.y, pt2.x, pt2.y);
       }
+      // Σχεδίαση βέλους στο τελευταίο σημείο
+      let lastPt = arrowPoints[arrowPoints.length - 1];
+      push();
+      translate(lastPt.x, lastPt.y);
+      let arrowSize = 7;
+      triangle(0, 0, -arrowSize, arrowSize/2, -arrowSize, -arrowSize/2);
+      pop();
     }
     
     function setup() {
@@ -111,9 +127,16 @@
     
     function draw() {
       background(255);
-      textAlign(CENTER, CENTER);
       
-      // Σχεδίαση των κουτιών για κάθε orbital
+      // Σχεδίαση ονομάτων περιόδων στα αριστερά
+      textAlign(RIGHT, CENTER);
+      let periodLabels = ["K", "L", "M", "N", "O", "P", "Q"];
+      for (let i = 0; i < periodLabels.length; i++) {
+        let y = 50 + i * verticalSpacing;
+        text(periodLabels[i], leftMargin - 20, y);
+      }
+      
+      // Σχεδίαση κουτιών για κάθε orbital
       noStroke();
       for (let pos of positions) {
         fill(220);
@@ -123,20 +146,11 @@
         text(pos.label + " (" + pos.filled + ")", pos.x, pos.y);
       }
       
-      // Σχεδίαση των οριζόντιων βελών (παράλληλα) σύμφωνα με το fillOrder
+      // Σχεδίαση βελών σύμφωνα με το fillOrder
       drawArrows();
-      
-      // Σχεδίαση των ονομάτων των περιόδων στα αριστερά
-      fill(0);
-      textAlign(RIGHT, CENTER);
-      let periodLabels = ["K", "L", "M", "N", "O", "P", "Q"];
-      for (let i = 0; i < periodLabels.length; i++) {
-        let y = 50 + i * verticalSpacing;
-        text(periodLabels[i], 30, y);
-      }
     }
     
-    // Δόμηση: Συμπλήρωση των orbitals σύμφωνα με τον ατομικό αριθμό και την ακολουθία Aufbau
+    // Συνάρτηση δόμησης: κατανέμει τα ηλεκτρόνια στα orbitals σύμφωνα με την σειρά Aufbau
     function startFilling() {
       // Επαναφορά τιμών
       for (let pos of positions) {
@@ -147,7 +161,7 @@
       for (let i = 0; i < fillOrder.length; i++) {
         let idx = fillOrder[i];
         let orbital = positions[idx];
-        let orbType = orbital.label.slice(-1); // παίρνουμε τον τύπο: s, p, d ή f
+        let orbType = orbital.label.slice(-1); // παίρνουμε τον τύπο (s, p, d, f)
         let capacity = maxElectrons[orbType] || 2;
         let fillAmount = min(remaining, capacity);
         orbital.filled = fillAmount;
