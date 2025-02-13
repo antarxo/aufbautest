@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aufbau Διάγραμμα</title>
+  <!-- Χρήση της βιβλιοθήκης p5.js για γραφική απεικόνιση -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <style>
     body { text-align: center; font-family: Arial, sans-serif; }
@@ -17,14 +18,17 @@
   <button onclick="startFilling()">Ξεκίνα Δόμηση</button>
   
   <script>
-    // Ορισμός των περιόδων (στιβάδων) σύμφωνα με το σχήμα:
-    // 1η:    1s
-    // 2η:    2s   2p
-    // 3η:    3s   3p   3d
-    // 4η:    4s   4p   4d   4f
-    // 5η:    5s   5p   5d   5f
-    // 6η:    6s   6p   6d
-    // 7η:    7s   7p
+    /* 
+      Ορισμός των περιόδων (στιβάδων) σύμφωνα με το σχήμα:
+      
+        1η:         1s
+        2η:         2s    2p
+        3η:         3s    3p    3d
+        4η:         4s    4p    4d    4f
+        5η:         5s    5p    5d    5f
+        6η:         6s    6p    6d
+        7η:         7s    7p
+    */
     let periods = [
       ["1s"],
       ["2s", "2p"],
@@ -35,57 +39,78 @@
       ["7s", "7p"]
     ];
     
-    // Παράμετροι σχεδίασης
+    // Οι μέγιστοι αριθμοί ηλεκτρονίων για κάθε orbital
+    let maxElectrons = { "s": 2, "p": 6, "d": 10, "f": 14 };
+    
+    // Σταθερές για τη σχεδίαση
     let boxWidth = 60;
     let boxHeight = 40;
     let verticalSpacing = 70;
     let canvasWidth = 600;
     let canvasHeight = 600;
     
-    // Οι μέγιστοι αριθμοί ηλεκτρονίων για κάθε τύπο orbital
-    let maxElectrons = { "s": 2, "p": 6, "d": 10, "f": 14 };
-    
-    // positions: πίνακας που θα περιέχει τα αντικείμενα για κάθε orbital με τις θέσεις του
+    // positions: πίνακας που περιέχει τα αντικείμενα για κάθε orbital (θέση, label, κ.λπ.)
     let positions = [];
+    /* 
+       Τα στοιχεία διαβάζονται σειρά προς σειρά. 
+       Οι δείκτες (indices) στα positions έχουν ως εξής:
+         Row 0: index 0        => "1s"
+         Row 1: index 1,2      => "2s", "2p"
+         Row 2: index 3,4,5    => "3s", "3p", "3d"
+         Row 3: index 6,7,8,9  => "4s", "4p", "4d", "4f"
+         Row 4: index 10,11,12,13 => "5s", "5p", "5d", "5f"
+         Row 5: index 14,15,16    => "6s", "6p", "6d"
+         Row 6: index 17,18       => "7s", "7p"
+    */
     
-    // fillOrder: ορίζουμε τη σειρά συμπλήρωσης με διάβαση των περιόδων από πάνω προς τα κάτω, αριστερά προς τα δεξιά
-    let fillOrder = [];
+    // fillOrder: η σωστή σειρά συμπλήρωσης σύμφωνα με την αρχή Aufbau:
+    // 1s, 2s, 2p, 3s, 3p, 4s, 3d, 4p, 5s, 4d, 5p, 6s, 4f, 5d, 6p, 7s, 5f, 6d, 7p
+    // Με βάση τα indices των θέσεων:
+    // 1s   -> index 0
+    // 2s   -> index 1
+    // 2p   -> index 2
+    // 3s   -> index 3
+    // 3p   -> index 4
+    // 4s   -> index 6    (Row 3, col0)
+    // 3d   -> index 5    (Row 2, col2)
+    // 4p   -> index 7    (Row 3, col1)
+    // 5s   -> index 10   (Row 4, col0)
+    // 4d   -> index 8    (Row 3, col2)
+    // 5p   -> index 11   (Row 4, col1)
+    // 6s   -> index 14   (Row 5, col0)
+    // 4f   -> index 9    (Row 3, col3)
+    // 5d   -> index 12   (Row 4, col2)
+    // 6p   -> index 15   (Row 5, col1)
+    // 7s   -> index 17   (Row 6, col0)
+    // 5f   -> index 13   (Row 4, col3)
+    // 6d   -> index 16   (Row 5, col2)
+    // 7p   -> index 18   (Row 6, col1)
+    let fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18];
     
-    // Υπολογισμός θέσεων ώστε κάθε σειρά να είναι κεντραρισμένη
+    // Υπολογισμός θέσεων: κάθε σειρά κεντραρίζεται οριζόντια στο canvas
     function calculatePositions() {
       positions = [];
-      fillOrder = [];
       let startY = 50;
-      let idx = 0;
       for (let i = 0; i < periods.length; i++) {
         let row = periods[i];
+        // Υπολογισμός συνολικού πλάτους της σειράς
         let gap = 10;
         let totalRowWidth = row.length * boxWidth + (row.length - 1) * gap;
-        // Κεντραρισμός της σειράς στο canvas
-        let startX = (canvasWidth - totalRowWidth) / 2 + boxWidth / 2;
+        let startX = (canvasWidth - totalRowWidth) / 2 + boxWidth/2;
         for (let j = 0; j < row.length; j++) {
           let x = startX + j * (boxWidth + gap);
           let y = startY + i * verticalSpacing;
-          positions.push({
-            x: x,
-            y: y,
-            label: row[j],
-            filled: 0,
-            period: i,
-            col: j
-          });
-          fillOrder.push(idx);
-          idx++;
+          positions.push({ x: x, y: y, label: row[j], filled: 0, period: i, col: j });
         }
       }
     }
     
-    // Σχεδίαση βελών μεταξύ δύο σημείων
+    // Συνάρτηση σχεδίασης βέλους μεταξύ δύο σημείων
     function drawArrow(x1, y1, x2, y2) {
       let angle = atan2(y2 - y1, x2 - x1);
-      // Σχεδίαση γραμμής
+      // Γραμμή
       line(x1, y1, x2, y2);
-      // Σχεδίαση κεφαλής βέλους
+      // Κεφαλή βέλους
       push();
       translate(x2, y2);
       rotate(angle);
@@ -105,7 +130,7 @@
       background(255);
       textAlign(CENTER, CENTER);
       
-      // Σχεδίαση βελών σύμφωνα με τη σειρά συμπλήρωσης
+      // Σχεδίαση βελών σύμφωνα με το fillOrder
       stroke(200, 0, 0);
       strokeWeight(2);
       for (let i = 0; i < fillOrder.length - 1; i++) {
@@ -123,23 +148,23 @@
         rectMode(CENTER);
         rect(pos.x, pos.y, boxWidth, boxHeight);
         fill(0);
-        text(pos.label + " (" + pos.filled + ")", pos.x, pos.y);
+        text(`${pos.label} (${pos.filled})`, pos.x, pos.y);
       }
     }
     
-    // Συνάρτηση δόμησης (συμπλήρωσης) σύμφωνα με τον ατομικό αριθμό
+    // Συνάρτηση δόμησης: συμπλήρωση των orbitals σύμφωνα με τον ατομικό αριθμό και τη σειρά Aufbau
     function startFilling() {
-      // Επαναφορά των τιμών συμπλήρωσης
+      // Επαναφορά συμπλήρωσης
       for (let pos of positions) {
         pos.filled = 0;
       }
       let atomicNumber = parseInt(document.getElementById("atomicNumber").value);
       let remaining = atomicNumber;
-      // Συμπλήρωση σύμφωνα με τη σειρά fillOrder
+      // Συμπλήρωση σύμφωνα με το fillOrder
       for (let i = 0; i < fillOrder.length; i++) {
         let idx = fillOrder[i];
         let orbital = positions[idx];
-        let orbType = orbital.label.slice(-1); // λαμβάνουμε τον τύπο: s, p, d, ή f
+        let orbType = orbital.label.slice(-1); // παίρνουμε το τελευταίο γράμμα (s, p, d, f)
         let capacity = maxElectrons[orbType] || 2;
         let fillAmount = min(remaining, capacity);
         orbital.filled = fillAmount;
