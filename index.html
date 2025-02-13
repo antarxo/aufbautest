@@ -50,7 +50,7 @@
     let canvasHeight = 500;
     let leftMargin = 120;  // αριστερό περιθώριο για τα κουτιά
     
-    // positions: αποθηκεύει τα δεδομένα κάθε orbital (στοιχείο, θέση κλπ.) σε επίπεδη δομή
+    // Array για αποθήκευση των δεδομένων κάθε orbital (σε επίπεδη δομή)
     let positions = [];
     /* 
       Οι σειρές αποθηκεύονται ως εξής:
@@ -84,35 +84,33 @@
       }
     }
     
-    // Σχεδίαση των βελών:
-    // Από κάθε orbital, σχεδιάζεται κατακόρυφη γραμμή από το κάτω κέντρο του κουτιού μέχρι την καθορισμένη οριζόντια γραμμή (baseline).
-    // Στη συνέχεια, σχεδιάζονται οριζόντιες γραμμές που ενώνουν τα σημεία αυτά με βελάκια στο τέλος, όλα τα βέλη είναι παράλληλα.
+    // Σχεδίαση βέλους: για κάθε συνεχόμενο ζεύγος στο fillOrder,
+    // σχεδιάζεται μια γραμμή από το κέντρο του πρώτου κουτιού στο κέντρο του επόμενου.
     function drawArrows() {
-      let arrowBaseline = canvasHeight - 50; // οριζόντια γραμμή στο κάτω μέρος του καμβά
       stroke(200, 0, 0);
       strokeWeight(2);
-      
-      let arrowPoints = [];
-      // Για κάθε orbital σύμφωνα με το fillOrder, σχεδιάζουμε κατακόρυφη γραμμή
-      for (let idx of fillOrder) {
-        let pos = positions[idx];
-        // Το κάτω κέντρο του κουτιού
-        let xCenter = pos.x;
-        let yBottom = pos.y + boxHeight/2;
-        line(xCenter, yBottom, xCenter, arrowBaseline);
-        arrowPoints.push({ x: xCenter, y: arrowBaseline });
+      for (let i = 0; i < fillOrder.length - 1; i++) {
+        let idx1 = fillOrder[i];
+        let idx2 = fillOrder[i+1];
+        let pos1 = positions[idx1];
+        let pos2 = positions[idx2];
+        // Υπολογισμός κέντρων των κουτιών
+        let x1 = pos1.x;
+        let y1 = pos1.y;
+        let x2 = pos2.x;
+        let y2 = pos2.y;
+        drawArrow(x1, y1, x2, y2);
       }
-      
-      // Σχεδίαση οριζόντιας γραμμής που ενώνει τα σημεία αυτά και τοποθέτηση βελόνων στο τέλος
-      for (let i = 0; i < arrowPoints.length - 1; i++) {
-        let pt1 = arrowPoints[i];
-        let pt2 = arrowPoints[i+1];
-        line(pt1.x, pt1.y, pt2.x, pt2.y);
-      }
-      // Σχεδίαση βέλους στο τελευταίο σημείο
-      let lastPt = arrowPoints[arrowPoints.length - 1];
+    }
+    
+    // Συνάρτηση σχεδίασης βέλους από (x1,y1) έως (x2,y2)
+    function drawArrow(x1, y1, x2, y2) {
+      line(x1, y1, x2, y2);
+      // Υπολογισμός γωνίας για την κεφαλή του βέλους
+      let angle = atan2(y2 - y1, x2 - x1);
       push();
-      translate(lastPt.x, lastPt.y);
+      translate(x2, y2);
+      rotate(angle);
       let arrowSize = 7;
       triangle(0, 0, -arrowSize, arrowSize/2, -arrowSize, -arrowSize/2);
       pop();
@@ -146,11 +144,11 @@
         text(pos.label + " (" + pos.filled + ")", pos.x, pos.y);
       }
       
-      // Σχεδίαση βελών σύμφωνα με το fillOrder
+      // Σχεδίαση βελών μεταξύ των κουτιών σύμφωνα με το fillOrder
       drawArrows();
     }
     
-    // Συνάρτηση δόμησης: κατανέμει τα ηλεκτρόνια στα orbitals σύμφωνα με την σειρά Aufbau
+    // Δόμηση: Κατανέμει τα ηλεκτρόνια στα orbitals σύμφωνα με τον ατομικό αριθμό και τη σειρά Aufbau
     function startFilling() {
       // Επαναφορά τιμών
       for (let pos of positions) {
