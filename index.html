@@ -114,8 +114,8 @@
         let colIndex = pos.col;
         let colColor = columnColors[colIndex % columnColors.length];
         
-        // Change color to gray for the last filled s and p orbitals
-        if (lastFilledS === pos.label || lastFilledP === pos.label) {
+        // Change color to gray for the last filled s and p orbitals of the last period
+        if ((lastFilledS === pos.label || lastFilledP === pos.label) && periods[periods.length - 1].orbitals.includes(pos.label)) {
           colColor = color(200); // Gray color
         }
         
@@ -153,10 +153,10 @@
     }
     
     function drawArrows() {
-      let blackArrowColor = color(0, 0, 0);
-      stroke(blackArrowColor);
+      let grayArrowColor = color(150, 150, 150);
+      stroke(grayArrowColor);
       strokeWeight(2);
-      drawingContext.setLineDash([5, 5]); // Set dashed line
+      drawingContext.setLineDash([5, 5]); // Set dotted line
       for (let i = 0; i < fillOrder.length - 1; i++) {
         let idx1 = fillOrder[i];
         let idx2 = fillOrder[i + 1];
