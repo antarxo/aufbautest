@@ -41,6 +41,7 @@
     let columnColors = [];
     let lastFilledS = null;
     let lastFilledP = null;
+    let lastPeriod = -1;
     
     function setup() {
       createCanvas(canvasWidth, canvasHeight);
@@ -220,7 +221,7 @@
       fill(200); // Gray color
       if (lastFilledS) {
         let pos = positions.find(p => p.label === lastFilledS);
-        if (pos) {
+        if (pos && periods[lastPeriod].orbitals.includes(pos.label)) {
           rectMode(CENTER);
           rect(pos.x, pos.y, boxWidth, boxHeight);
           drawOrbitalContent(pos); // Draw content on top
@@ -228,7 +229,7 @@
       }
       if (lastFilledP) {
         let pos = positions.find(p => p.label === lastFilledP);
-        if (pos) {
+        if (pos && periods[lastPeriod].orbitals.includes(pos.label)) {
           rectMode(CENTER);
           rect(pos.x, pos.y, boxWidth, boxHeight);
           drawOrbitalContent(pos); // Draw content on top
@@ -267,9 +268,9 @@
       }
       lastFilledS = null;
       lastFilledP = null;
+      lastPeriod = -1;
       let atomicNumber = parseInt(document.getElementById("atomicNumber").value);
       let remaining = atomicNumber;
-      let lastPeriod = -1;
       for (let i = 0; i < fillOrder.length; i++) {
         let idx = fillOrder[i];
         let orbital = positions[idx];
@@ -288,20 +289,6 @@
         }
         if (remaining <= 0) break;
       }
-      // Ensure only the last filled s and p orbitals of the last period are gray
-      if (lastPeriod !== -1) {
-        for (let i = 0; i < positions.length; i++) {
-          let pos = positions[i];
-          if (periods[lastPeriod].orbitals.includes(pos.label)) {
-            if (pos.label.endsWith("s") && pos.label !== lastFilledS) {
-              lastFilledS = null;
-            }
-            if (pos.label.endsWith("p") && pos.label !== lastFilledP) {
-              lastFilledP = null;
-            }
-          }
-        }
-      }
       redraw();
     }
     
@@ -311,6 +298,7 @@
       }
       lastFilledS = null;
       lastFilledP = null;
+      lastPeriod = -1;
       document.getElementById("atomicNumber").value = 1;
       redraw();
     }
