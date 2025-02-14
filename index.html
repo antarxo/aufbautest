@@ -9,10 +9,22 @@
     body { text-align: center; font-family: Verdana, sans-serif; }
     canvas { display: block; margin: auto; }
     button { margin: 5px; }
-    #electronConfiguration {
+    #infoTable {
       margin-top: 20px;
-      font-size: 14px; /* Μικρότερο μέγεθος γραμματοσειράς */
-      font-weight: normal; /* Χωρίς έντονη γραμματοσειρά */
+      font-size: 14px;
+      font-weight: normal;
+      border-collapse: collapse;
+      width: 50%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #infoTable th, #infoTable td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: center;
+    }
+    #infoTable th {
+      background-color: #f2f2f2;
     }
   </style>
 </head>
@@ -23,7 +35,24 @@
   <button onclick="startFilling()">Ξεκίνα Δόμηση</button>
   <button onclick="resetDiagram()">Reset</button>
   <div id="elementInfo"></div>
-  <div id="electronConfiguration"></div> <!-- Εμφάνιση ηλεκτρονιακής δόμησης -->
+  <table id="infoTable">
+    <tr>
+      <th>Περίοδος</th>
+      <th>Ομάδα</th>
+    </tr>
+    <tr>
+      <td id="periodInfo"></td>
+      <td id="groupInfo"></td>
+    </tr>
+    <tr>
+      <th>Αρχικό aufbau</th>
+      <th>Δόμηση</th>
+    </tr>
+    <tr>
+      <td>Aufbau</td>
+      <td id="electronConfigInfo"></td>
+    </tr>
+  </table>
 
   <script>
     const periods = [
@@ -264,8 +293,7 @@
       }
 
       // Εμφάνιση της ηλεκτρονιακής δόμησης με κόμμα ως διαχωριστικό
-      document.getElementById("electronConfiguration").innerText = 
-        `Η ηλεκτρονιακή δόμηση είναι: ${electronConfig.join(", ")}`;
+      document.getElementById("electronConfigInfo").innerText = electronConfig.join(", ");
 
       // Προβλέψεις για την ομάδα και την περίοδο
       predictElementPosition(lastFilledPeriod, lastFilledS, lastFilledP);
@@ -326,7 +354,8 @@
         groupNumber = lastFilledS.filled + dElectrons.filled;
       }
 
-      document.getElementById("elementInfo").innerText = `Περίοδος: ${period}, Ομάδα: ${groupRoman} ή ${groupNumber}`;
+      document.getElementById("periodInfo").innerText = period;
+      document.getElementById("groupInfo").innerText = `${groupRoman} ή ${groupNumber}`;
     }
 
     function toRoman(num) {
@@ -364,7 +393,9 @@
       lastPeriod = -1;
       document.getElementById("atomicNumber").value = 1;
       document.getElementById("elementInfo").innerText = '';
-      document.getElementById("electronConfiguration").innerText = '';
+      document.getElementById("electronConfigInfo").innerText = '';
+      document.getElementById("periodInfo").innerText = '';
+      document.getElementById("groupInfo").innerText = '';
       redraw();
     }
   </script>
