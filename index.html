@@ -312,7 +312,7 @@
       let previousPeriodOrbitals = positions.filter(p => parseInt(p.label.slice(0, -1)) === previousPeriod);
       let dElectrons = previousPeriodOrbitals.find(o => o.label.endsWith("d") && o.filled > 0);
       if (dElectrons) {
-        groupNumber = 2 + dElectrons.filled;
+        groupNumber = lastFilledS.filled + dElectrons.filled;
       }
       
       document.getElementById("elementInfo").innerText = `Περίοδος: ${period}, Ομάδα: ${groupRoman} ή ${groupNumber}`;
