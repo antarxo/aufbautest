@@ -116,7 +116,7 @@
         let colColor = columnColors[colIndex % columnColors.length];
         
         // Change color to gray for the last filled s and p orbitals of the last period
-        if ((lastFilledS === pos.label || lastFilledP === pos.label) && periods[lastPeriod].orbitals.includes(pos.label)) {
+        if (pos.isGray) {
           colColor = color(200); // Gray color
         }
         
@@ -220,55 +220,10 @@
       pop();
     }
     
-    function highlightLastFilledOrbitals() {
-      noStroke();
-      fill(200); // Gray color
-      if (lastFilledS) {
-        let pos = positions.find(p => p.label === lastFilledS);
-        if (pos && periods[lastPeriod].orbitals.includes(pos.label)) {
-          rectMode(CENTER);
-          rect(pos.x, pos.y, boxWidth, boxHeight);
-          drawOrbitalContent(pos); // Draw content on top
-        }
-      }
-      if (lastFilledP) {
-        let pos = positions.find(p => p.label === lastFilledP);
-        if (pos && periods[lastPeriod].orbitals.includes(pos.label)) {
-          rectMode(CENTER);
-          rect(pos.x, pos.y, boxWidth, boxHeight);
-          drawOrbitalContent(pos); // Draw content on top
-        }
-      }
-    }
-    
-    function drawOrbitalContent(pos) {
-      fill(0);
-      let label = pos.label;
-      let exponent = pos.filled;
-      let labelWidth = textWidth(label);
-      
-      text(label, pos.x - labelWidth / 4, pos.y);
-      
-      textSize(10);
-      textStyle(BOLD);
-      
-      if (label.endsWith("s") || label.endsWith("p")) {
-        fill(255, 0, 0);
-      } else if (label.endsWith("d")) {
-        fill(0, 0, 255);
-      } else if (label.endsWith("f")) {
-        fill(255, 165, 0);
-      }
-      
-      text(exponent, pos.x + labelWidth / 4, pos.y - 5);
-      fill(0);
-      textStyle(NORMAL);
-      textSize(12);
-    }
-    
     function startFilling() {
       for (let pos of positions) {
         pos.filled = 0;
+        pos.isGray = false;
       }
       lastFilledS = null;
       lastFilledP = null;
@@ -276,37 +231,44 @@
       let atomicNumber = parseInt(document.getElementById("atomicNumber").value);
       let remaining = atomicNumber;
       let lastFilledOrbital = null;
+      let lastFilledPeriod = -1;
       for (let i = 0; i < fillOrder.length; i++) {
         let idx = fillOrder[i];
         let orbital = positions[idx];
         let orbType = orbital.label.slice(-1);
+        let periodNumber = parseInt(orbital.label.slice(0, -1));
         let capacity = maxElectrons[orbType] || 2;
         let fillAmount = min(remaining, capacity);
         orbital.filled = fillAmount;
         remaining -= fillAmount;
         if (fillAmount > 0) {
           lastFilledOrbital = orbital.label;
-          lastPeriod = periods.findIndex(p => p.orbitals.includes(orbital.label));
+          lastFilledPeriod = periodNumber;
         }
         if (remaining <= 0) break;
       }
       
       // Determine the last filled s and p orbitals of the last period
-      if (lastPeriod !== -1) {
-        let lastPeriodOrbitals = periods[lastPeriod].orbitals;
-        lastFilledS = lastPeriodOrbitals.find(o => o.endsWith("s") && positions.find(p => p.label === o).filled > 0);
-        lastFilledP = lastPeriodOrbitals.find(o => o.endsWith("p") && positions.find(p => p.label === o).filled > 0);
+      if (lastFilledPeriod !== -1) {
+        let lastPeriodOrbitals = positions.filter(p => parseInt(p.label.slice(0, -1)) === lastFilledPeriod);
+        lastFilledS = lastPeriodOrbitals.find(o => o.label.endsWith("s") && o.filled > 0);
+        lastFilledP = lastPeriodOrbitals.find(o => o.label.endsWith("p") && o.filled > 0);
       }
       
       // Ensure only the last filled s and p orbitals of the last period are gray
       if (lastFilledP) {
         for (let i = 0; i < positions.length; i++) {
           let pos = positions[i];
-          if (periods[lastPeriod].orbitals.includes(pos.label)) {
+          if (parseInt(pos.label.slice(0, -1)) === lastFilledPeriod) {
             if (pos.label.endsWith("s") || pos.label.endsWith("p")) {
               pos.isGray = true;
             }
           }
+        }
+      } else if (lastFilledS) {
+        let pos = positions.find(p => p.label === lastFilledS.label);
+        if (pos) {
+          pos.isGray = true;
         }
       }
       
