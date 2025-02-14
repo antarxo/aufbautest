@@ -3,22 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aufbau Διάγραμμα</title>
+  <title>Κανόνας Aufbau</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <style>
     body { text-align: center; font-family: Verdana, sans-serif; }
     canvas { display: block; margin: auto; }
     button { margin: 5px; }
+    #electronConfiguration {
+      margin-top: 20px;
+      font-size: 14px;
+      font-weight: normal;
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
-  <h1>Aufbau Διάγραμμα</h1>
+  <h1>Κανόνας Aufbau</h1>
   <label for="atomicNumber">Ατομικός Αριθμός:</label>
   <input type="number" id="atomicNumber" min="1" max="118" value="1">
   <button onclick="startFilling()">Ξεκίνα Δόμηση</button>
-  <button onclick="resetDiagram()">Reset</button>  <!-- Νέο κουμπί Reset -->
-  <div id="elementInfo"></div> <!-- Νέο στοιχείο για την πρόβλεψη της θέσης στον Περιοδικό Πίνακα -->
-  
+  <button onclick="resetDiagram()">Reset</button>
+  <div id="elementInfo"></div>
+  <div class="section-title">Αρχικά κατά Aufbau</div>
+  <div id="electronConfiguration"></div>
+
   <script>
     const periods = [
       { label: "K", orbitals: ["1s"] },
@@ -29,7 +41,7 @@
       { label: "P", orbitals: ["6s", "6p", "6d"] },
       { label: "Q", orbitals: ["7s", "7p"] }
     ];
-    
+
     const maxElectrons = { "s": 2, "p": 6, "d": 10, "f": 14 };
     const boxWidth = 60, boxHeight = 40, verticalSpacing = 45;
     const horizontalGap = 5;
@@ -37,13 +49,13 @@
     const leftMargin = 120;
     const periodLabelWidth = 50;
     const fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18];
-    
+
     let positions = [];
     let columnColors = [];
     let lastFilledS = null;
     let lastFilledP = null;
     let lastPeriod = -1;
-    
+
     function setup() {
       createCanvas(canvasWidth, canvasHeight);
       textSize(12);
@@ -52,14 +64,14 @@
       calculatePositions();
       noLoop();
     }
-    
+
     function draw() {
       background(255);
       drawPeriodLabels();
       drawOrbitals();
       drawArrows();
     }
-    
+
     function initColumnColors() {
       columnColors = [
         color("#FFCDD2"), // στήλη 0
@@ -69,7 +81,7 @@
         color("#D1C4E9")  // στήλη 4
       ];
     }
-    
+
     function calculatePositions() {
       positions = [];
       let startY = 50;
@@ -83,7 +95,7 @@
         }
       }
     }
-    
+
     function drawPeriodLabels() {
       let periodElectrons = new Array(periods.length).fill(0);
       for (let pos of positions) {
@@ -92,7 +104,7 @@
           periodElectrons[periodIndex] += pos.filled;
         }
       }
-      
+
       textAlign(RIGHT, CENTER);
       fill(0);
       textSize(14);
@@ -108,34 +120,33 @@
       textStyle(NORMAL);
       textSize(12);
     }
-    
+
     function drawOrbitals() {
       noStroke();
       textAlign(CENTER, CENTER);
       for (let pos of positions) {
         let colIndex = pos.col;
         let colColor = columnColors[colIndex % columnColors.length];
-        
-        // Change color to gray for the last filled s and p orbitals of the last period
+
         if (pos.isGray) {
           colColor = color(200); // Gray color
         }
-        
+
         fill(colColor);
         rectMode(CENTER);
         rect(pos.x, pos.y, boxWidth, boxHeight);
         fill(0);
-        
+
         if (pos.filled > 0) {
           let label = pos.label;
           let exponent = pos.filled;
           let labelWidth = textWidth(label);
-          
+
           text(label, pos.x - labelWidth / 4, pos.y);
-          
+
           textSize(10);
           textStyle(BOLD);
-          
+
           if (pos.isGray) {
             fill(0); // Black color for exponents in gray boxes
           } else if (label.endsWith("s")) {
@@ -147,7 +158,7 @@
           } else if (label.endsWith("f")) {
             fill(255, 165, 0);
           }
-          
+
           text(exponent, pos.x + labelWidth / 4, pos.y - 8); // Move exponent 3 pixels higher
           fill(0);
           textStyle(NORMAL);
@@ -157,7 +168,7 @@
         }
       }
     }
-    
+
     function drawArrows() {
       let grayArrowColor = color(150, 150, 150);
       stroke(grayArrowColor);
@@ -171,21 +182,21 @@
         if (pos2.y > pos1.y) {
           let startOffset = 13;
           let endOffset = 13;
-          
+
           let x1 = pos1.x + boxWidth / 2;
           let y1 = pos1.y - boxHeight / 2 + startOffset;
           let x2 = pos2.x + boxWidth / 2;
           let y2 = pos2.y - boxHeight / 2 + endOffset;
-          
+
           drawArrow(x1, y1, x2, y2);
         }
       }
       drawingContext.setLineDash([]); // Reset to solid line
-      
+
       let redArrowColor = color(255, 0, 0);
       stroke(redArrowColor);
       strokeWeight(2);
-      
+
       let lastFilledIndex = -1;
       for (let i = fillOrder.length - 1; i >= 0; i--) {
         let idx = fillOrder[i];
@@ -194,7 +205,7 @@
           break;
         }
       }
-      
+
       for (let i = 0; i < lastFilledIndex; i++) {
         let idx1 = fillOrder[i];
         let idx2 = fillOrder[i + 1];
@@ -203,17 +214,17 @@
         if (pos2.y > pos1.y) {
           let startOffset = 13;
           let endOffset = 13;
-          
+
           let x1 = pos1.x + boxWidth / 2;
           let y1 = pos1.y - boxHeight / 2 + startOffset;
           let x2 = pos2.x + boxWidth / 2;
           let y2 = pos2.y - boxHeight / 2 + endOffset;
-          
+
           drawArrow(x1, y1, x2, y2);
         }
       }
     }
-    
+
     function drawArrow(x1, y1, x2, y2) {
       line(x1, y1, x2, y2);
       let angle = atan2(y2 - y1, x2 - x1);
@@ -224,7 +235,7 @@
       triangle(0, 0, -arrowSize, arrowSize / 2, -arrowSize, -arrowSize / 2);
       pop();
     }
-    
+
     function startFilling() {
       for (let pos of positions) {
         pos.filled = 0;
@@ -237,6 +248,8 @@
       let remaining = atomicNumber;
       let lastFilledOrbital = null;
       let lastFilledPeriod = -1;
+      let electronConfig = [];
+
       for (let i = 0; i < fillOrder.length; i++) {
         let idx = fillOrder[i];
         let orbital = positions[idx];
@@ -246,52 +259,50 @@
         let fillAmount = min(remaining, capacity);
         orbital.filled = fillAmount;
         remaining -= fillAmount;
+
         if (fillAmount > 0) {
+          electronConfig.push(`${orbital.label}${fillAmount > 1 ? `²` : '¹'}`);
           lastFilledOrbital = orbital.label;
           lastFilledPeriod = periodNumber;
         }
         if (remaining <= 0) break;
       }
-      
-      // Determine the outermost period
-      let outermostPeriod = Math.max(...positions.filter(p => p.filled > 0).map(p => parseInt(p.label.slice(0, -1))));
-      
-      // Determine the last filled s and p orbitals of the outermost period
+
+      document.getElementById("electronConfiguration").innerText = 
+        `Η ηλεκτρονιακή δόμηση είναι: ${electronConfig.join(", ")}`;
+
+      predictElementPosition(lastFilledPeriod, lastFilledS, lastFilledP);
+
+      let outermostPeriod = Math.max(...positions.filter(p => p.filled > 0).map(p => parseInt(p.label.slice(0, -1)));
       if (outermostPeriod !== -1) {
         let lastPeriodOrbitals = positions.filter(p => parseInt(p.label.slice(0, -1)) === outermostPeriod);
         lastFilledS = lastPeriodOrbitals.find(o => o.label.endsWith("s") && o.filled > 0);
         lastFilledP = lastPeriodOrbitals.find(o => o.label.endsWith("p") && o.filled > 0);
-      }
-      
-      // Ensure only the last filled s and p orbitals of the outermost period are gray
-      if (lastFilledP) {
-        for (let i = 0; i < positions.length; i++) {
-          let pos = positions[i];
-          if (parseInt(pos.label.slice(0, -1)) === outermostPeriod) {
-            if (pos.label.endsWith("s") || pos.label.endsWith("p")) {
-              pos.isGray = true;
+
+        if (lastFilledP) {
+          for (let i = 0; i < positions.length; i++) {
+            let pos = positions[i];
+            if (parseInt(pos.label.slice(0, -1)) === outermostPeriod) {
+              if (pos.label.endsWith("s") || pos.label.endsWith("p")) {
+                pos.isGray = true;
+              }
             }
           }
-        }
-      } else if (lastFilledS) {
-        let pos = positions.find(p => p.label === lastFilledS.label);
-        if (pos) {
-          pos.isGray = true;
+        } else if (lastFilledS) {
+          let pos = positions.find(p => p.label === lastFilledS.label);
+          if (pos) {
+            pos.isGray = true;
+          }
         }
       }
-      
-      // Predict the element's position in the periodic table
-      predictElementPosition(outermostPeriod, lastFilledS, lastFilledP);
-      
+
       redraw();
     }
-    
+
     function predictElementPosition(period, lastFilledS, lastFilledP) {
       let group = 0;
       let groupRoman = '';
-      let groupNumber = 0;
-      
-      // Calculate group using the first method
+
       if (lastFilledP) {
         group = lastFilledS.filled + lastFilledP.filled;
         groupRoman = toRoman(group) + 'A';
@@ -299,25 +310,10 @@
         group = lastFilledS.filled;
         groupRoman = toRoman(group) + 'A';
       }
-      
-      // Calculate group using the second method
-      if (lastFilledP) {
-        groupNumber = 12 + lastFilledP.filled;
-      } else if (lastFilledS) {
-        groupNumber = lastFilledS.filled;
-      }
-      
-      // Check for d electrons in the previous period
-      let previousPeriod = period - 1;
-      let previousPeriodOrbitals = positions.filter(p => parseInt(p.label.slice(0, -1)) === previousPeriod);
-      let dElectrons = previousPeriodOrbitals.find(o => o.label.endsWith("d") && o.filled > 0);
-      if (dElectrons) {
-        groupNumber = lastFilledS.filled + dElectrons.filled;
-      }
-      
-      document.getElementById("elementInfo").innerText = `Περίοδος: ${period}, Ομάδα: ${groupRoman} ή ${groupNumber}`;
+
+      document.getElementById("elementInfo").innerText = `Περίοδος: ${period}, Ομάδα: ${groupRoman}`;
     }
-    
+
     function toRoman(num) {
       const roman = {
         M: 1000,
@@ -342,7 +338,7 @@
       }
       return str;
     }
-    
+
     function resetDiagram() {
       for (let pos of positions) {
         pos.filled = 0;
@@ -353,6 +349,7 @@
       lastPeriod = -1;
       document.getElementById("atomicNumber").value = 1;
       document.getElementById("elementInfo").innerText = '';
+      document.getElementById("electronConfiguration").innerText = '';
       redraw();
     }
   </script>
