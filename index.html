@@ -57,7 +57,6 @@
       drawPeriodLabels();
       drawOrbitals();
       drawArrows();
-      highlightLastFilledOrbitals(); // Ensure the last filled orbitals are highlighted
     }
     
     function initColumnColors() {
@@ -115,6 +114,11 @@
       for (let pos of positions) {
         let colIndex = pos.col;
         let colColor = columnColors[colIndex % columnColors.length];
+        
+        // Change color to gray for the last filled s and p orbitals of the last period
+        if ((lastFilledS === pos.label || lastFilledP === pos.label) && periods[lastPeriod].orbitals.includes(pos.label)) {
+          colColor = color(200); // Gray color
+        }
         
         fill(colColor);
         rectMode(CENTER);
@@ -271,6 +275,7 @@
       lastPeriod = -1;
       let atomicNumber = parseInt(document.getElementById("atomicNumber").value);
       let remaining = atomicNumber;
+      let lastFilledOrbital = null;
       for (let i = 0; i < fillOrder.length; i++) {
         let idx = fillOrder[i];
         let orbital = positions[idx];
@@ -280,35 +285,38 @@
         orbital.filled = fillAmount;
         remaining -= fillAmount;
         if (fillAmount > 0) {
-          if (orbital.label.endsWith("s")) {
-            lastFilledS = orbital.label;
-          } else if (orbital.label.endsWith("p")) {
-            lastFilledP = orbital.label;
-          }
+          lastFilledOrbital = orbital.label;
           lastPeriod = periods.findIndex(p => p.orbitals.includes(orbital.label));
         }
         if (remaining <= 0) break;
       }
-      // Ensure only the last filled s and p orbitals of the last period are gray
+      
+      // Determine the last filled s and p orbitals of the last period
       if (lastPeriod !== -1) {
+        let lastPeriodOrbitals = periods[lastPeriod].orbitals;
+        lastFilledS = lastPeriodOrbitals.find(o => o.endsWith("s") && positions.find(p => p.label === o).filled > 0);
+        lastFilledP = lastPeriodOrbitals.find(o => o.endsWith("p") && positions.find(p => p.label === o).filled > 0);
+      }
+      
+      // Ensure only the last filled s and p orbitals of the last period are gray
+      if (lastFilledP) {
         for (let i = 0; i < positions.length; i++) {
           let pos = positions[i];
           if (periods[lastPeriod].orbitals.includes(pos.label)) {
-            if (pos.label.endsWith("s") && pos.label !== lastFilledS) {
-              lastFilledS = null;
-            }
-            if (pos.label.endsWith("p") && pos.label !== lastFilledP) {
-              lastFilledP = null;
+            if (pos.label.endsWith("s") || pos.label.endsWith("p")) {
+              pos.isGray = true;
             }
           }
         }
       }
+      
       redraw();
     }
     
     function resetDiagram() {
       for (let pos of positions) {
         pos.filled = 0;
+        pos.isGray = false;
       }
       lastFilledS = null;
       lastFilledP = null;
