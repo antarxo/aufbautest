@@ -136,15 +136,17 @@
           textSize(10);
           textStyle(BOLD);
           
-          if (label.endsWith("s") || label.endsWith("p")) {
+          if (label.endsWith("s")) {
             fill(255, 0, 0);
+          } else if (label.endsWith("p")) {
+            fill(0, 255, 0); // Green color for p orbitals
           } else if (label.endsWith("d")) {
             fill(0, 0, 255);
           } else if (label.endsWith("f")) {
             fill(255, 165, 0);
           }
           
-          text(exponent, pos.x + labelWidth / 4, pos.y - 5);
+          text(exponent, pos.x + labelWidth / 4, pos.y - 8); // Move exponent 3 pixels higher
           fill(0);
           textStyle(NORMAL);
           textSize(12);
