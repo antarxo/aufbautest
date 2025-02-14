@@ -82,9 +82,9 @@
           let endOffset = 13;
           
           let x1 = pos1.x;
-          let y1 = pos1.y + startOffset;
+          let y1 = pos1.y + startOffset;  // Κάτω από το κέντρο του πρώτου ορθογωνίου
           let x2 = pos2.x;
-          let y2 = pos2.y + endOffset;
+          let y2 = pos2.y + endOffset;    // Κάτω από το κέντρο του δεύτερου ορθογωνίου
           
           drawArrow(x1, y1, x2, y2);
         }
@@ -95,6 +95,7 @@
       stroke(redArrowColor);
       strokeWeight(2);
       
+      // Βρίσκουμε την τελευταία στιβάδα που έχει ηλεκτρόνια
       let lastFilledIndex = -1;
       for (let i = fillOrder.length - 1; i >= 0; i--) {
         let idx = fillOrder[i];
@@ -104,6 +105,7 @@
         }
       }
       
+      // Σχεδιάζουμε τα κόκκινα βέλα μόνο μέχρι την τελευταία στιβάδα που έχει ηλεκτρόνια
       for (let i = 0; i < lastFilledIndex; i++) {
         let idx1 = fillOrder[i];
         let idx2 = fillOrder[i+1];
@@ -186,12 +188,56 @@
           let label = pos.label;  // π.χ., "2p"
           let exponent = pos.filled;  // π.χ., 6
           let labelWidth = textWidth(label);
+          // Σχεδίαση του κύριου label
           text(label, pos.x - labelWidth / 4, pos.y);
-          
-          // Σχεδίαση του εκθέτη: για p orbitals, πράσινο σε μικρότερο μέγεθος
+          // Σχεδίαση του εκθέτη: για p orbitals, πράσινο σε μικρότερο μέγεθος, αλλιώς κόκκινο όπως πριν
           textSize(10);
           textStyle(BOLD);
           if (label.endsWith("p")) {
             fill(0,128,0); // πράσινο για p orbitals
           } else {
-            fill(255,0,0); // κόκκινο για τα υπόλοιπα (όπως ήταν αρχικά)\n          }\n          text(exponent, pos.x + labelWidth / 4, pos.y - 5);\n          fill(0);\n          textStyle(NORMAL);\n          textSize(12);\n        } else {\n          text(pos.label, pos.x, pos.y);\n        }\n      }\n      \n      // Σχεδίαση των βελών (πάνω από τα ορθογώνια)\n      drawArrows();\n    }\n    \n    function startFilling() {\n      for (let pos of positions) {\n        pos.filled = 0;\n      }\n      let atomicNumber = parseInt(document.getElementById(\"atomicNumber\").value);\n      let remaining = atomicNumber;\n      for (let i = 0; i < fillOrder.length; i++) {\n        let idx = fillOrder[i];\n        let orbital = positions[idx];\n        let orbType = orbital.label.slice(-1);\n        let capacity = maxElectrons[orbType] || 2;\n        let fillAmount = min(remaining, capacity);\n        orbital.filled = fillAmount;\n        remaining -= fillAmount;\n        if (remaining <= 0) break;\n      }\n      redraw();\n    }\n    \n    // Συνάρτηση reset\n    function resetDiagram() {\n      for (let pos of positions) {\n        pos.filled = 0;\n      }\n      document.getElementById(\"atomicNumber\").value = 1;\n      redraw();\n    }\n  </script>\n</body>\n</html>
+            fill(255,0,0);
+          }
+          text(exponent, pos.x + labelWidth / 4, pos.y - 5);
+          fill(0);
+          textStyle(NORMAL);
+          textSize(12);
+        } else {
+          text(pos.label, pos.x, pos.y);
+        }
+      }
+      
+      // Σχεδίαση των βελών (πάνω από τα ορθογώνια)
+      drawArrows();
+    }
+    
+    function startFilling() {
+      for (let pos of positions) {
+        pos.filled = 0;
+      }
+      let atomicNumber = parseInt(document.getElementById("atomicNumber").value);
+      let remaining = atomicNumber;
+      for (let i = 0; i < fillOrder.length; i++) {
+        let idx = fillOrder[i];
+        let orbital = positions[idx];
+        let orbType = orbital.label.slice(-1);
+        let capacity = maxElectrons[orbType] || 2;
+        let fillAmount = min(remaining, capacity);
+        orbital.filled = fillAmount;
+        remaining -= fillAmount;
+        if (remaining <= 0) break;
+      }
+      redraw();
+    }
+    
+    // Συνάρτηση reset
+    function resetDiagram() {
+      for (let pos of positions) {
+        pos.filled = 0;
+      }
+      document.getElementById("atomicNumber").value = 1;
+      redraw();
+    }
+  </script>
+</body>
+</html>
