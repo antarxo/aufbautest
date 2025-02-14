@@ -223,6 +223,7 @@
         if (pos) {
           rectMode(CENTER);
           rect(pos.x, pos.y, boxWidth, boxHeight);
+          drawOrbitalContent(pos); // Draw content on top
         }
       }
       if (lastFilledP) {
@@ -230,8 +231,34 @@
         if (pos) {
           rectMode(CENTER);
           rect(pos.x, pos.y, boxWidth, boxHeight);
+          drawOrbitalContent(pos); // Draw content on top
         }
       }
+    }
+    
+    function drawOrbitalContent(pos) {
+      fill(0);
+      let label = pos.label;
+      let exponent = pos.filled;
+      let labelWidth = textWidth(label);
+      
+      text(label, pos.x - labelWidth / 4, pos.y);
+      
+      textSize(10);
+      textStyle(BOLD);
+      
+      if (label.endsWith("s") || label.endsWith("p")) {
+        fill(255, 0, 0);
+      } else if (label.endsWith("d")) {
+        fill(0, 0, 255);
+      } else if (label.endsWith("f")) {
+        fill(255, 165, 0);
+      }
+      
+      text(exponent, pos.x + labelWidth / 4, pos.y - 5);
+      fill(0);
+      textStyle(NORMAL);
+      textSize(12);
     }
     
     function startFilling() {
