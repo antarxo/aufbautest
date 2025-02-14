@@ -227,6 +227,7 @@
       lastFilledP = null;
       let atomicNumber = parseInt(document.getElementById("atomicNumber").value);
       let remaining = atomicNumber;
+      let lastPeriod = -1;
       for (let i = 0; i < fillOrder.length; i++) {
         let idx = fillOrder[i];
         let orbital = positions[idx];
@@ -241,8 +242,23 @@
           } else if (orbital.label.endsWith("p")) {
             lastFilledP = orbital.label;
           }
+          lastPeriod = periods.findIndex(p => p.orbitals.includes(orbital.label));
         }
         if (remaining <= 0) break;
+      }
+      // Ensure only the last filled s and p orbitals of the last period are gray
+      if (lastPeriod !== -1) {
+        for (let i = 0; i < positions.length; i++) {
+          let pos = positions[i];
+          if (periods[lastPeriod].orbitals.includes(pos.label)) {
+            if (pos.label.endsWith("s") && pos.label !== lastFilledS) {
+              lastFilledS = null;
+            }
+            if (pos.label.endsWith("p") && pos.label !== lastFilledP) {
+              lastFilledP = null;
+            }
+          }
+        }
       }
       redraw();
     }
