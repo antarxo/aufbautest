@@ -112,8 +112,8 @@
         let colIndex = pos.col;
         let colColor = columnColors[colIndex % columnColors.length];
         
-        // Change color to gray for the last layer
-        if (periods[periods.length - 1].orbitals.includes(pos.label)) {
+        // Change color to gray for the last orbitals (s and p) of each period
+        if (pos.label.endsWith("s") || pos.label.endsWith("p")) {
           colColor = color(200); // Gray color
         }
         
