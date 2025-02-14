@@ -37,19 +37,15 @@
   <div id="elementInfo"></div>
   <table id="infoTable">
     <tr>
-      <th>Περίοδος</th>
-      <th>Ομάδα</th>
+      <td>Περίοδος</td>
+      <td id="periodInfo"></td>
     </tr>
     <tr>
-      <td id="periodInfo"></td>
+      <td>Ομάδα</td>
       <td id="groupInfo"></td>
     </tr>
     <tr>
-      <th>Αρχικό aufbau</th>
-      <th>Δόμηση</th>
-    </tr>
-    <tr>
-      <td>Aufbau</td>
+      <td>Αρχικό aufbau</td>
       <td id="electronConfigInfo"></td>
     </tr>
   </table>
@@ -354,8 +350,8 @@
         groupNumber = lastFilledS.filled + dElectrons.filled;
       }
 
-      document.getElementById("periodInfo").innerText = period;
-      document.getElementById("groupInfo").innerText = `${groupRoman} ή ${groupNumber}`;
+      document.getElementById("periodInfo").innerText = `Περίοδος: ${period}`;
+      document.getElementById("groupInfo").innerText = `Ομάδα: ${groupRoman} ή ${groupNumber}`;
     }
 
     function toRoman(num) {
