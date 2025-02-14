@@ -9,22 +9,10 @@
     body { text-align: center; font-family: Verdana, sans-serif; }
     canvas { display: block; margin: auto; }
     button { margin: 5px; }
-    #infoTable {
+    #electronConfiguration {
       margin-top: 20px;
-      font-size: 14px;
-      font-weight: normal;
-      border-collapse: collapse;
-      width: 50%;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    #infoTable th, #infoTable td {
-      border: 1px solid black;
-      padding: 8px;
-      text-align: center;
-    }
-    #infoTable th {
-      background-color: #f2f2f2;
+      font-size: 14px; /* Μικρότερο μέγεθος γραμματοσειράς */
+      font-weight: normal; /* Χωρίς έντονη γραμματοσειρά */
     }
   </style>
 </head>
@@ -35,20 +23,7 @@
   <button onclick="startFilling()">Ξεκίνα Δόμηση</button>
   <button onclick="resetDiagram()">Reset</button>
   <div id="elementInfo"></div>
-  <table id="infoTable">
-    <tr>
-      <td>Περίοδος</td>
-      <td id="periodInfo"></td>
-    </tr>
-    <tr>
-      <td>Ομάδα</td>
-      <td id="groupInfo"></td>
-    </tr>
-    <tr>
-      <td>Αρχικό aufbau</td>
-      <td id="electronConfigInfo"></td>
-    </tr>
-  </table>
+  <div id="electronConfiguration"></div> <!-- Εμφάνιση ηλεκτρονιακής δόμησης -->
 
   <script>
     const periods = [
@@ -173,7 +148,7 @@
             fill(255, 0, 0);
           } else if (label.endsWith("p")) {
             fill(0, 255, 0); // Green color for p orbitals
-          } else if (label endsWith("d")) {
+          } else if (label.endsWith("d")) {
             fill(0, 0, 255);
           } else if (label.endsWith("f")) {
             fill(255, 165, 0);
@@ -289,7 +264,8 @@
       }
 
       // Εμφάνιση της ηλεκτρονιακής δόμησης με κόμμα ως διαχωριστικό
-      document.getElementById("electronConfigInfo").innerText = electronConfig.join(", ");
+      document.getElementById("electronConfiguration").innerText = 
+        `Η ηλεκτρονιακή δόμηση είναι: ${electronConfig.join(", ")}`;
 
       // Προβλέψεις για την ομάδα και την περίοδο
       predictElementPosition(lastFilledPeriod, lastFilledS, lastFilledP);
@@ -326,7 +302,6 @@
       let groupRoman = '';
       let groupNumber = 0;
 
-      // Calculate group using the first method
       if (lastFilledP) {
         group = lastFilledS.filled + lastFilledP.filled;
         groupRoman = toRoman(group) + 'A';
@@ -335,23 +310,7 @@
         groupRoman = toRoman(group) + 'A';
       }
 
-      // Calculate group using the second method
-      if (lastFilledP) {
-        groupNumber = 12 + lastFilledP.filled;
-      } else if (lastFilledS) {
-        groupNumber = lastFilledS.filled;
-      }
-
-      // Check for d electrons in the previous period
-      let previousPeriod = period - 1;
-      let previousPeriodOrbitals = positions.filter(p => parseInt(p.label.slice(0, -1)) === previousPeriod);
-      let dElectrons = previousPeriodOrbitals.find(o => o.label.endsWith("d") && o.filled > 0);
-      if (dElectrons) {
-        groupNumber = lastFilledS.filled + dElectrons.filled;
-      }
-
-      document.getElementById("periodInfo").innerText = `Περίοδος: ${period}`;
-      document.getElementById("groupInfo").innerText = `Ομάδα: ${groupRoman} ή ${groupNumber}`;
+      document.getElementById("elementInfo").innerText = `Περίοδος: ${period}, Ομάδα: ${groupRoman}`;
     }
 
     function toRoman(num) {
@@ -389,9 +348,7 @@
       lastPeriod = -1;
       document.getElementById("atomicNumber").value = 1;
       document.getElementById("elementInfo").innerText = '';
-      document.getElementById("electronConfigInfo").innerText = '';
-      document.getElementById("periodInfo").innerText = '';
-      document.getElementById("groupInfo").innerText = '';
+      document.getElementById("electronConfiguration").innerText = '';
       redraw();
     }
   </script>
