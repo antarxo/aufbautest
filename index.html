@@ -288,12 +288,25 @@
     
     function predictElementPosition(period, lastFilledS, lastFilledP) {
       let group = 0;
+      let groupRoman = '';
       if (lastFilledP) {
-        group = 12 + positions.filter(p => p.label.endsWith("p") && p.filled > 0).length;
+        group = 10 + lastFilledP.filled;
+        groupRoman = 'A';
       } else if (lastFilledS) {
-        group = positions.filter(p => p.label.endsWith("s") && p.filled > 0).length;
+        group = lastFilledS.filled;
+        groupRoman = 'A';
       }
-      document.getElementById("elementInfo").innerText = `Περίοδος: ${period}, Ομάδα: ${group}`;
+      
+      // Check for d electrons in the previous period
+      let previousPeriod = period - 1;
+      let previousPeriodOrbitals = positions.filter(p => parseInt(p.label.slice(0, -1)) === previousPeriod);
+      let dElectrons = previousPeriodOrbitals.find(o => o.label.endsWith("d") && o.filled > 0);
+      if (dElectrons) {
+        group = 2 + dElectrons.filled;
+        groupRoman = '';
+      }
+      
+      document.getElementById("elementInfo").innerText = `Περίοδος: ${period}, Ομάδα: ${group}${groupRoman}`;
     }
     
     function resetDiagram() {
