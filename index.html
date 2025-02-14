@@ -56,6 +56,7 @@
       drawPeriodLabels();
       drawOrbitals();
       drawArrows();
+      highlightLastFilledOrbitals(); // Ensure the last filled orbitals are highlighted
     }
     
     function initColumnColors() {
@@ -113,11 +114,6 @@
       for (let pos of positions) {
         let colIndex = pos.col;
         let colColor = columnColors[colIndex % columnColors.length];
-        
-        // Change color to gray for the last filled s and p orbitals of the last period
-        if ((lastFilledS === pos.label || lastFilledP === pos.label) && periods[periods.length - 1].orbitals.includes(pos.label)) {
-          colColor = color(200); // Gray color
-        }
         
         fill(colColor);
         rectMode(CENTER);
@@ -217,6 +213,25 @@
       let arrowSize = 7;
       triangle(0, 0, -arrowSize, arrowSize / 2, -arrowSize, -arrowSize / 2);
       pop();
+    }
+    
+    function highlightLastFilledOrbitals() {
+      noStroke();
+      fill(200); // Gray color
+      if (lastFilledS) {
+        let pos = positions.find(p => p.label === lastFilledS);
+        if (pos) {
+          rectMode(CENTER);
+          rect(pos.x, pos.y, boxWidth, boxHeight);
+        }
+      }
+      if (lastFilledP) {
+        let pos = positions.find(p => p.label === lastFilledP);
+        if (pos) {
+          rectMode(CENTER);
+          rect(pos.x, pos.y, boxWidth, boxHeight);
+        }
+      }
     }
     
     function startFilling() {
