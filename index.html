@@ -39,7 +39,7 @@
     
     let positions = [];
     let columnColors = [];
-    let lastFilledOrbitals = new Set();
+    let lastFilledOrbital = null;
     
     function setup() {
       createCanvas(canvasWidth, canvasHeight);
@@ -113,8 +113,8 @@
         let colIndex = pos.col;
         let colColor = columnColors[colIndex % columnColors.length];
         
-        // Change color to gray for the last filled s and p orbitals
-        if (lastFilledOrbitals.has(pos.label)) {
+        // Change color to gray for the last filled orbital
+        if (lastFilledOrbital === pos.label) {
           colColor = color(200); // Gray color
         }
         
@@ -220,7 +220,7 @@
       for (let pos of positions) {
         pos.filled = 0;
       }
-      lastFilledOrbitals.clear();
+      lastFilledOrbital = null;
       let atomicNumber = parseInt(document.getElementById("atomicNumber").value);
       let remaining = atomicNumber;
       for (let i = 0; i < fillOrder.length; i++) {
@@ -231,8 +231,8 @@
         let fillAmount = min(remaining, capacity);
         orbital.filled = fillAmount;
         remaining -= fillAmount;
-        if (fillAmount > 0 && (orbital.label.endsWith("s") || orbital.label.endsWith("p"))) {
-          lastFilledOrbitals.add(orbital.label);
+        if (fillAmount > 0) {
+          lastFilledOrbital = orbital.label;
         }
         if (remaining <= 0) break;
       }
@@ -243,7 +243,7 @@
       for (let pos of positions) {
         pos.filled = 0;
       }
-      lastFilledOrbitals.clear();
+      lastFilledOrbital = null;
       document.getElementById("atomicNumber").value = 1;
       redraw();
     }
