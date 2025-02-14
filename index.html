@@ -136,7 +136,9 @@
           textSize(10);
           textStyle(BOLD);
           
-          if (label.endsWith("s")) {
+          if (pos.isGray) {
+            fill(0); // Black color for exponents in gray boxes
+          } else if (label.endsWith("s")) {
             fill(255, 0, 0);
           } else if (label.endsWith("p")) {
             fill(0, 255, 0); // Green color for p orbitals
