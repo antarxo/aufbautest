@@ -153,9 +153,10 @@
     }
     
     function drawArrows() {
-      let blueArrowColor = color(200, 230, 255);
-      stroke(blueArrowColor);
+      let blackArrowColor = color(0, 0, 0);
+      stroke(blackArrowColor);
       strokeWeight(2);
+      drawingContext.setLineDash([5, 5]); // Set dashed line
       for (let i = 0; i < fillOrder.length - 1; i++) {
         let idx1 = fillOrder[i];
         let idx2 = fillOrder[i + 1];
@@ -173,6 +174,7 @@
           drawArrow(x1, y1, x2, y2);
         }
       }
+      drawingContext.setLineDash([]); // Reset to solid line
       
       let redArrowColor = color(255, 0, 0);
       stroke(redArrowColor);
