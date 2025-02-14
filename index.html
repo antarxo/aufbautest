@@ -289,12 +289,22 @@
     function predictElementPosition(period, lastFilledS, lastFilledP) {
       let group = 0;
       let groupRoman = '';
+      let groupNumber = 0;
+      
+      // Calculate group using the first method
       if (lastFilledP) {
-        group = 10 + lastFilledP.filled;
-        groupRoman = 'A';
+        group = lastFilledS.filled + lastFilledP.filled;
+        groupRoman = toRoman(group) + 'A';
       } else if (lastFilledS) {
         group = lastFilledS.filled;
-        groupRoman = 'A';
+        groupRoman = toRoman(group) + 'A';
+      }
+      
+      // Calculate group using the second method
+      if (lastFilledP) {
+        groupNumber = 12 + lastFilledP.filled;
+      } else if (lastFilledS) {
+        groupNumber = lastFilledS.filled;
       }
       
       // Check for d electrons in the previous period
@@ -302,11 +312,35 @@
       let previousPeriodOrbitals = positions.filter(p => parseInt(p.label.slice(0, -1)) === previousPeriod);
       let dElectrons = previousPeriodOrbitals.find(o => o.label.endsWith("d") && o.filled > 0);
       if (dElectrons) {
-        group = 2 + dElectrons.filled;
-        groupRoman = '';
+        groupNumber = 2 + dElectrons.filled;
       }
       
-      document.getElementById("elementInfo").innerText = `Περίοδος: ${period}, Ομάδα: ${group}${groupRoman}`;
+      document.getElementById("elementInfo").innerText = `Περίοδος: ${period}, Ομάδα: ${groupRoman} ή ${groupNumber}`;
+    }
+    
+    function toRoman(num) {
+      const roman = {
+        M: 1000,
+        CM: 900,
+        D: 500,
+        CD: 400,
+        C: 100,
+        XC: 90,
+        L: 50,
+        XL: 40,
+        X: 10,
+        IX: 9,
+        V: 5,
+        IV: 4,
+        I: 1
+      };
+      let str = '';
+      for (let i of Object.keys(roman)) {
+        let q = Math.floor(num / roman[i]);
+        num -= q * roman[i];
+        str += i.repeat(q);
+      }
+      return str;
     }
     
     function resetDiagram() {
