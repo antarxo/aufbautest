@@ -17,6 +17,7 @@
   <input type="number" id="atomicNumber" min="1" max="118" value="1">
   <button onclick="startFilling()">Ξεκίνα Δόμηση</button>
   <button onclick="resetDiagram()">Reset</button>  <!-- Νέο κουμπί Reset -->
+  <div id="elementInfo"></div> <!-- Νέο στοιχείο για την πρόβλεψη της θέσης στον Περιοδικό Πίνακα -->
   
   <script>
     const periods = [
@@ -272,7 +273,20 @@
         }
       }
       
+      // Predict the element's position in the periodic table
+      predictElementPosition(lastFilledPeriod, lastFilledS, lastFilledP);
+      
       redraw();
+    }
+    
+    function predictElementPosition(period, lastFilledS, lastFilledP) {
+      let group = 0;
+      if (lastFilledP) {
+        group = 12 + positions.filter(p => p.label.endsWith("p") && p.filled > 0).length;
+      } else if (lastFilledS) {
+        group = positions.filter(p => p.label.endsWith("s") && p.filled > 0).length;
+      }
+      document.getElementById("elementInfo").innerText = `Περίοδος: ${period}, Ομάδα: ${group}`;
     }
     
     function resetDiagram() {
@@ -284,6 +298,7 @@
       lastFilledP = null;
       lastPeriod = -1;
       document.getElementById("atomicNumber").value = 1;
+      document.getElementById("elementInfo").innerText = '';
       redraw();
     }
   </script>
