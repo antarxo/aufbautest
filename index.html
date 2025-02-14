@@ -251,18 +251,21 @@
         if (remaining <= 0) break;
       }
       
-      // Determine the last filled s and p orbitals of the last period
-      if (lastFilledPeriod !== -1) {
-        let lastPeriodOrbitals = positions.filter(p => parseInt(p.label.slice(0, -1)) === lastFilledPeriod);
+      // Determine the outermost period
+      let outermostPeriod = Math.max(...positions.filter(p => p.filled > 0).map(p => parseInt(p.label.slice(0, -1))));
+      
+      // Determine the last filled s and p orbitals of the outermost period
+      if (outermostPeriod !== -1) {
+        let lastPeriodOrbitals = positions.filter(p => parseInt(p.label.slice(0, -1)) === outermostPeriod);
         lastFilledS = lastPeriodOrbitals.find(o => o.label.endsWith("s") && o.filled > 0);
         lastFilledP = lastPeriodOrbitals.find(o => o.label.endsWith("p") && o.filled > 0);
       }
       
-      // Ensure only the last filled s and p orbitals of the last period are gray
+      // Ensure only the last filled s and p orbitals of the outermost period are gray
       if (lastFilledP) {
         for (let i = 0; i < positions.length; i++) {
           let pos = positions[i];
-          if (parseInt(pos.label.slice(0, -1)) === lastFilledPeriod) {
+          if (parseInt(pos.label.slice(0, -1)) === outermostPeriod) {
             if (pos.label.endsWith("s") || pos.label.endsWith("p")) {
               pos.isGray = true;
             }
@@ -276,7 +279,7 @@
       }
       
       // Predict the element's position in the periodic table
-      predictElementPosition(lastFilledPeriod, lastFilledS, lastFilledP);
+      predictElementPosition(outermostPeriod, lastFilledS, lastFilledP);
       
       redraw();
     }
