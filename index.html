@@ -35,18 +35,15 @@
   <button onclick="startFilling()">Ξεκίνα Δόμηση</button>
   <button onclick="resetDiagram()">Reset</button>
   <div id="elementInfo"></div>
-  <div id="canvasContainer"></div>
   <table id="infoTable">
     <tr>
-      <td>Περίοδος</td>
+      <th>Περίοδος</th>
+      <th>Ομάδα</th>
+      <th>Αρχικό aufbau</th>
+    </tr>
+    <tr>
       <td id="periodInfo"></td>
-    </tr>
-    <tr>
-      <td>Ομάδα</td>
       <td id="groupInfo"></td>
-    </tr>
-    <tr>
-      <td>Αρχικό aufbau</td>
       <td id="electronConfigInfo"></td>
     </tr>
   </table>
@@ -77,8 +74,7 @@
     let lastPeriod = -1;
 
     function setup() {
-      let canvas = createCanvas(canvasWidth, canvasHeight);
-      canvas.parent('canvasContainer');
+      createCanvas(canvasWidth, canvasHeight);
       textSize(12);
       textFont("Verdana");
       initColumnColors();
@@ -177,7 +173,7 @@
             fill(0, 255, 0); // Green color for p orbitals
           } else if (label.endsWith("d")) {
             fill(0, 0, 255);
-          } else if (label.endsWith("f")) {
+          } else if (label endsWith("f")) {
             fill(255, 165, 0);
           }
 
