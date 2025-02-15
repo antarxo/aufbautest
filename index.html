@@ -35,6 +35,7 @@
   <button onclick="startFilling()">Ξεκίνα Δόμηση</button>
   <button onclick="resetDiagram()">Reset</button>
   <div id="elementInfo"></div>
+  <div id="canvasContainer"></div>
   <table id="infoTable">
     <tr>
       <td>Περίοδος</td>
@@ -76,7 +77,8 @@
     let lastPeriod = -1;
 
     function setup() {
-      createCanvas(canvasWidth, canvasHeight);
+      let canvas = createCanvas(canvasWidth, canvasHeight);
+      canvas.parent('canvasContainer');
       textSize(12);
       textFont("Verdana");
       initColumnColors();
