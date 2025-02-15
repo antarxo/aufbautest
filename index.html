@@ -55,127 +55,6 @@
   </table>
 
   <script>
-    const elements = [
-      { symbol: "H", name: "Υδρογόνο" },
-      { symbol: "He", name: "Ήλιο" },
-      { symbol: "Li", name: "Λίθιο" },
-      { symbol: "Be", name: "Βηρύλλιο" },
-      { symbol: "B", name: "Βόριο" },
-      { symbol: "C", name: "Άνθρακας" },
-      { symbol: "N", name: "Άζωτο" },
-      { symbol: "O", name: "Οξυγόνο" },
-      { symbol: "F", name: "Φθόριο" },
-      { symbol: "Ne", name: "Νέον" },
-      { symbol: "Na", name: "Νάτριο" },
-      { symbol: "Mg", name: "Μαγνήσιο" },
-      { symbol: "Al", name: "Αλουμίνιο" },
-      { symbol: "Si", name: "Πυρίτιο" },
-      { symbol: "P", name: "Φώσφορος" },
-      { symbol: "S", name: "Θείο" },
-      { symbol: "Cl", name: "Χλώριο" },
-      { symbol: "Ar", name: "Αργό" },
-      { symbol: "K", name: "Κάλιο" },
-      { symbol: "Ca", name: "Ασβέστιο" },
-      { symbol: "Sc", name: "Σκάνδιο" },
-      { symbol: "Ti", name: "Τιτάνιο" },
-      { symbol: "V", name: "Βανάδιο" },
-      { symbol: "Cr", name: "Χρώμιο" },
-      { symbol: "Mn", name: "Μαγγάνιο" },
-      { symbol: "Fe", name: "Σίδηρος" },
-      { symbol: "Co", name: "Κοβάλτιο" },
-      { symbol: "Ni", name: "Νικέλιο" },
-      { symbol: "Cu", name: "Χαλκός" },
-      { symbol: "Zn", name: "Ψευδάργυρος" },
-      { symbol: "Ga", name: "Γάλλιο" },
-      { symbol: "Ge", name: "Γερμάνιο" },
-      { symbol: "As", name: "Αρσενικό" },
-      { symbol: "Se", name: "Σελήνιο" },
-      { symbol: "Br", name: "Βρώμιο" },
-      { symbol: "Kr", name: "Κρυπτό" },
-      { symbol: "Rb", name: "Ρουβίδιο" },
-      { symbol: "Sr", name: "Στρόντιο" },
-      { symbol: "Y", name: "Ύττριο" },
-      { symbol: "Zr", name: "Ζιρκόνιο" },
-      { symbol: "Nb", name: "Νιόβιο" },
-      { symbol: "Mo", name: "Μολυβδαίνιο" },
-      { symbol: "Tc", name: "Τεχνήτιο" },
-      { symbol: "Ru", name: "Ρουθήνιο" },
-      { symbol: "Rh", name: "Ρόδιο" },
-      { symbol: "Pd", name: "Παλλάδιο" },
-      { symbol: "Ag", name: "Άργυρος" },
-      { symbol: "Cd", name: "Κάδμιο" },
-      { symbol: "In", name: "Ίνδιο" },
-      { symbol: "Sn", name: "Κασσίτερος" },
-      { symbol: "Sb", name: "Αντιμόνιο" },
-      { symbol: "Te", name: "Τελλούριο" },
-      { symbol: "I", name: "Ιώδιο" },
-      { symbol: "Xe", name: "Ξένο" },
-      { symbol: "Cs", name: "Καίσιο" },
-      { symbol: "Ba", name: "Βάριο" },
-      { symbol: "La", name: "Λανθάνιο" },
-      { symbol: "Ce", name: "Κερίο" },
-      { symbol: "Pr", name: "Πρασεοδύμιο" },
-      { symbol: "Nd", name: "Νεοδύμιο" },
-      { symbol: "Pm", name: "Προμήθιο" },
-      { symbol: "Sm", name: "Σαμάριο" },
-      { symbol: "Eu", name: "Ευρώπιο" },
-      { symbol: "Gd", name: "Γαδολίνιο" },
-      { symbol: "Tb", name: "Τέρβιο" },
-      { symbol: "Dy", name: "Δυσπρόσιο" },
-      { symbol: "Ho", name: "Όλμιο" },
-      { symbol: "Er", name: "Έρβιο" },
-      { symbol: "Tm", name: "Θούλιο" },
-      { symbol: "Yb", name: "Υττέρβιο" },
-      { symbol: "Lu", name: "Λουτέτσιο" },
-      { symbol: "Hf", name: "Άφνιο" },
-      { symbol: "Ta", name: "Ταντάλιο" },
-      { symbol: "W", name: "Βολφράμιο" },
-      { symbol: "Re", name: "Ρήνιο" },
-      { symbol: "Os", name: "Όσμιο" },
-      { symbol: "Ir", name: "Ιρίδιο" },
-      { symbol: "Pt", name: "Πλατίνα" },
-      { symbol: "Au", name: "Χρυσός" },
-      { symbol: "Hg", name: "Υδράργυρος" },
-      { symbol: "Tl", name: "Θάλλιο" },
-      { symbol: "Pb", name: "Μόλυβδος" },
-      { symbol: "Bi", name: "Βισμούθιο" },
-      { symbol: "Po", name: "Πολώνιο" },
-      { symbol: "At", name: "Άστατο" },
-      { symbol: "Rn", name: "Ραδόνιο" },
-      { symbol: "Fr", name: "Φράνκιο" },
-      { symbol: "Ra", name: "Ράδιο" },
-      { symbol: "Ac", name: "Ακτίνιο" },
-      { symbol: "Th", name: "Θόριο" },
-      { symbol: "Pa", name: "Πρωτακτίνιο" },
-      { symbol: "U", name: "Ουράνιο" },
-      { symbol: "Np", name: "Νεπτούνιο" },
-      { symbol: "Pu", name: "Πλουτώνιο" },
-      { symbol: "Am", name: "Αμερίκιο" },
-      { symbol: "Cm", name: "Κουρίο" },
-      { symbol: "Bk", name: "Μπερκέλιο" },
-      { symbol: "Cf", name: "Καλιφόρνιο" },
-      { symbol: "Es", name: "Αϊνστάινιο" },
-      { symbol: "Fm", name: "Φέρμιο" },
-      { symbol: "Md", name: "Μενδελέβιο" },
-      { symbol: "No", name: "Νομπέλιο" },
-      { symbol: "Lr", name: "Λωρένσιο" },
-      { symbol: "Rf", name: "Ραδερφόρδιο" },
-      { symbol: "Db", name: "Ντούμπνιο" },
-      { symbol: "Sg", name: "Σίμποργκιο" },
-      { symbol: "Bh", name: "Μποχρίο" },
-      { symbol: "Hs", name: "Χάσιο" },
-      { symbol: "Mt", name: "Μάιτνεριο" },
-      { symbol: "Ds", name: "Νταρμστάντιο" },
-      { symbol: "Rg", name: "Ρεντγκένιο" },
-      { symbol: "Cn", name: "Κοπέρνικιο" },
-      { symbol: "Nh", name: "Νιχόνιο" },
-      { symbol: "Fl", name: "Φλερόβιο" },
-      { symbol: "Mc", name: "Μοσκόβιο" },
-      { symbol: "Lv", name: "Λιβερμόριο" },
-      { symbol: "Ts", name: "Τενεσσίνο" },
-      { symbol: "Og", name: "Ογκανέσσιο" }
-    ];
-
     const periods = [
       { label: "K", orbitals: ["1s"] },
       { label: "L", orbitals: ["2s", "2p"] },
@@ -352,4 +231,181 @@
       }
 
       for (let i = 0; i < lastFilledIndex; i++) {
+        let idx1 = fillOrder[i];
+        let idx2 = fillOrder[i + 1];
+        let pos1 = positions[idx1];
+        let pos2 = positions[idx2];
+        if (pos2.y > pos1.y) {
+          let startOffset = 13;
+          let endOffset = 13;
 
+          let x1 = pos1.x + boxWidth / 2;
+          let y1 = pos1.y - boxHeight / 2 + startOffset;
+          let x2 = pos2.x + boxWidth / 2;
+          let y2 = pos2.y - boxHeight / 2 + endOffset;
+
+          drawArrow(x1, y1, x2, y2);
+        }
+      }
+    }
+
+    function drawArrow(x1, y1, x2, y2) {
+      line(x1, y1, x2, y2);
+      let angle = atan2(y2 - y1, x2 - x1);
+      push();
+      translate(x2, y2);
+      rotate(angle);
+      let arrowSize = 7;
+      triangle(0, 0, -arrowSize, arrowSize / 2, -arrowSize, -arrowSize / 2);
+      pop();
+    }
+
+    function startFilling() {
+      for (let pos of positions) {
+        pos.filled = 0;
+        pos.isGray = false;
+      }
+      lastFilledS = null;
+      lastFilledP = null;
+      lastPeriod = -1;
+      let atomicNumber = parseInt(document.getElementById("atomicNumber").value);
+      let remaining = atomicNumber;
+      let lastFilledOrbital = null;
+      let lastFilledPeriod = -1;
+      let electronConfig = []; // Αποθήκευση της ηλεκτρονιακής δόμησης
+
+      for (let i = 0; i < fillOrder.length; i++) {
+        let idx = fillOrder[i];
+        let orbital = positions[idx];
+        let orbType = orbital.label.slice(-1);
+        let periodNumber = parseInt(orbital.label.slice(0, -1));
+        let capacity = maxElectrons[orbType] || 2;
+        let fillAmount = min(remaining, capacity);
+        orbital.filled = fillAmount;
+        remaining -= fillAmount;
+
+        if (fillAmount > 0) {
+          electronConfig.push(`${orbital.label}${fillAmount > 1 ? `⁰${fillAmount}` : ''}`);
+          lastFilledOrbital = orbital.label;
+          lastFilledPeriod = periodNumber;
+        }
+        if (remaining <= 0) break;
+      }
+
+      // Εμφάνιση της ηλεκτρονιακής δόμησης με κόμμα ως διαχωριστικό
+      document.getElementById("electronConfigInfo").innerText = electronConfig.join(", ");
+
+      // Προβλέψεις για την ομάδα και την περίοδο
+      predictElementPosition(lastFilledPeriod, lastFilledS, lastFilledP);
+
+      // Εμφάνιση του συμβόλου του στοιχείου
+      if (atomicNumber > 0 && atomicNumber <= elements.length) {
+        document.getElementById("elementSymbol").innerText = elements[atomicNumber - 1].symbol;
+      } else {
+        document.getElementById("elementSymbol").innerText = "Άγνωστο";
+      }
+
+      // Χρώμα γκρι για τα τελευταία γεμισμένα s και p τροχιακά της εξωτερικής περιόδου
+      let outermostPeriod = Math.max(...positions.filter(p => p.filled > 0).map(p => parseInt(p.label.slice(0, -1))));
+      if (outermostPeriod !== -1) {
+        let lastPeriodOrbitals = positions.filter(p => parseInt(p.label.slice(0, -1)) === outermostPeriod);
+        lastFilledS = lastPeriodOrbitals.find(o => o.label.endsWith("s") && o.filled > 0);
+        lastFilledP = lastPeriodOrbitals.find(o => o.label.endsWith("p") && o.filled > 0);
+
+        if (lastFilledP) {
+          for (let i = 0; i < positions.length; i++) {
+            let pos = positions[i];
+            if (parseInt(pos.label.slice(0, -1)) === outermostPeriod) {
+              if (pos.label.endsWith("s") || pos.label.endsWith("p")) {
+                pos.isGray = true;
+              }
+            }
+          }
+        } else if (lastFilledS) {
+          let pos = positions.find(p => p.label === lastFilledS.label);
+          if (pos) {
+            pos.isGray = true;
+          }
+        }
+      }
+
+      redraw();
+    }
+
+    function predictElementPosition(period, lastFilledS, lastFilledP) {
+      let group = 0;
+      let groupRoman = '';
+      let groupNumber = 0;
+
+      // Calculate group using the first method
+      if (lastFilledP) {
+        group = lastFilledS.filled + lastFilledP.filled;
+        groupRoman = toRoman(group) + 'A';
+      } else if (lastFilledS) {
+        group = lastFilledS.filled;
+        groupRoman = toRoman(group) + 'A';
+      }
+
+      // Calculate group using the second method
+      if (lastFilledP) {
+        groupNumber = 12 + lastFilledP.filled;
+      } else if (lastFilledS) {
+        groupNumber = lastFilledS.filled;
+      }
+
+      // Check for d electrons in the previous period
+      let previousPeriod = period - 1;
+      let previousPeriodOrbitals = positions.filter(p => parseInt(p.label.slice(0, -1)) === previousPeriod);
+      let dElectrons = previousPeriodOrbitals.find(o => o.label.endsWith("d") && o.filled > 0);
+      if (dElectrons) {
+        groupNumber = lastFilledS.filled + dElectrons.filled;
+      }
+
+      document.getElementById("periodInfo").innerText = period;
+      document.getElementById("groupInfo").innerText = `${groupRoman} ή ${groupNumber}`;
+    }
+
+    function toRoman(num) {
+      const roman = {
+        M: 1000,
+        CM: 900,
+        D: 500,
+        CD: 400,
+        C: 100,
+        XC: 90,
+        L: 50,
+        XL: 40,
+        X: 10,
+        IX: 9,
+        V: 5,
+        IV: 4,
+        I: 1
+      };
+      let str = '';
+      for (let i of Object.keys(roman)) {
+        let q = Math.floor(num / roman[i]);
+        num -= q * roman[i];
+        str += i.repeat(q);
+      }
+      return str;
+    }
+
+    function resetDiagram() {
+      for (let pos of positions) {
+        pos.filled = 0;
+        pos.isGray = false;
+      }
+      lastFilledS = null;
+      lastFilledP = null;
+      lastPeriod = -1;
+      document.getElementById("atomicNumber").value = 1;
+      document.getElementById("elementInfo").innerText = '';
+      document.getElementById("electronConfigInfo").innerText = '';
+      document.getElementById("periodInfo").innerText = '';
+      document.getElementById("groupInfo").innerText = '';
+      document.getElementById("elementSymbol").innerText = '';
+      redraw();
+    }
+  </script>
+</body>
+</html>
