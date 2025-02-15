@@ -189,7 +189,7 @@
       for (let i = 0; i < periods.length; i++) {
         let y = 50 + i * verticalSpacing;
         const electrons = periodElectrons[i];
-        text(`${periods[i].label}${electrons > 0 ? ` (${electrons})` : ''}`, leftMargin - 10, y);
+        text(`${periods[i].label}${electrons > 0 ? ` (${electrons})` : ''}`, leftMargin - 10, y + 15); // Κατέβασμα των ονομάτων των στιβάδων
       }
       textStyle(NORMAL);
     }
@@ -203,7 +203,7 @@
         
         // Κύριο label
         fill(0);
-        text(pos.label, pos.x + boxWidth/2, pos.y + boxHeight/2 + 15); // Κατέβασμα των συμβόλων
+        text(pos.label, pos.x + boxWidth/2, pos.y + boxHeight/2); // Επαναφορά των συμβόλων στην αρχική θέση
         
         // Εκθέτης (μαύρος σε γκρί ορθογώνια)
         if(pos.actualElectrons > 0) {
@@ -214,7 +214,7 @@
             'd': color(0,0,255),
             'f': color(255,165,0)
           }[pos.type]);
-          text(numberToExponent(pos.actualElectrons), pos.x + boxWidth - 15, pos.y + 25); // Κατέβασμα των εκθετών
+          text(numberToExponent(pos.actualElectrons), pos.x + boxWidth - 15, pos.y + 10); // Επαναφορά των εκθετών στην αρχική θέση
         }
       });
     }
