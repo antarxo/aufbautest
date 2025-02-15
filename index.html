@@ -249,8 +249,6 @@
       lastPeriod = -1;
       let atomicNumber = parseInt(document.getElementById("atomicNumber").value);
       let remaining = atomicNumber;
-      let lastFilledOrbital = null;
-      let lastFilledPeriod = -1;
       let electronConfig = [];
       for (let i = 0; i < fillOrder.length; i++) {
         let idx = fillOrder[i];
@@ -258,55 +256,51 @@
         let orbType = orbital.label.slice(-1);
         let periodNumber = parseInt(orbital.label.slice(0, -1));
         let capacity = maxElectrons[orbType] || 2;
-        let fillAmount = min(remaining, capacity);
+        let fillAmount = Math.min(remaining, capacity);
         orbital.filled = fillAmount;
         remaining -= fillAmount;
         if (fillAmount > 0) {
           electronConfig.push(`${orbital.label}${fillAmount > 1 ? `⁰${fillAmount}` : ''}`);
-          lastFilledOrbital = orbital.label;
-          lastFilledPeriod = periodNumber;
         }
         if (remaining <= 0) break;
       }
       document.getElementById("electronConfigInfo").innerText = electronConfig.join(", ");
-      predictElementPosition(lastFilledPeriod, lastFilledS, lastFilledP);
       document.getElementById("elementSymbol").innerText = elementSymbols[atomicNumber - 1] || "Άγνωστο";
+      
       let outermostPeriod = Math.max(...positions.filter(p => p.filled > 0).map(p => parseInt(p.label.slice(0, -1))));
       if (outermostPeriod !== -1) {
         let lastPeriodOrbitals = positions.filter(p => parseInt(p.label.slice(0, -1)) === outermostPeriod);
         lastFilledS = lastPeriodOrbitals.find(o => o.label.endsWith("s") && o.filled > 0);
         lastFilledP = lastPeriodOrbitals.find(o => o.label.endsWith("p") && o.filled > 0);
         if (lastFilledP) {
-          for (let i = 0; i < positions.length; i++) {
-            let pos = positions[i];
-            if (parseInt(pos.label.slice(0, -1)) === outermostPeriod) {
-              if (pos.label.endsWith("s") || pos.label.endsWith("p")) pos.isGray = true;
+          positions.forEach(pos => {
+            if (parseInt(pos.label.slice(0, -1)) === outermostPeriod && (pos.label.endsWith("s") || pos.label.endsWith("p"))) {
+              pos.isGray = true;
             }
-          }
+          });
         } else if (lastFilledS) {
           let pos = positions.find(p => p.label === lastFilledS.label);
           if (pos) pos.isGray = true;
         }
       }
+      predictElementPosition(outermostPeriod, lastFilledS, lastFilledP);
       redraw();
     }
 
     function predictElementPosition(period, lastFilledS, lastFilledP) {
-      let group = 0, groupRoman = '', groupNumber = 0;
-      if (lastFilledP) {
-        group = lastFilledS.filled + lastFilledP.filled;
+      let groupRoman = '';
+      let groupNumber = 0;
+      
+      if (lastFilledP && lastFilledP.filled) {
+        const group = lastFilledS.filled + lastFilledP.filled;
         groupRoman = toRoman(group) + 'A';
-      } else if (lastFilledS) {
-        group = lastFilledS.filled;
-        groupRoman = toRoman(group) + 'A';
+        groupNumber = 12 + lastFilledP.filled;
+      } else if (lastFilledS && lastFilledS.filled) {
+        groupRoman = toRoman(lastFilledS.filled) + 'A';
+        groupNumber = lastFilledS.filled;
       }
-      if (lastFilledP) groupNumber = 12 + lastFilledP.filled;
-      else if (lastFilledS) groupNumber = lastFilledS.filled;
-      let previousPeriod = period - 1;
-      let previousPeriodOrbitals = positions.filter(p => parseInt(p.label.slice(0, -1)) === previousPeriod);
-      let dElectrons = previousPeriodOrbitals.find(o => o.label.endsWith("d") && o.filled > 0);
-      if (dElectrons) groupNumber = lastFilledS.filled + dElectrons.filled;
-      document.getElementById("periodInfo").innerText = period;
+      
+      document.getElementById("periodInfo").innerText = period || '-';
       document.getElementById("groupInfo").innerText = `${groupRoman} ή ${groupNumber}`;
     }
 
@@ -324,3 +318,17 @@
     function resetDiagram() {
       for (let pos of positions) {
         pos.filled = 0;
+        pos.isGray = false;
+      }
+      lastFilledS = null;
+      lastFilledP = null;
+      document.getElementById("atomicNumber").value = 1;
+      document.getElementById("electronConfigInfo").innerText = '';
+      document.getElementById("periodInfo").innerText = '';
+      document.getElementById("groupInfo").innerText = '';
+      document.getElementById("elementSymbol").innerText = '';
+      redraw();
+    }
+  </script>
+</body>
+</html>
