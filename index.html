@@ -16,6 +16,7 @@
       margin: 20px auto; 
       border: 2px solid #4CAF50;
       border-radius: 10px;
+      margin-left: 100px; /* Αριστερό περιθώριο 100px */
     }
     button { 
       margin: 10px; 
@@ -103,6 +104,7 @@
     const horizontalGap = 5;
     const canvasWidth = 420; // Αλλαγή πλάτους καμβά σε 420px
     const canvasHeight = 400; // Μείωση του πλάτους του καμβά
+    const leftMargin = 100; // Αριστερό περιθώριο 100px
     const periodLabelWidth = 50;
     const fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18];
     const exceptions = {
@@ -130,7 +132,6 @@
       drawPeriodLabels();
       drawOrbitals();
       drawArrows();
-      drawElementSymbol();
     }
 
     function initColumnColors() {
@@ -266,16 +267,6 @@
       pop();
     }
 
-    function drawElementSymbol() {
-      const elementSymbol = document.getElementById("elementSymbol").textContent;
-      const z = document.getElementById("elementSymbol").getAttribute("data-z");
-      textSize(24);
-      textStyle(BOLD);
-      fill(0);
-      text(`${z} ${elementSymbol}`, 20, 30);
-      textStyle(NORMAL);
-    }
-
     function startFilling() {
       resetDiagram();
       const Z = parseInt(document.getElementById("atomicNumber").value);
@@ -353,7 +344,6 @@
       updatePeriodGroup();
 
       // Σύμβολο στοιχείου και δείκτης
-      document.getElementById("elementSymbol").textContent = elementSymbols[Z - 1];
       document.getElementById("elementSymbol").setAttribute("data-z", Z);
     }
 
