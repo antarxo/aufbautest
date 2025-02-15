@@ -344,7 +344,6 @@
       updatePeriodGroup();
 
       // Σύμβολο στοιχείου και δείκτης
-      // document.getElementById("elementSymbol").textContent = elementSymbols[Z - 1];
       document.getElementById("elementSymbol").setAttribute("data-z", Z);
     }
 
@@ -363,9 +362,15 @@
 
     function predictGroup(valence) {
       let group = '-';
-      if(valence.type === 's') group = `${toRoman(valence.actualElectrons)}A ή ${valence.actualElectrons}`;
-      else if(valence.type === 'p') group = `${toRoman(valence.actualElectrons + 10)}A ή ${valence.actualElectrons + 12}`;
-      else if(valence.type === 'd') group = `${toRoman(valence.actualElectrons)}B ή ${valence.actualElectrons + (valence.actualElectrons >= 10 ? 1 : 0)}`;
+      if (valence.type === 's') {
+        group = `${toRoman(valence.actualElectrons)}A ή ${valence.actualElectrons}`;
+      } else if (valence.type === 'p') {
+        const sElectrons = positions.find(p => p.label === `${parseInt(valence.label)}s`).actualElectrons;
+        group = `${toRoman(sElectrons + valence.actualElectrons)}A ή ${sElectrons + valence.actualElectrons}`;
+      } else if (valence.type === 'd') {
+        const sElectrons = positions.find(p => p.label === `${parseInt(valence.label) + 1}s`).actualElectrons;
+        group = `${toRoman(sElectrons + valence.actualElectrons)}B ή ${sElectrons + valence.actualElectrons}`;
+      }
       return group;
     }
 
