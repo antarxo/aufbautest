@@ -328,7 +328,12 @@
       // Τελική διαμόρφωση
       const final = positions
         .filter(p => p.actualElectrons > 0)
-        .sort((a,b) => a.label.localeCompare(b.label, undefined, {numeric: true}))
+        .sort((a,b) => {
+          const aN = parseInt(a.label);
+          const bN = parseInt(b.label);
+          if (aN !== bN) return aN - bN;
+          return a.type.localeCompare(b.type);
+        })
         .map(p => `${p.label}${numberToExponent(p.actualElectrons)}`);
 
       document.getElementById("initialConfig").textContent = initial.join(" ");
