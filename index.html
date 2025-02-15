@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="el">
 <head>
@@ -16,7 +17,7 @@
       margin: 20px auto; 
       border: 2px solid #4CAF50;
       border-radius: 10px;
-      margin-left: 120px; /* Αριστερό περιθώριο 120px */
+      margin-left: 100px; /* Αριστερό περιθώριο 100px */
     }
     button { 
       margin: 10px; 
@@ -104,7 +105,7 @@
     const horizontalGap = 5;
     const canvasWidth = 420; // Αλλαγή πλάτους καμβά σε 420px
     const canvasHeight = 400; // Μείωση του πλάτους του καμβά
-    const leftMargin = 120; // Αριστερό περιθώριο 120px
+    const leftMargin = 100; // Αριστερό περιθώριο 100px
     const periodLabelWidth = 50;
     const fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18];
     const exceptions = {
@@ -361,12 +362,16 @@
       document.getElementById("periodValue").textContent = period;
 
       // Ομάδα
+      let group = predictGroup(valence);
+      document.getElementById("groupValue").textContent = group;
+    }
+
+    function predictGroup(valence) {
       let group = '-';
       if(valence.type === 's') group = `${toRoman(valence.actualElectrons)}A ή ${valence.actualElectrons}`;
       else if(valence.type === 'p') group = `${toRoman(valence.actualElectrons + 10)}A ή ${valence.actualElectrons + 12}`;
       else if(valence.type === 'd') group = `${toRoman(valence.actualElectrons)}B ή ${valence.actualElectrons + (valence.actualElectrons >= 10 ? 1 : 0)}`;
-
-      document.getElementById("groupValue").textContent = group;
+      return group;
     }
 
     function toRoman(num) {
@@ -396,4 +401,3 @@
     }
   </script>
 </body>
-</html>
