@@ -11,7 +11,7 @@
     button { margin: 5px; padding: 5px 10px; font-size: 12px; }
     #infoTable {
       margin-top: 10px;
-      font-size: 14px;
+      font-size: 12px;
       font-weight: normal;
       border-collapse: collapse;
       width: 50%;
@@ -20,14 +20,15 @@
     }
     #infoTable th, #infoTable td {
       border: 1px solid black;
-      padding: 8px;
+      padding: 5px;
       text-align: center;
     }
     #infoTable th {
       background-color: #f2f2f2;
+      font-weight: bold;
     }
     .instructions {
-      font-size: 12px;
+      font-size: 10px;
       color: #777;
     }
     .element-symbol {
@@ -36,12 +37,12 @@
       color: darkgreen;
       margin-right: 10px;
     }
-    .element-symbol::before {
+    .element-symbol::after {
       content: attr(data-z);
       font-size: 14px;
       color: red;
       vertical-align: sub;
-      margin-right: 5px;
+      margin-left: 5px;
     }
   </style>
 </head>
