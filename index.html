@@ -217,27 +217,38 @@
       for(let i=0; i<fillOrder.length-1; i++) {
         let from = positions[fillOrder[i]];
         let to = positions[fillOrder[i+1]];
-        drawArrow(
-          from.x + boxWidth - 10,
-          from.y + 10,
-          to.x + boxWidth - 10,
-          to.y + 10
-        );
+        if (to.y > from.y) {
+          drawArrow(
+            from.x + boxWidth / 2,
+            from.y + boxHeight / 2,
+            to.x + boxWidth / 2,
+            to.y - boxHeight / 2
+          );
+        }
       }
       
       // Κόκκινα βέλη (πραγματική συμπλήρωση)
       stroke(255,0,0);
       drawingContext.setLineDash([]);
-      let lastFilled = positions.findIndex(p => p.actualElectrons > 0);
-      for(let i=0; i<lastFilled; i++) {
+      let lastFilledIndex = -1;
+      for (let i = fillOrder.length - 1; i >= 0; i--) {
+        let idx = fillOrder[i];
+        if (positions[idx].filled > 0) {
+          lastFilledIndex = i;
+          break;
+        }
+      }
+      for (let i = 0; i < lastFilledIndex; i++) {
         let from = positions[fillOrder[i]];
         let to = positions[fillOrder[i+1]];
-        drawArrow(
-          from.x + boxWidth - 10,
-          from.y + 10,
-          to.x + boxWidth - 10,
-          to.y + 10
-        );
+        if (to.y > from.y) {
+          drawArrow(
+            from.x + boxWidth / 2,
+            from.y + boxHeight / 2,
+            to.x + boxWidth / 2,
+            to.y - boxHeight / 2
+          );
+        }
       }
     }
 
@@ -248,7 +259,7 @@
       translate(x2, y2);
       rotate(angle);
       let arrowSize = 7;
-      triangle(-arrowSize, arrowSize/2, -arrowSize, -arrowSize/2, 0, 0);
+      triangle(-arrowSize, arrowSize / 2, -arrowSize, -arrowSize / 2, 0, 0);
       pop();
     }
 
