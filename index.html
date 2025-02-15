@@ -30,7 +30,7 @@
       background-color: #45a049;
     }
     #infoTable {
-      margin: 30px auto;
+      margin: 20px auto;
       border-collapse: collapse;
       width: 60%;
       box-shadow: 0 0 15px rgba(0,0,0,0.2);
@@ -38,16 +38,16 @@
     }
     #infoTable th, #infoTable td {
       border: 2px solid #4CAF50;
-      padding: 10px;
+      padding: 8px;
       text-align: center;
     }
     #infoTable th {
       background-color: #4CAF50;
       color: white;
-      font-size: 16px;
+      font-size: 14px;
     }
     #infoTable td {
-      font-size: 14px;
+      font-size: 12px;
     }
     .element-symbol {
       font-size: 24px;
@@ -303,7 +303,7 @@
 
       // Γκρίζα ορθογώνια εξωτερικής στιβάδας
       markOuterShell();
-      updateDisplay();
+      updateDisplay(Z);
       redraw();
     }
 
@@ -325,11 +325,10 @@
       return num.toString().split('').map(d => exponents[d]).join('');
     }
 
-    function updateDisplay() {
+    function updateDisplay(Z) {
       // Αρχική διαμόρφωση
       const initial = positions
         .filter(p => p.filled > 0)
-        .sort((a,b) => a.label.localeCompare(b.label, undefined, {numeric: true}))
         .map(p => `${p.label}${numberToExponent(p.filled)}`);
       
       // Τελική διαμόρφωση
@@ -343,6 +342,10 @@
 
       // Περίοδος και Ομάδα
       updatePeriodGroup();
+
+      // Σύμβολο στοιχείου και δείκτης
+      document.getElementById("elementSymbol").textContent = elementSymbols[Z - 1];
+      document.getElementById("elementSymbol").setAttribute("data-z", Z);
     }
 
     function updatePeriodGroup() {
