@@ -28,7 +28,7 @@
       font-weight: bold;
     }
     .instructions {
-      font-size: 10px;
+      font-size: 12px;
       color: #777;
     }
     .element-symbol {
@@ -37,12 +37,12 @@
       color: darkgreen;
       margin-right: 10px;
     }
-    .element-symbol::after {
+    .element-symbol::before {
       content: attr(data-z);
       font-size: 14px;
       color: red;
-      vertical-align: sub;
-      margin-left: 5px;
+      vertical-align: baseline;
+      margin-right: 5px;
     }
   </style>
 </head>
@@ -57,12 +57,8 @@
   <div id="elementInfo"></div>
   <table id="infoTable">
     <tr>
-      <td>Περίοδος</td>
-      <td id="periodInfo"></td>
-    </tr>
-    <tr>
-      <td>Ομάδα</td>
-      <td id="groupInfo"></td>
+      <td>Περίοδος και Ομάδα</td>
+      <td id="periodGroupInfo"></td>
     </tr>
     <tr>
       <td>Αρχική διαμόρφωση</td>
@@ -333,8 +329,7 @@
         groupNumber = lastFilledS.filled;
       }
       
-      document.getElementById("periodInfo").innerText = period || '-';
-      document.getElementById("groupInfo").innerText = `${groupRoman} ή ${groupNumber}`;
+      document.getElementById("periodGroupInfo").innerText = `Περίοδος: ${period || '-'} | Ομάδα: ${groupRoman} ή ${groupNumber}`;
     }
 
     function toRoman(num) {
@@ -358,8 +353,7 @@
       document.getElementById("atomicNumber").value = 1;
       document.getElementById("electronConfigInfo").innerText = '';
       document.getElementById("initialConfigInfo").innerText = '';
-      document.getElementById("periodInfo").innerText = '';
-      document.getElementById("groupInfo").innerText = '';
+      document.getElementById("periodGroupInfo").innerText = '';
       document.getElementById("elementSymbol").innerText = '';
       document.getElementById("elementSymbol").setAttribute("data-z", '');
       redraw();
