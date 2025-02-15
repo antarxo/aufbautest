@@ -43,11 +43,17 @@
       vertical-align: sub;
       margin-right: 5px;
     }
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
   </style>
 </head>
 <body>
   <h1>Κανόνας Aufbau <span id="elementSymbol" class="element-symbol" data-z=""></span></h1>
-  <div>
+  <div class="controls">
     <label for="atomicNumber">Z:</label>
     <input type="number" id="atomicNumber" min="1" max="118" value="1">
     <button onclick="startFilling()">Έναρξη</button>
@@ -275,7 +281,7 @@
         orbital.filled = fillAmount;
         remaining -= fillAmount;
         if (fillAmount > 0) {
-          electronConfig.push(`${orbital.label}${fillAmount}`);
+          electronConfig.push(`${orbital}${fillAmount}`);
         }
         if (remaining <= 0) break;
       }
