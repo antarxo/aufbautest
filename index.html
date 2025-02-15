@@ -45,16 +45,30 @@
       <td id="groupInfo"></td>
     </tr>
     <tr>
-      <td>Αρχικό aufbau</td>
-      <td id="electronConfigInfo"></td>
+      <td>Σύμβολο Στοιχείου</td>
+      <td id="elementSymbol"></td>
     </tr>
     <tr>
-      <td>Τελική Διαμόρφωση</td>
-      <td id="finalConfigInfo"></td>
+      <td>Αρχικό aufbau</td>
+      <td id="electronConfigInfo"></td>
     </tr>
   </table>
 
   <script>
+    const elements = [
+      { symbol: "H", name: "Υδρογόνο" },
+      { symbol: "He", name: "Ήλιο" },
+      { symbol: "Li", name: "Λίθιο" },
+      { symbol: "Be", name: "Βηρύλλιο" },
+      { symbol: "B", name: "Βόριο" },
+      { symbol: "C", name: "Άνθρακας" },
+      { symbol: "N", name: "Άζωτο" },
+      { symbol: "O", name: "Οξυγόνο" },
+      { symbol: "F", name: "Φθόριο" },
+      { symbol: "Ne", name: "Νέον" },
+      // ... προσθέστε όλα τα στοιχεία μέχρι το 118
+    ];
+
     const periods = [
       { label: "K", orbitals: ["1s"] },
       { label: "L", orbitals: ["2s", "2p"] },
@@ -295,18 +309,15 @@
       // Εμφάνιση της ηλεκτρονιακής δόμησης με κόμμα ως διαχωριστικό
       document.getElementById("electronConfigInfo").innerText = electronConfig.join(", ");
 
-      // Ταξινόμηση της ηλεκτρονιακής δόμησης κατά κύριο κβαντικό αριθμό
-      let sortedElectronConfig = electronConfig.slice().sort((a, b) => {
-        let aMainQuantumNumber = parseInt(a.match(/\d+/)[0]);
-        let bMainQuantumNumber = parseInt(b.match(/\d+/)[0]);
-        return aMainQuantumNumber - bMainQuantumNumber;
-      });
-
-      // Εμφάνιση της τελικής διαμόρφωσης
-      document.getElementById("finalConfigInfo").innerText = sortedElectronConfig.join(", ");
-
       // Προβλέψεις για την ομάδα και την περίοδο
       predictElementPosition(lastFilledPeriod, lastFilledS, lastFilledP);
+
+      // Εμφάνιση του συμβόλου του στοιχείου
+      if (atomicNumber > 0 && atomicNumber <= elements.length) {
+        document.getElementById("elementSymbol").innerText = elements[atomicNumber - 1].symbol;
+      } else {
+        document.getElementById("elementSymbol").innerText = "Άγνωστο";
+      }
 
       // Χρώμα γκρι για τα τελευταία γεμισμένα s και p τροχιακά της εξωτερικής περιόδου
       let outermostPeriod = Math.max(...positions.filter(p => p.filled > 0).map(p => parseInt(p.label.slice(0, -1))));
@@ -406,7 +417,7 @@
       document.getElementById("electronConfigInfo").innerText = '';
       document.getElementById("periodInfo").innerText = '';
       document.getElementById("groupInfo").innerText = '';
-      document.getElementById("finalConfigInfo").innerText = '';
+      document.getElementById("elementSymbol").innerText = '';
       redraw();
     }
   </script>
