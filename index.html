@@ -13,12 +13,12 @@
     }
     canvas { 
       display: block; 
-      margin: 10px auto; /* Μείωση του κενού κάτω από τον τίτλο */
+      margin: 10px auto; 
       border: 2px solid #4CAF50;
       border-radius: 10px;
     }
     button { 
-      margin: 5px; /* Μείωση του κενού κάτω από τα κουμπιά */
+      margin: 5px; 
       padding: 10px 20px; 
       background-color: #4CAF50; 
       color: white; 
@@ -30,9 +30,9 @@
       background-color: #45a049;
     }
     #infoTable {
-      margin: 10px auto; /* Μείωση του κενού κάτω από το κάτω πλαίσιο */
+      margin: 10px auto;
       border-collapse: collapse;
-      width: 420px; /* Μείωση πλάτους σε 420px */
+      width: 420px; /* Αλλαγή πλάτους σε 420px */
       box-shadow: 0 0 15px rgba(0,0,0,0.2);
       background-color: white;
     }
@@ -66,7 +66,7 @@
 </head>
 <body>
   <h1 style="color: #2E8B57; margin-bottom: 10px;">Κανόνας Aufbau <span id="elementSymbol" class="element-symbol" data-z=""></span></h1>
-  <div>
+  <div style="margin-bottom: 5px;">
     <label for="atomicNumber" style="font-size: 16px;">Z:</label>
     <input type="number" id="atomicNumber" min="1" max="118" value="1" style="padding: 5px;">
     <button onclick="startFilling()">Έναρξη</button>
@@ -101,9 +101,9 @@
     const maxElectrons = { "s": 2, "p": 6, "d": 10, "f": 14 };
     const boxWidth = 60, boxHeight = 40, verticalSpacing = 45;
     const horizontalGap = 5;
-    const canvasWidth = 420; // Μείωση πλάτους καμβά σε 420px
-    const canvasHeight = 400;
-    const leftMargin = 100; // Μείωση του αριστερού περιθωρίου σε 100px
+    const canvasWidth = 420; // Αλλαγή πλάτους καμβά σε 420px
+    const canvasHeight = 400; // Μείωση του πλάτους του καμβά
+    const leftMargin = 100; // Μείωση του αριστερού περιθωρίου σε 100
     const periodLabelWidth = 50;
     const fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18];
     const exceptions = {
@@ -208,7 +208,7 @@
 
         // Εκθέτης (μαύρος σε γκρί ορθογώνια)
         if(pos.actualElectrons > 0) {
-          textSize(14);
+          textSize(16); // Μεγαλύτεροι χαρακτήρες για τους εκθέτες
           textStyle(BOLD); // Κάνουμε τους εκθέτες έντονους
           fill(pos.isGray ? 0 : {
             's': color(255,0,0),
@@ -216,7 +216,7 @@
             'd': color(0,0,255),
             'f': color(255,165,0)
           }[pos.type]);
-          text(numberToExponent(pos.actualElectrons), pos.x + boxWidth - 15, pos.y + 10); // Επαναφορά των εκθετών στην αρχική θέση
+          text(numberToExponent(pos.actualElectrons), pos.x + boxWidth - 15, pos.y + 13); // Επαναφορά των εκθετών στην αρχική θέση και 3px πιο κάτω
           textStyle(NORMAL); // Επαναφορά του κανονικού στυλ
         }
       });
