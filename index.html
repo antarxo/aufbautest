@@ -88,6 +88,18 @@
     </tr>
   </table>
 
+  <table id="initialTable">
+    <tr>
+      <th>Αρχική Διαμόρφωση</th>
+    </tr>
+  </table>
+
+  <table id="finalTable">
+    <tr>
+      <th>Τελική Διαμόρφωση</th>
+    </tr>
+  </table>
+
   <script>
     const periods = [
       { label: "K", orbitals: ["1s"] },
@@ -340,12 +352,37 @@
       document.getElementById("initialConfig").textContent = initial.join(" ");
       document.getElementById("finalConfig").textContent = final.join(" ");
 
+      // Ενημέρωση των πινάκων
+      updateTables(initial, final);
+
       // Περίοδος και Ομάδα
       updatePeriodGroup();
 
       // Σύμβολο στοιχείου και δείκτης
       // document.getElementById("elementSymbol").textContent = elementSymbols[Z - 1];
       document.getElementById("elementSymbol").setAttribute("data-z", Z);
+    }
+
+    function updateTables(initial, final) {
+      const initialTable = document.getElementById("initialTable");
+      const finalTable = document.getElementById("finalTable");
+
+      // Καθαρισμός των πινάκων
+      initialTable.innerHTML = "<tr><th>Αρχική Διαμόρφωση</th></tr>";
+      finalTable.innerHTML = "<tr><th>Τελική Διαμόρφωση</th></tr>";
+
+      // Προσθήκη των δεδομένων στους πίνακες
+      initial.forEach(config => {
+        const row = initialTable.insertRow();
+        const cell = row.insertCell(0);
+        cell.textContent = config;
+      });
+
+      final.forEach(config => {
+        const row = finalTable.insertRow();
+        const cell = row.insertCell(0);
+        cell.textContent = config;
+      });
     }
 
     function updatePeriodGroup() {
