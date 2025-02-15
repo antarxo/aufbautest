@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Σχήμα aufbau</title>
+  <title>Aufbau</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <style>
-    body { text-align: center; font-family: Verdana, sans-serif; max-width: 600px; margin: auto; }
+    body { text-align: center; font-family: Verdana, sans-serif; }
     canvas { display: block; margin: auto; }
     button { margin: 5px; padding: 10px 20px; font-size: 14px; }
     #infoTable {
-      margin-top: 10px;
+      margin-top: 20px;
       font-size: 16px;
       font-weight: normal;
       border-collapse: collapse;
@@ -29,19 +29,23 @@
   </style>
 </head>
 <body>
-  <h1>Σχήμα aufbau</h1>
-  <label for="atomicNumber">Z=</label>
-  <input type="number" id="atomicNumber" min="1" max="118" value="1" style="width: 50px;">
-  <button onclick="startFilling()">Έναρξη</button>
+  <h1>Aufbau</h1>
+  <label for="atomicNumber">Ατομικός Αριθμός:</label>
+  <input type="number" id="atomicNumber" min="1" max="118" value="1">
+  <button onclick="startFilling()">Ξεκίνα Δόμηση</button>
   <button onclick="resetDiagram()">Reset</button>
   <div id="elementInfo"></div>
   <table id="infoTable">
     <tr>
-      <td>Περίοδος: <span id="periodInfo"></span></td>
-      <td>Ομάδα: <span id="groupInfo"></span></td>
+      <td>Περίοδος</td>
+      <td id="periodInfo"></td>
     </tr>
     <tr>
-      <td>Αρχική διαμόρφωση</td>
+      <td>Ομάδα</td>
+      <td id="groupInfo"></td>
+    </tr>
+    <tr>
+      <td>Αρχικό aufbau</td>
       <td id="electronConfigInfo"></td>
     </tr>
     <tr>
@@ -281,7 +285,7 @@
         remaining -= fillAmount;
 
         if (fillAmount > 0) {
-          electronConfig.push(`${orbital.label}<sup>${fillAmount}</sup>`);
+          electronConfig.push(`${orbital.label}${fillAmount > 1 ? `⁰${fillAmount}` : ''}`);
           lastFilledOrbital = orbital.label;
           lastFilledPeriod = periodNumber;
         }
@@ -289,7 +293,7 @@
       }
 
       // Εμφάνιση της ηλεκτρονιακής δόμησης με κόμμα ως διαχωριστικό
-      document.getElementById("electronConfigInfo").innerHTML = electronConfig.join(", ");
+      document.getElementById("electronConfigInfo").innerText = electronConfig.join(", ");
 
       // Ταξινόμηση της ηλεκτρονιακής δόμησης κατά κύριο κβαντικό αριθμό
       let sortedElectronConfig = electronConfig.slice().sort((a, b) => {
@@ -299,7 +303,7 @@
       });
 
       // Εμφάνιση της τελικής διαμόρφωσης
-      document.getElementById("finalConfigInfo").innerHTML = sortedElectronConfig.join(", ");
+      document.getElementById("finalConfigInfo").innerText = sortedElectronConfig.join(", ");
 
       // Προβλέψεις για την ομάδα και την περίοδο
       predictElementPosition(lastFilledPeriod, lastFilledS, lastFilledP);
