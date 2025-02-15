@@ -203,7 +203,7 @@
         
         // Κύριο label
         fill(0);
-        text(pos.label, pos.x + boxWidth/2, pos.y + boxHeight/2 + 5); // Κατέβασμα των συμβόλων
+        text(pos.label, pos.x + boxWidth/2, pos.y + boxHeight/2 + 15); // Κατέβασμα των συμβόλων
         
         // Εκθέτης (μαύρος σε γκρί ορθογώνια)
         if(pos.actualElectrons > 0) {
@@ -214,7 +214,7 @@
             'd': color(0,0,255),
             'f': color(255,165,0)
           }[pos.type]);
-          text(numberToExponent(pos.actualElectrons), pos.x + boxWidth - 15, pos.y + 20); // Κατέβασμα των εκθετών
+          text(numberToExponent(pos.actualElectrons), pos.x + boxWidth - 15, pos.y + 25); // Κατέβασμα των εκθετών
         }
       });
     }
