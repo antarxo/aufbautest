@@ -26,6 +26,11 @@
     #infoTable th {
       background-color: #f2f2f2;
     }
+    .explanation {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #555;
+    }
   </style>
 </head>
 <body>
@@ -49,10 +54,13 @@
       <td id="elementSymbol"></td>
     </tr>
     <tr>
-      <td>Αρχικό aufbau</td>
+      <td>Ηλεκτρονική Διαμόρφωση</td>
       <td id="electronConfigInfo"></td>
     </tr>
   </table>
+  <div class="explanation">
+    <p>Το διάγραμμα αυτό ακολουθεί την αρχή του Aufbau για την ηλεκτρονική δόμηση των ατόμων. Εισάγετε τον ατομικό αριθμό και κάντε κλικ στο "Ξεκίνα Δόμηση" για να δείτε την ηλεκτρονική διαμόρφωση και το διάγραμμα.</p>
+  </div>
   <script>
     const periods = [
       { label: "K", orbitals: ["1s"] },
@@ -71,6 +79,17 @@
     const periodLabelWidth = 50;
     const fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18];
     let positions = [], columnColors = [], lastFilledS = null, lastFilledP = null, lastPeriod = -1;
+
+    // Λίστα με τα σύμβολα των στοιχείων
+    const elementSymbols = [
+      "H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar",
+      "K", "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As", "Se", "Br", "Kr",
+      "Rb", "Sr", "Y", "Zr", "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Ag", "Cd", "In", "Sn", "Sb", "Te", "I", "Xe",
+      "Cs", "Ba", "La", "Ce", "Pr", "Nd", "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm", "Yb", "Lu",
+      "Hf", "Ta", "W", "Re", "Os", "Ir", "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Po", "At", "Rn",
+      "Fr", "Ra", "Ac", "Th", "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No", "Lr",
+      "Rf", "Db", "Sg", "Bh", "Hs", "Mt", "Ds", "Rg", "Cn", "Nh", "Fl", "Mc", "Lv", "Ts", "Og"
+    ];
 
     function setup() {
       createCanvas(canvasWidth, canvasHeight);
@@ -251,7 +270,7 @@
       }
       document.getElementById("electronConfigInfo").innerText = electronConfig.join(", ");
       predictElementPosition(lastFilledPeriod, lastFilledS, lastFilledP);
-      document.getElementById("elementSymbol").innerText = "Άγνωστο";
+      document.getElementById("elementSymbol").innerText = elementSymbols[atomicNumber - 1] || "Άγνωστο";
       let outermostPeriod = Math.max(...positions.filter(p => p.filled > 0).map(p => parseInt(p.label.slice(0, -1))));
       if (outermostPeriod !== -1) {
         let lastPeriodOrbitals = positions.filter(p => parseInt(p.label.slice(0, -1)) === outermostPeriod);
@@ -305,19 +324,3 @@
     function resetDiagram() {
       for (let pos of positions) {
         pos.filled = 0;
-        pos.isGray = false;
-      }
-      lastFilledS = null;
-      lastFilledP = null;
-      lastPeriod = -1;
-      document.getElementById("atomicNumber").value = 1;
-      document.getElementById("elementInfo").innerText = '';
-      document.getElementById("electronConfigInfo").innerText = '';
-      document.getElementById("periodInfo").innerText = '';
-      document.getElementById("groupInfo").innerText = '';
-      document.getElementById("elementSymbol").innerText = '';
-      redraw();
-    }
-  </script>
-</body>
-</html>
