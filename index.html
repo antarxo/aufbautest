@@ -278,6 +278,16 @@
       }).join(", ");
       document.getElementById("initialConfigInfo").innerHTML = initialConfig;
 
+      let sortedConfig = electronConfig.slice().sort((a, b) => {
+        let aLayer = parseInt(a.match(/\d+/)[0]);
+        let bLayer = parseInt(b.match(/\d+/)[0]);
+        return aLayer - bLayer;
+      }).map(config => {
+        let [orbital, count] = config.split(/(\d+)/);
+        return `${orbital}<sup>${count}</sup>`;
+      }).join(", ");
+      document.getElementById("electronConfigInfo").innerHTML = sortedConfig;
+
       let outermostPeriod = Math.max(...positions.filter(p => p.filled > 0).map(p => parseInt(p.label.slice(0, -1))));
       if (outermostPeriod !== -1) {
         let lastPeriodOrbitals = positions.filter(p => parseInt(p.label.slice(0, -1)) === outermostPeriod);
