@@ -88,15 +88,21 @@
     </tr>
   </table>
 
-  <table id="initialTable">
+  <table id="fillingOrderTable">
     <tr>
-      <th>Αρχική Διαμόρφωση</th>
+      <th>Συμπλήρωση</th>
+    </tr>
+    <tr>
+      <td id="fillingOrder">-</td>
     </tr>
   </table>
 
-  <table id="finalTable">
+  <table id="sortedOrderTable">
     <tr>
-      <th>Τελική Διαμόρφωση</th>
+      <th>Ταξινόμηση</th>
+    </tr>
+    <tr>
+      <td id="sortedOrder">-</td>
     </tr>
   </table>
 
@@ -352,8 +358,9 @@
       document.getElementById("initialConfig").textContent = initial.join(" ");
       document.getElementById("finalConfig").textContent = final.join(" ");
 
-      // Ενημέρωση των πινάκων
-      updateTables(initial, final);
+      // Εμφάνιση της σειράς συμπλήρωσης και της ταξινόμησης
+      document.getElementById("fillingOrder").textContent = initial.join(" ");
+      document.getElementById("sortedOrder").textContent = final.join(" ");
 
       // Περίοδος και Ομάδα
       updatePeriodGroup();
@@ -361,28 +368,6 @@
       // Σύμβολο στοιχείου και δείκτης
       // document.getElementById("elementSymbol").textContent = elementSymbols[Z - 1];
       document.getElementById("elementSymbol").setAttribute("data-z", Z);
-    }
-
-    function updateTables(initial, final) {
-      const initialTable = document.getElementById("initialTable");
-      const finalTable = document.getElementById("finalTable");
-
-      // Καθαρισμός των πινάκων
-      initialTable.innerHTML = "<tr><th>Αρχική Διαμόρφωση</th></tr>";
-      finalTable.innerHTML = "<tr><th>Τελική Διαμόρφωση</th></tr>";
-
-      // Προσθήκη των δεδομένων στους πίνακες
-      initial.forEach(config => {
-        const row = initialTable.insertRow();
-        const cell = row.insertCell(0);
-        cell.textContent = config;
-      });
-
-      final.forEach(config => {
-        const row = finalTable.insertRow();
-        const cell = row.insertCell(0);
-        cell.textContent = config;
-      });
     }
 
     function updatePeriodGroup() {
@@ -427,6 +412,8 @@
       document.getElementById("groupValue").textContent = '-';
       document.getElementById("initialConfig").textContent = '-';
       document.getElementById("finalConfig").textContent = '-';
+      document.getElementById("fillingOrder").textContent = '-';
+      document.getElementById("sortedOrder").textContent = '-';
       document.getElementById("elementSymbol").textContent = '';
       document.getElementById("elementSymbol").setAttribute("data-z", '');
       redraw();
