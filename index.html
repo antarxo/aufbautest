@@ -181,7 +181,7 @@
           else if (label.endsWith("p")) fill(0, 100, 0); // Σκούρο πράσινο για τα τροχιακά p
           else if (label.endsWith("d")) fill(0, 0, 255);
           else if (label.endsWith("f")) fill(255, 165, 0);
-          text(exponent, pos.x + labelWidth / 4, pos.y); // Κανονική εμφάνιση εκθετών
+          text(exponent, pos.x + labelWidth / 4, pos.y - 8); // Υπερκείμενοι εκθέτες στο διάγραμμα
           fill(0);
           textStyle(NORMAL);
           textSize(12);
@@ -279,6 +279,12 @@
       document.getElementById("electronConfigInfo").innerText = electronConfig.join(", ");
       document.getElementById("elementSymbol").innerText = elementSymbols[atomicNumber - 1] || "Άγνωστο";
       
+      let initialConfig = electronConfig.map(config => {
+        let [orbital, count] = config.split(/(\d+)/);
+        return `${orbital}<sup>${count}</sup>`;
+      }).join(", ");
+      document.getElementById("initialConfigInfo").innerHTML = initialConfig;
+
       let outermostPeriod = Math.max(...positions.filter(p => p.filled > 0).map(p => parseInt(p.label.slice(0, -1))));
       if (outermostPeriod !== -1) {
         let lastPeriodOrbitals = positions.filter(p => parseInt(p.label.slice(0, -1)) === outermostPeriod);
