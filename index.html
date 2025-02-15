@@ -351,7 +351,8 @@
           const aN = parseInt(a.label);
           const bN = parseInt(b.label);
           if (aN !== bN) return aN - bN;
-          return a.type.localeCompare(b.type);
+          const typeOrder = { 's': 1, 'p': 2, 'd': 3, 'f': 4 };
+          return typeOrder[a.type] - typeOrder[b.type];
         })
         .map(p => `${p.label}${numberToExponent(p.actualElectrons)}`);
 
