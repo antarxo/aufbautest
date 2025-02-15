@@ -16,7 +16,6 @@
       margin: 20px auto; 
       border: 2px solid #4CAF50;
       border-radius: 10px;
-      margin-left: 100px; /* Αριστερό περιθώριο 100px */
     }
     button { 
       margin: 10px; 
@@ -104,7 +103,6 @@
     const horizontalGap = 5;
     const canvasWidth = 420; // Αλλαγή πλάτους καμβά σε 420px
     const canvasHeight = 400; // Μείωση του πλάτους του καμβά
-    const leftMargin = 100; // Αριστερό περιθώριο 100px
     const periodLabelWidth = 50;
     const fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18];
     const exceptions = {
@@ -366,11 +364,13 @@
       const pElectrons = positions.filter(p => p.type === 'p' && parseInt(p.label) === parseInt(valence.label)).reduce((sum, p) => sum + p.actualElectrons, 0);
       const dElectrons = positions.filter(p => p.type === 'd' && parseInt(p.label) === parseInt(valence.label) - 1).reduce((sum, p) => sum + p.actualElectrons, 0);
 
-      if (valence.type === 's' || valence.type === 'p') {
-        group = `${toRoman(sElectrons + pElectrons)}A ή ${sElectrons + pElectrons}`;
+      if (valence.type === 's') {
+        group = `${toRoman(sElectrons)}A ή ${sElectrons}`;
+      } else if (valence.type === 'p') {
+        group = `${toRoman(sElectrons + pElectrons)}A ή ${sElectrons + pElectrons + 10}`;
       } else if (valence.type === 'd') {
         const totalElectrons = sElectrons + dElectrons;
-        if (totalElectrons === 8) {
+        if (totalElectrons === 8 || totalElectrons === 9 || totalElectrons === 10) {
           group = `VIIIB ή 8`;
         } else if (dElectrons === 9) {
           group = `IB ή 11`;
