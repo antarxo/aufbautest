@@ -53,7 +53,6 @@
       <td id="electronConfigInfo"></td>
     </tr>
   </table>
-
   <script>
     const periods = [
       { label: "K", orbitals: ["1s"] },
@@ -64,7 +63,6 @@
       { label: "P", orbitals: ["6s", "6p", "6d"] },
       { label: "Q", orbitals: ["7s", "7p"] }
     ];
-
     const maxElectrons = { "s": 2, "p": 6, "d": 10, "f": 14 };
     const boxWidth = 60, boxHeight = 40, verticalSpacing = 45;
     const horizontalGap = 5;
@@ -72,12 +70,7 @@
     const leftMargin = 120;
     const periodLabelWidth = 50;
     const fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18];
-
-    let positions = [];
-    let columnColors = [];
-    let lastFilledS = null;
-    let lastFilledP = null;
-    let lastPeriod = -1;
+    let positions = [], columnColors = [], lastFilledS = null, lastFilledP = null, lastPeriod = -1;
 
     function setup() {
       createCanvas(canvasWidth, canvasHeight);
@@ -97,11 +90,8 @@
 
     function initColumnColors() {
       columnColors = [
-        color("#FFCDD2"), // στήλη 0
-        color("#C8E6C9"), // στήλη 1
-        color("#BBDEFB"), // στήλη 2
-        color("#FFF9C4"), // στήλη 3
-        color("#D1C4E9")  // στήλη 4
+        color("#FFCDD2"), color("#C8E6C9"), color("#BBDEFB"),
+        color("#FFF9C4"), color("#D1C4E9")
       ];
     }
 
@@ -123,22 +113,15 @@
       let periodElectrons = new Array(periods.length).fill(0);
       for (let pos of positions) {
         let periodIndex = periods.findIndex(p => p.orbitals.includes(pos.label));
-        if (periodIndex !== -1) {
-          periodElectrons[periodIndex] += pos.filled;
-        }
+        if (periodIndex !== -1) periodElectrons[periodIndex] += pos.filled;
       }
-
       textAlign(RIGHT, CENTER);
       fill(0);
       textSize(14);
       textStyle(BOLD);
       for (let i = 0; i < periods.length; i++) {
         let y = 50 + i * verticalSpacing;
-        if (periodElectrons[i] > 0) {
-          text(periods[i].label + " (" + periodElectrons[i] + ")", leftMargin - 10, y);
-        } else {
-          text(periods[i].label, leftMargin - 10, y);
-        }
+        text(periods[i].label + (periodElectrons[i] > 0 ? " (" + periodElectrons[i] + ")" : ""), leftMargin - 10, y);
       }
       textStyle(NORMAL);
       textSize(12);
@@ -150,40 +133,24 @@
       for (let pos of positions) {
         let colIndex = pos.col;
         let colColor = columnColors[colIndex % columnColors.length];
-
-        // Change color to gray for the last filled s and p orbitals of the last period
-        if (pos.isGray) {
-          colColor = color(200); // Gray color
-        }
-
+        if (pos.isGray) colColor = color(200);
         fill(colColor);
         rectMode(CENTER);
         rect(pos.x, pos.y, boxWidth, boxHeight);
         fill(0);
-
         if (pos.filled > 0) {
           let label = pos.label;
           let exponent = pos.filled;
           let labelWidth = textWidth(label);
-
           text(label, pos.x - labelWidth / 4, pos.y);
-
           textSize(10);
           textStyle(BOLD);
-
-          if (pos.isGray) {
-            fill(0); // Black color for exponents in gray boxes
-          } else if (label.endsWith("s")) {
-            fill(255, 0, 0);
-          } else if (label.endsWith("p")) {
-            fill(0, 255, 0); // Green color for p orbitals
-          } else if (label.endsWith("d")) {
-            fill(0, 0, 255);
-          } else if (label.endsWith("f")) {
-            fill(255, 165, 0);
-          }
-
-          text(exponent, pos.x + labelWidth / 4, pos.y - 8); // Move exponent 3 pixels higher
+          if (pos.isGray) fill(0);
+          else if (label.endsWith("s")) fill(255, 0, 0);
+          else if (label.endsWith("p")) fill(0, 255, 0);
+          else if (label.endsWith("d")) fill(0, 0, 255);
+          else if (label.endsWith("f")) fill(255, 165, 0);
+          text(exponent, pos.x + labelWidth / 4, pos.y - 8);
           fill(0);
           textStyle(NORMAL);
           textSize(12);
@@ -197,7 +164,7 @@
       let grayArrowColor = color(150, 150, 150);
       stroke(grayArrowColor);
       strokeWeight(2);
-      drawingContext.setLineDash([5, 5]); // Set dotted line
+      drawingContext.setLineDash([5, 5]);
       for (let i = 0; i < fillOrder.length - 1; i++) {
         let idx1 = fillOrder[i];
         let idx2 = fillOrder[i + 1];
@@ -206,21 +173,17 @@
         if (pos2.y > pos1.y) {
           let startOffset = 13;
           let endOffset = 13;
-
           let x1 = pos1.x + boxWidth / 2;
           let y1 = pos1.y - boxHeight / 2 + startOffset;
           let x2 = pos2.x + boxWidth / 2;
           let y2 = pos2.y - boxHeight / 2 + endOffset;
-
           drawArrow(x1, y1, x2, y2);
         }
       }
-      drawingContext.setLineDash([]); // Reset to solid line
-
+      drawingContext.setLineDash([]);
       let redArrowColor = color(255, 0, 0);
       stroke(redArrowColor);
       strokeWeight(2);
-
       let lastFilledIndex = -1;
       for (let i = fillOrder.length - 1; i >= 0; i--) {
         let idx = fillOrder[i];
@@ -229,7 +192,6 @@
           break;
         }
       }
-
       for (let i = 0; i < lastFilledIndex; i++) {
         let idx1 = fillOrder[i];
         let idx2 = fillOrder[i + 1];
@@ -238,12 +200,10 @@
         if (pos2.y > pos1.y) {
           let startOffset = 13;
           let endOffset = 13;
-
           let x1 = pos1.x + boxWidth / 2;
           let y1 = pos1.y - boxHeight / 2 + startOffset;
           let x2 = pos2.x + boxWidth / 2;
           let y2 = pos2.y - boxHeight / 2 + endOffset;
-
           drawArrow(x1, y1, x2, y2);
         }
       }
@@ -272,8 +232,7 @@
       let remaining = atomicNumber;
       let lastFilledOrbital = null;
       let lastFilledPeriod = -1;
-      let electronConfig = []; // Αποθήκευση της ηλεκτρονιακής δόμησης
-
+      let electronConfig = [];
       for (let i = 0; i < fillOrder.length; i++) {
         let idx = fillOrder[i];
         let orbital = positions[idx];
@@ -283,7 +242,6 @@
         let fillAmount = min(remaining, capacity);
         orbital.filled = fillAmount;
         remaining -= fillAmount;
-
         if (fillAmount > 0) {
           electronConfig.push(`${orbital.label}${fillAmount > 1 ? `⁰${fillAmount}` : ''}`);
           lastFilledOrbital = orbital.label;
@@ -291,53 +249,31 @@
         }
         if (remaining <= 0) break;
       }
-
-      // Εμφάνιση της ηλεκτρονιακής δόμησης με κόμμα ως διαχωριστικό
       document.getElementById("electronConfigInfo").innerText = electronConfig.join(", ");
-
-      // Προβλέψεις για την ομάδα και την περίοδο
       predictElementPosition(lastFilledPeriod, lastFilledS, lastFilledP);
-
-      // Εμφάνιση του συμβόλου του στοιχείου
-      if (atomicNumber > 0 && atomicNumber <= elements.length) {
-        document.getElementById("elementSymbol").innerText = elements[atomicNumber - 1].symbol;
-      } else {
-        document.getElementById("elementSymbol").innerText = "Άγνωστο";
-      }
-
-      // Χρώμα γκρι για τα τελευταία γεμισμένα s και p τροχιακά της εξωτερικής περιόδου
+      document.getElementById("elementSymbol").innerText = "Άγνωστο";
       let outermostPeriod = Math.max(...positions.filter(p => p.filled > 0).map(p => parseInt(p.label.slice(0, -1))));
       if (outermostPeriod !== -1) {
         let lastPeriodOrbitals = positions.filter(p => parseInt(p.label.slice(0, -1)) === outermostPeriod);
         lastFilledS = lastPeriodOrbitals.find(o => o.label.endsWith("s") && o.filled > 0);
         lastFilledP = lastPeriodOrbitals.find(o => o.label.endsWith("p") && o.filled > 0);
-
         if (lastFilledP) {
           for (let i = 0; i < positions.length; i++) {
             let pos = positions[i];
             if (parseInt(pos.label.slice(0, -1)) === outermostPeriod) {
-              if (pos.label.endsWith("s") || pos.label.endsWith("p")) {
-                pos.isGray = true;
-              }
+              if (pos.label.endsWith("s") || pos.label.endsWith("p")) pos.isGray = true;
             }
           }
         } else if (lastFilledS) {
           let pos = positions.find(p => p.label === lastFilledS.label);
-          if (pos) {
-            pos.isGray = true;
-          }
+          if (pos) pos.isGray = true;
         }
       }
-
       redraw();
     }
 
     function predictElementPosition(period, lastFilledS, lastFilledP) {
-      let group = 0;
-      let groupRoman = '';
-      let groupNumber = 0;
-
-      // Calculate group using the first method
+      let group = 0, groupRoman = '', groupNumber = 0;
       if (lastFilledP) {
         group = lastFilledS.filled + lastFilledP.filled;
         groupRoman = toRoman(group) + 'A';
@@ -345,42 +281,18 @@
         group = lastFilledS.filled;
         groupRoman = toRoman(group) + 'A';
       }
-
-      // Calculate group using the second method
-      if (lastFilledP) {
-        groupNumber = 12 + lastFilledP.filled;
-      } else if (lastFilledS) {
-        groupNumber = lastFilledS.filled;
-      }
-
-      // Check for d electrons in the previous period
+      if (lastFilledP) groupNumber = 12 + lastFilledP.filled;
+      else if (lastFilledS) groupNumber = lastFilledS.filled;
       let previousPeriod = period - 1;
       let previousPeriodOrbitals = positions.filter(p => parseInt(p.label.slice(0, -1)) === previousPeriod);
       let dElectrons = previousPeriodOrbitals.find(o => o.label.endsWith("d") && o.filled > 0);
-      if (dElectrons) {
-        groupNumber = lastFilledS.filled + dElectrons.filled;
-      }
-
+      if (dElectrons) groupNumber = lastFilledS.filled + dElectrons.filled;
       document.getElementById("periodInfo").innerText = period;
       document.getElementById("groupInfo").innerText = `${groupRoman} ή ${groupNumber}`;
     }
 
     function toRoman(num) {
-      const roman = {
-        M: 1000,
-        CM: 900,
-        D: 500,
-        CD: 400,
-        C: 100,
-        XC: 90,
-        L: 50,
-        XL: 40,
-        X: 10,
-        IX: 9,
-        V: 5,
-        IV: 4,
-        I: 1
-      };
+      const roman = { M: 1000, CM: 900, D: 500, CD: 400, C: 100, XC: 90, L: 50, XL: 40, X: 10, IX: 9, V: 5, IV: 4, I: 1 };
       let str = '';
       for (let i of Object.keys(roman)) {
         let q = Math.floor(num / roman[i]);
