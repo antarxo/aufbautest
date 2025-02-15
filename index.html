@@ -10,17 +10,17 @@
     canvas { display: block; margin: auto; }
     button { margin: 5px; }
     #infoTable {
-      margin-top: 20px;
-      font-size: 14px;
+      margin-top: 10px;
+      font-size: 12px;
       font-weight: normal;
       border-collapse: collapse;
-      width: 50%;
+      width: 40%;
       margin-left: auto;
       margin-right: auto;
     }
     #infoTable th, #infoTable td {
       border: 1px solid black;
-      padding: 8px;
+      padding: 6px;
       text-align: center;
     }
     #infoTable th {
@@ -31,7 +31,7 @@
 <body>
   <h1>Σχήμα aufbau</h1>
   <label for="atomicNumber">Z=</label>
-  <input type="number" id="atomicNumber" min="1" max="118" value="1">
+  <input type="number" id="atomicNumber" min="1" max="118" value="1" style="width: 50px;">
   <button onclick="startFilling()">Έναρξη</button>
   <button onclick="resetDiagram()">Reset</button>
   <div id="elementInfo"></div>
@@ -62,11 +62,11 @@
     ];
 
     const maxElectrons = { "s": 2, "p": 6, "d": 10, "f": 14 };
-    const boxWidth = 60, boxHeight = 40, verticalSpacing = 45;
+    const boxWidth = 50, boxHeight = 30, verticalSpacing = 35;
     const horizontalGap = 5;
-    const canvasWidth = 800, canvasHeight = 500;
-    const leftMargin = 120;
-    const periodLabelWidth = 50;
+    const canvasWidth = 700, canvasHeight = 400;
+    const leftMargin = 100;
+    const periodLabelWidth = 40;
     const fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18];
 
     let positions = [];
@@ -77,7 +77,7 @@
 
     function setup() {
       createCanvas(canvasWidth, canvasHeight);
-      textSize(12);
+      textSize(10);
       textFont("Verdana");
       initColumnColors();
       calculatePositions();
@@ -103,7 +103,7 @@
 
     function calculatePositions() {
       positions = [];
-      let startY = 50;
+      let startY = 40;
       for (let i = 0; i < periods.length; i++) {
         let rowOrbitals = periods[i].orbitals;
         let startX = leftMargin + periodLabelWidth;
@@ -126,10 +126,10 @@
 
       textAlign(RIGHT, CENTER);
       fill(0);
-      textSize(14);
+      textSize(12);
       textStyle(BOLD);
       for (let i = 0; i < periods.length; i++) {
-        let y = 50 + i * verticalSpacing;
+        let y = 40 + i * verticalSpacing;
         if (periodElectrons[i] > 0) {
           text(periods[i].label + " (" + periodElectrons[i] + ")", leftMargin - 10, y);
         } else {
@@ -137,7 +137,7 @@
         }
       }
       textStyle(NORMAL);
-      textSize(12);
+      textSize(10);
     }
 
     function drawOrbitals() {
@@ -164,7 +164,7 @@
 
           text(label, pos.x - labelWidth / 4, pos.y);
 
-          textSize(10);
+          textSize(8);
           textStyle(BOLD);
 
           if (pos.isGray) {
@@ -179,10 +179,10 @@
             fill(255, 165, 0);
           }
 
-          text(exponent, pos.x + labelWidth / 4, pos.y - 8); // Move exponent 3 pixels higher
+          text(exponent, pos.x + labelWidth / 4, pos.y - 6); // Move exponent 3 pixels higher
           fill(0);
           textStyle(NORMAL);
-          textSize(12);
+          textSize(10);
         } else {
           text(pos.label, pos.x, pos.y);
         }
@@ -200,8 +200,8 @@
         let pos1 = positions[idx1];
         let pos2 = positions[idx2];
         if (pos2.y > pos1.y) {
-          let startOffset = 13;
-          let endOffset = 13;
+          let startOffset = 10;
+          let endOffset = 10;
 
           let x1 = pos1.x + boxWidth / 2;
           let y1 = pos1.y - boxHeight / 2 + startOffset;
@@ -232,8 +232,8 @@
         let pos1 = positions[idx1];
         let pos2 = positions[idx2];
         if (pos2.y > pos1.y) {
-          let startOffset = 13;
-          let endOffset = 13;
+          let startOffset = 10;
+          let endOffset = 10;
 
           let x1 = pos1.x + boxWidth / 2;
           let y1 = pos1.y - boxHeight / 2 + startOffset;
@@ -251,7 +251,7 @@
       push();
       translate(x2, y2);
       rotate(angle);
-      let arrowSize = 7;
+      let arrowSize = 5;
       triangle(0, 0, -arrowSize, arrowSize / 2, -arrowSize, -arrowSize / 2);
       pop();
     }
