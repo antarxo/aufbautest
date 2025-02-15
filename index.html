@@ -16,7 +16,6 @@
       margin: 20px auto; 
       border: 2px solid #4CAF50;
       border-radius: 10px;
-      margin-left: 100px; /* Αριστερό περιθώριο 100px */
     }
     button { 
       margin: 10px; 
@@ -104,7 +103,6 @@
     const horizontalGap = 5;
     const canvasWidth = 420; // Αλλαγή πλάτους καμβά σε 420px
     const canvasHeight = 400; // Μείωση του πλάτους του καμβά
-    const leftMargin = 100; // Αριστερό περιθώριο 100px
     const periodLabelWidth = 50;
     const fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18];
     const exceptions = {
@@ -119,7 +117,7 @@
     let electronCounter = 0;
 
     function setup() {
-      createCanvas(canvasWidth, canvasHeight);
+      createCanvas(canvasWidth, canvasHeight).parent('canvasContainer');
       textSize(12);
       textFont("Verdana");
       initColumnColors();
@@ -148,7 +146,7 @@
       let startY = 50;
       for (let i = 0; i < periods.length; i++) {
         let rowOrbitals = periods[i].orbitals;
-        let startX = leftMargin + periodLabelWidth;
+        let startX = periodLabelWidth;
         let y = startY + i * verticalSpacing;
         for (let j = 0; j < rowOrbitals.length; j++) {
           let x = startX + j * (boxWidth + horizontalGap);
@@ -181,7 +179,7 @@
       for (let i = 0; i < periods.length; i++) {
         let y = 50 + i * verticalSpacing;
         const electrons = periodElectrons[i];
-        text(`${periods[i].label}${electrons > 0 ? ` (${electrons})` : ''}`, leftMargin - 10, y + 17); // Κατέβασμα των ονομάτων των στιβάδων κατά 2px ακόμα
+        text(`${periods[i].label}${electrons > 0 ? ` (${electrons})` : ''}`, periodLabelWidth - 10, y + 17); // Κατέβασμα των ονομάτων των στιβάδων κατά 2px ακόμα
       }
       textStyle(NORMAL);
     }
@@ -362,15 +360,25 @@
 
     function predictGroup(valence) {
       let group = '-';
-      if (valence.type === 's') {
-        group = `${toRoman(valence.actualElectrons)}A ή ${valence.actualElectrons}`;
-      } else if (valence.type === 'p') {
-        const sElectrons = positions.find(p => p.label === `${parseInt(valence.label)}s`).actualElectrons;
-        group = `${toRoman(sElectrons + valence.actualElectrons)}A ή ${sElectrons + valence.actualElectrons}`;
+      const sElectrons = positions.filter(p => p.type === 's' && parseInt(p.label) === parseInt(valence.label)).reduce((sum, p) => sum + p.actualElectrons, 0);
+      const pElectrons = positions.filter(p => p.type === 'p' && parseInt(p.label) === parseInt(valence.label)).reduce((sum, p) => sum + p.actualElectrons, 0);
+      const dElectrons = positions.filter(p => p.type === 'd' && parseInt(p.label) === parseInt(valence.label) - 1).reduce((sum, p) => sum + p.actualElectrons, 0);
+
+      if (valence.type === 's' || valence.type === 'p') {
+        group = `${toRoman(sElectrons + pElectrons)}A ή ${sElectrons + pElectrons}`;
       } else if (valence.type === 'd') {
-        const sElectrons = positions.find(p => p.label === `${parseInt(valence.label) + 1}s`).actualElectrons;
-        group = `${toRoman(sElectrons + valence.actualElectrons)}B ή ${sElectrons + valence.actualElectrons}`;
+        const totalElectrons = sElectrons + dElectrons;
+        if (totalElectrons === 8) {
+          group = `VIIIB ή 8`;
+        } else if (dElectrons === 9) {
+          group = `IB ή 11`;
+        } else if (dElectrons === 10) {
+          group = `IIB ή 12`;
+        } else {
+          group = `${toRoman(totalElectrons)}B ή ${totalElectrons}`;
+        }
       }
+
       return group;
     }
 
@@ -400,5 +408,6 @@
       redraw();
     }
   </script>
+  <div id="canvasContainer"></div>
 </body>
 </html>
