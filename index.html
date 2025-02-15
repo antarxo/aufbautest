@@ -169,7 +169,7 @@
           else if (label.endsWith("p")) fill(0, 100, 0); // Σκούρο πράσινο για τα τροχιακά p
           else if (label.endsWith("d")) fill(0, 0, 255);
           else if (label.endsWith("f")) fill(255, 165, 0);
-          text(exponent, pos.x + labelWidth / 4, pos.y - 8);
+          text(exponent, pos.x + labelWidth / 4, pos.y); // Κανονική εμφάνιση εκθετών
           fill(0);
           textStyle(NORMAL);
           textSize(12);
@@ -260,7 +260,7 @@
         orbital.filled = fillAmount;
         remaining -= fillAmount;
         if (fillAmount > 0) {
-          electronConfig.push(`${orbital.label}${fillAmount > 1 ? `⁰${fillAmount}` : ''}`);
+          electronConfig.push(`${orbital.label}${fillAmount}`);
         }
         if (remaining <= 0) break;
       }
