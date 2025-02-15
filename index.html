@@ -6,30 +6,48 @@
   <title>Κανόνας Aufbau</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <style>
-    body { text-align: center; font-family: Verdana, sans-serif; line-height: 1.2; }
-    canvas { display: block; margin: auto; }
-    button { margin: 5px; padding: 5px 10px; font-size: 12px; }
+    body { 
+      text-align: center; 
+      font-family: Verdana, sans-serif; 
+      background-color: #f0f8ff;
+    }
+    canvas { 
+      display: block; 
+      margin: 20px auto; 
+      border: 2px solid #4CAF50;
+      border-radius: 10px;
+    }
+    button { 
+      margin: 10px; 
+      padding: 10px 20px; 
+      background-color: #4CAF50; 
+      color: white; 
+      border: none; 
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
     #infoTable {
-      margin-top: 10px;
-      font-size: 12px;
-      font-weight: normal;
+      margin: 30px auto;
       border-collapse: collapse;
-      width: 50%;
-      margin-left: auto;
-      margin-right: auto;
+      width: 60%;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      background-color: white;
     }
     #infoTable th, #infoTable td {
-      border: 1px solid black;
-      padding: 5px;
+      border: 2px solid #4CAF50;
+      padding: 15px;
       text-align: center;
     }
     #infoTable th {
-      background-color: #f2f2f2;
-      font-weight: bold;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 18px;
     }
-    .instructions {
-      font-size: 12px;
-      color: #777;
+    #infoTable td {
+      font-size: 16px;
     }
     .element-symbol {
       font-size: 24px;
@@ -47,33 +65,26 @@
   </style>
 </head>
 <body>
-  <h1>Κανόνας Aufbau <span id="elementSymbol" class="element-symbol" data-z=""></span></h1>
-  <div>
-    <label for="atomicNumber">Z:</label>
-    <input type="number" id="atomicNumber" min="1" max="118" value="1">
-    <button onclick="startFilling()">Έναρξη</button>
-    <button onclick="resetDiagram()">Reset</button>
-  </div>
-  <div id="elementInfo"></div>
+  <h1 style="color: #2E8B57;">Κανόνας Aufbau <span id="elementSymbol" class="element-symbol" data-z=""></span></h1>
+  <label for="atomicNumber" style="font-size: 16px;">Z:</label>
+  <input type="number" id="atomicNumber" min="1" max="118" value="1" style="padding: 5px;">
+  <button onclick="startFilling()">Έναρξη</button>
+  <button onclick="resetDiagram()">Reset</button>
+
   <table id="infoTable">
     <tr>
-      <td>Περίοδος και Ομάδα</td>
-      <td id="periodGroupInfo"></td>
+      <th colspan="2">Περίοδος: <span id="periodValue">-</span> | Ομάδα: <span id="groupValue">-</span></th>
     </tr>
     <tr>
-      <td>Αρχική διαμόρφωση</td>
-      <td id="initialConfigInfo"></td>
+      <td><strong>Αρχική Διαμόρφωση</strong></td>
+      <td id="initialConfig">-</td>
     </tr>
     <tr>
-      <td>Τελική διαμόρφωση</td>
-      <td id="electronConfigInfo"></td>
-    </tr>
-    <tr>
-      <td colspan="2" class="instructions">
-        Οδηγίες: Εισάγετε τον ατομικό αριθμό του στοιχείου και πατήστε "Έναρξη" για να δείτε την ηλεκτρονική διαμόρφωση και το διάγραμμα. Πατήστε "Reset" για να επαναφέρετε το διάγραμμα.
-      </td>
+      <td><strong>Τελική Διαμόρφωση</strong></td>
+      <td id="finalConfig">-</td>
     </tr>
   </table>
+
   <script>
     const periods = [
       { label: "K", orbitals: ["1s"] },
@@ -84,24 +95,24 @@
       { label: "P", orbitals: ["6s", "6p", "6d"] },
       { label: "Q", orbitals: ["7s", "7p"] }
     ];
+
     const maxElectrons = { "s": 2, "p": 6, "d": 10, "f": 14 };
     const boxWidth = 60, boxHeight = 40, verticalSpacing = 45;
     const horizontalGap = 5;
-    const canvasWidth = 600, canvasHeight = 500;
+    const canvasWidth = 800, canvasHeight = 500;
     const leftMargin = 120;
     const periodLabelWidth = 50;
-    const fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18];
-    let positions = [], columnColors = [], lastFilledS = null, lastFilledP = null, lastPeriod = -1;
+    const fillOrder = [0,1,2,3,4,7,5,8,6,9,10,14,11,15,12,16,13,17,18]; // Σωστή σειρά
+    const exceptions = {
+      24: { from: "4s", to: "3d", amount: 1 },  // Cr
+      29: { from: "4s", to: "3d", amount: 1 },  // Cu
+      47: { from: "5s", to: "4d", amount: 1 },  // Ag
+      79: { from: "6s", to: "5d", amount: 1 }   // Au
+    };
 
-    const elementSymbols = [
-      "H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar",
-      "K", "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As", "Se", "Br", "Kr",
-      "Rb", "Sr", "Y", "Zr", "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Ag", "Cd", "In", "Sn", "Sb", "Te", "I", "Xe",
-      "Cs", "Ba", "La", "Ce", "Pr", "Nd", "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm", "Yb", "Lu",
-      "Hf", "Ta", "W", "Re", "Os", "Ir", "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Po", "At", "Rn",
-      "Fr", "Ra", "Ac", "Th", "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No", "Lr",
-      "Rf", "Db", "Sg", "Bh", "Hs", "Mt", "Ds", "Rg", "Cn", "Nh", "Fl", "Mc", "Lv", "Ts", "Og"
-    ];
+    let positions = [];
+    let columnColors = [];
+    let electronCounter = 0;
 
     function setup() {
       createCanvas(canvasWidth, canvasHeight);
@@ -121,8 +132,10 @@
 
     function initColumnColors() {
       columnColors = [
-        color("#FFCDD2"), color("#C8E6C9"), color("#BBDEFB"),
-        color("#FFF9C4"), color("#D1C4E9")
+        color("#FFCDD2"), // s
+        color("#C8E6C9"), // p
+        color("#BBDEFB"), // d
+        color("#FFF9C4")  // f
       ];
     }
 
@@ -135,108 +148,94 @@
         let y = startY + i * verticalSpacing;
         for (let j = 0; j < rowOrbitals.length; j++) {
           let x = startX + j * (boxWidth + horizontalGap);
-          positions.push({ x: x, y: y, label: rowOrbitals[j], filled: 0, col: j });
+          positions.push({ 
+            x: x, y: y, 
+            label: rowOrbitals[j],
+            type: rowOrbitals[j].slice(-1),
+            filled: 0,
+            col: j,
+            isGray: false,
+            actualElectrons: 0
+          });
         }
       }
     }
 
     function drawPeriodLabels() {
-      let periodElectrons = new Array(periods.length).fill(0);
-      for (let pos of positions) {
-        let periodIndex = periods.findIndex(p => p.orbitals.includes(pos.label));
-        if (periodIndex !== -1) periodElectrons[periodIndex] += pos.filled;
-      }
       textAlign(RIGHT, CENTER);
       fill(0);
       textSize(14);
       textStyle(BOLD);
+      
+      // Υπολογισμός ηλεκτρονίων ανά περίοδο
+      const periodElectrons = new Array(periods.length).fill(0);
+      positions.forEach(pos => {
+        const periodIndex = periods.findIndex(p => p.orbitals.includes(pos.label));
+        if (periodIndex !== -1) periodElectrons[periodIndex] += pos.actualElectrons;
+      });
+
       for (let i = 0; i < periods.length; i++) {
         let y = 50 + i * verticalSpacing;
-        text(periods[i].label + (periodElectrons[i] > 0 ? " (" + periodElectrons[i] + ")" : ""), leftMargin - 10, y);
+        const electrons = periodElectrons[i];
+        text(`${periods[i].label}${electrons > 0 ? ` (${electrons})` : ''}`, leftMargin - 10, y);
       }
       textStyle(NORMAL);
-      textSize(12);
     }
 
     function drawOrbitals() {
       noStroke();
       textAlign(CENTER, CENTER);
-      for (let pos of positions) {
-        let colIndex = pos.col;
-        let colColor = columnColors[colIndex % columnColors.length];
-        if (pos.isGray) colColor = color(200);
-        fill(colColor);
-        rectMode(CENTER);
+      positions.forEach(pos => {
+        fill(pos.isGray ? 200 : columnColors[pos.col]);
         rect(pos.x, pos.y, boxWidth, boxHeight);
+        
+        // Κύριο label
         fill(0);
-        if (pos.filled > 0) {
-          let label = pos.label;
-          let exponent = pos.filled;
-          let labelWidth = textWidth(label);
-          text(label, pos.x - labelWidth / 4, pos.y);
-          textSize(10);
-          textStyle(BOLD);
-          if (pos.isGray) fill(0);
-          else if (label.endsWith("s")) fill(255, 0, 0);
-          else if (label.endsWith("p")) fill(0, 100, 0);
-          else if (label.endsWith("d")) fill(0, 0, 255);
-          else if (label.endsWith("f")) fill(255, 165, 0);
-          text(exponent, pos.x + labelWidth / 4, pos.y - 8);
-          fill(0);
-          textStyle(NORMAL);
-          textSize(12);
-        } else {
-          text(pos.label, pos.x, pos.y);
+        text(pos.label, pos.x + boxWidth/2, pos.y + boxHeight/2 - 5);
+        
+        // Εκθέτης (μαύρος σε γκρί ορθογώνια)
+        if(pos.actualElectrons > 0) {
+          textSize(14);
+          fill(pos.isGray ? 0 : {
+            's': color(255,0,0),
+            'p': color(0,100,0),
+            'd': color(0,0,255),
+            'f': color(255,165,0)
+          }[pos.type]);
+          text(numberToExponent(pos.actualElectrons), pos.x + boxWidth - 15, pos.y + 10);
         }
-      }
+      });
     }
 
     function drawArrows() {
-      let grayArrowColor = color(150, 150, 150);
-      stroke(grayArrowColor);
+      // Γκρίζα βέλη (θεωρητική σειρά)
+      stroke(150);
       strokeWeight(2);
-      drawingContext.setLineDash([5, 5]);
-      for (let i = 0; i < fillOrder.length - 1; i++) {
-        let idx1 = fillOrder[i];
-        let idx2 = fillOrder[i + 1];
-        let pos1 = positions[idx1];
-        let pos2 = positions[idx2];
-        if (pos2.y > pos1.y) {
-          let startOffset = 13;
-          let endOffset = 13;
-          let x1 = pos1.x + boxWidth / 2;
-          let y1 = pos1.y - boxHeight / 2 + startOffset;
-          let x2 = pos2.x + boxWidth / 2;
-          let y2 = pos2.y - boxHeight / 2 + endOffset;
-          drawArrow(x1, y1, x2, y2);
-        }
+      drawingContext.setLineDash([5,5]);
+      for(let i=0; i<fillOrder.length-1; i++) {
+        let from = positions[fillOrder[i]];
+        let to = positions[fillOrder[i+1]];
+        drawArrow(
+          from.x + boxWidth - 10,
+          from.y + 10,
+          to.x + boxWidth - 10,
+          to.y + 10
+        );
       }
+      
+      // Κόκκινα βέλη (πραγματική συμπλήρωση)
+      stroke(255,0,0);
       drawingContext.setLineDash([]);
-      let redArrowColor = color(255, 0, 0);
-      stroke(redArrowColor);
-      strokeWeight(2);
-      let lastFilledIndex = -1;
-      for (let i = fillOrder.length - 1; i >= 0; i--) {
-        let idx = fillOrder[i];
-        if (positions[idx].filled > 0) {
-          lastFilledIndex = i;
-          break;
-        }
-      }
-      for (let i = 0; i < lastFilledIndex; i++) {
-        let idx1 = fillOrder[i];
-        let idx2 = fillOrder[i + 1];
-        let pos1 = positions[idx1];
-        let pos2 = positions[idx2];
-        if (pos2.y > pos1.y) {
-          let startOffset = 13;
-          let endOffset = 13;
-          let x1 = pos1.x + boxWidth / 2;
-          let y1 = pos1.y - boxHeight / 2 + startOffset;
-          let x2 = pos2.x + boxWidth / 2;
-          let y2 = pos2.y - boxHeight / 2 + endOffset;
-          drawArrow(x1, y1, x2, y2);
-        }
+      let lastFilled = positions.findIndex(p => p.actualElectrons > 0);
+      for(let i=0; i<lastFilled; i++) {
+        let from = positions[fillOrder[i]];
+        let to = positions[fillOrder[i+1]];
+        drawArrow(
+          from.x + boxWidth - 10,
+          from.y + 10,
+          to.x + boxWidth - 10,
+          to.y + 10
+        );
       }
     }
 
@@ -247,115 +246,109 @@
       translate(x2, y2);
       rotate(angle);
       let arrowSize = 7;
-      triangle(0, 0, -arrowSize, arrowSize / 2, -arrowSize, -arrowSize / 2);
+      triangle(-arrowSize, arrowSize/2, -arrowSize, -arrowSize/2, 0, 0);
       pop();
     }
 
     function startFilling() {
-      for (let pos of positions) {
-        pos.filled = 0;
-        pos.isGray = false;
-      }
-      lastFilledS = null;
-      lastFilledP = null;
-      lastPeriod = -1;
-      let atomicNumber = parseInt(document.getElementById("atomicNumber").value);
-      let remaining = atomicNumber;
-      let electronConfig = [];
-      for (let i = 0; i < fillOrder.length; i++) {
-        let idx = fillOrder[i];
-        let orbital = positions[idx];
-        let orbType = orbital.label.slice(-1);
-        let periodNumber = parseInt(orbital.label.slice(0, -1));
-        let capacity = maxElectrons[orbType] || 2;
-        let fillAmount = Math.min(remaining, capacity);
-        orbital.filled = fillAmount;
-        remaining -= fillAmount;
-        if (fillAmount > 0) {
-          electronConfig.push(`${orbital}${fillAmount}`);
-        }
-        if (remaining <= 0) break;
-      }
-      document.getElementById("electronConfigInfo").innerText = electronConfig.join(", ");
-      document.getElementById("elementSymbol").innerText = elementSymbols[atomicNumber - 1] || "Άγνωστο";
-      document.getElementById("elementSymbol").setAttribute("data-z", atomicNumber);
+      resetDiagram();
+      const Z = parseInt(document.getElementById("atomicNumber").value);
+      electronCounter = Z;
 
-      let initialConfig = electronConfig.map(config => {
-        let [orbital, count] = config.split(/(\d+)/);
-        return `${orbital}<sup>${count}</sup>`;
-      }).join(" ");
-      document.getElementById("initialConfigInfo").innerHTML = initialConfig;
+      // Κανονικό γέμισμα (Aufbau)
+      fillOrder.forEach(idx => {
+        const orb = positions[idx];
+        const capacity = maxElectrons[orb.type];
+        const fill = Math.min(electronCounter, capacity);
+        orb.filled = fill;
+        electronCounter -= fill;
+      });
 
-      let sortedConfig = electronConfig.slice().sort((a, b) => {
-        let aLayer = parseInt(a.match(/\d+/)[0]);
-        let bLayer = parseInt(b.match(/\d+/)[0]);
-        return aLayer - bLayer;
-      }).map(config => {
-        let [orbital, count] = config.split(/(\d+)/);
-        return `${orbital}<sup>${count}</sup>`;
-      }).join(" ");
-      document.getElementById("electronConfigInfo").innerHTML = sortedConfig;
+      // Αντιγραφή για αρχική διαμόρφωση
+      positions.forEach(p => p.actualElectrons = p.filled);
 
-      let outermostPeriod = Math.max(...positions.filter(p => p.filled > 0).map(p => parseInt(p.label.slice(0, -1))));
-      if (outermostPeriod !== -1) {
-        let lastPeriodOrbitals = positions.filter(p => parseInt(p.label.slice(0, -1)) === outermostPeriod);
-        lastFilledS = lastPeriodOrbitals.find(o => o.label.endsWith("s") && o.filled > 0);
-        lastFilledP = lastPeriodOrbitals.find(o => o.label.endsWith("p") && o.filled > 0);
-        if (lastFilledP) {
-          positions.forEach(pos => {
-            if (parseInt(pos.label.slice(0, -1)) === outermostPeriod && (pos.label.endsWith("s") || pos.label.endsWith("p"))) {
-              pos.isGray = true;
-            }
-          });
-        } else if (lastFilledS) {
-          let pos = positions.find(p => p.label === lastFilledS.label);
-          if (pos) pos.isGray = true;
+      // Εφαρμογή εξαιρέσεων
+      if(exceptions[Z]) {
+        const {from, to, amount} = exceptions[Z];
+        const fromOrb = positions.find(p => p.label === from);
+        const toOrb = positions.find(p => p.label === to);
+        if(fromOrb && toOrb) {
+          fromOrb.actualElectrons -= amount;
+          toOrb.actualElectrons += amount;
         }
       }
-      predictElementPosition(outermostPeriod, lastFilledS, lastFilledP);
+
+      // Γκρίζα ορθογώνια εξωτερικής στιβάδας
+      markOuterShell();
+      updateDisplay();
       redraw();
     }
 
-    function predictElementPosition(period, lastFilledS, lastFilledP) {
-      let groupRoman = '';
-      let groupNumber = 0;
+    function markOuterShell() {
+      const filled = positions.filter(p => p.actualElectrons > 0);
+      const maxPeriod = Math.max(...filled.map(p => parseInt(p.label)));
+      const lastOrbType = filled[filled.length-1].type;
       
-      if (lastFilledP && lastFilledP.filled) {
-        const group = lastFilledS.filled + lastFilledP.filled;
-        groupRoman = toRoman(group) + 'A';
-        groupNumber = 12 + lastFilledP.filled;
-      } else if (lastFilledS && lastFilledS.filled) {
-        groupRoman = toRoman(lastFilledS.filled) + 'A';
-        groupNumber = lastFilledS.filled;
-      }
-      
-      document.getElementById("periodGroupInfo").innerText = `Περίοδος: ${period || '-'} | Ομάδα: ${groupRoman} ή ${groupNumber}`;
+      positions.forEach(pos => {
+        const currentPeriod = parseInt(pos.label);
+        pos.isGray = (currentPeriod === maxPeriod) && 
+                     ((lastOrbType === 'p' && (pos.type === 's' || pos.type === 'p')) ||
+                      (lastOrbType === 's' && pos.type === 's'));
+      });
     }
 
-    function toRoman(num) {
-      const roman = { M: 1000, CM: 900, D: 500, CD: 400, C: 100, XC: 90, L: 50, XL: 40, X: 10, IX: 9, V: 5, IV: 4, I: 1 };
-      let str = '';
-      for (let i of Object.keys(roman)) {
-        let q = Math.floor(num / roman[i]);
-        num -= q * roman[i];
-        str += i.repeat(q);
-      }
-      return str;
+    function numberToExponent(num) {
+      const exponents = ['⁰','¹','²','³','⁴','⁵','⁶','⁷','⁸','⁹'];
+      return num.toString().split('').map(d => exponents[d]).join('');
+    }
+
+    function updateDisplay() {
+      // Αρχική διαμόρφωση
+      const initial = positions
+        .filter(p => p.filled > 0)
+        .sort((a,b) => a.label.localeCompare(b.label, undefined, {numeric: true}))
+        .map(p => `${p.label}${numberToExponent(p.filled)}`);
+      
+      // Τελική διαμόρφωση
+      const final = positions
+        .filter(p => p.actualElectrons > 0)
+        .sort((a,b) => a.label.localeCompare(b.label, undefined, {numeric: true}))
+        .map(p => `${p.label}${numberToExponent(p.actualElectrons)}`);
+
+      document.getElementById("initialConfig").textContent = initial.join(" ");
+      document.getElementById("finalConfig").textContent = final.join(" ");
+
+      // Περίοδος και Ομάδα
+      updatePeriodGroup();
+    }
+
+    function updatePeriodGroup() {
+      const filled = positions.filter(p => p.actualElectrons > 0);
+      const valence = filled[filled.length-1];
+      
+      // Περίοδος
+      const period = Math.max(...filled.map(p => parseInt(p.label)));
+      document.getElementById("periodValue").textContent = period;
+
+      // Ομάδα
+      let group = '-';
+      if(valence.type === 's') group = `${valence.actualElectrons}A ή ${valence.actualElectrons}`;
+      else if(valence.type === 'p') group = `${valence.actualElectrons + 10}A ή ${valence.actualElectrons + 12}`;
+      else if(valence.type === 'd') group = `${valence.actualElectrons}B ή ${valence.actualElectrons + (valence.actualElectrons >= 10 ? 1 : 0)}`;
+      
+      document.getElementById("groupValue").textContent = group;
     }
 
     function resetDiagram() {
-      for (let pos of positions) {
-        pos.filled = 0;
-        pos.isGray = false;
-      }
-      lastFilledS = null;
-      lastFilledP = null;
-      document.getElementById("atomicNumber").value = 1;
-      document.getElementById("electronConfigInfo").innerText = '';
-      document.getElementById("initialConfigInfo").innerText = '';
-      document.getElementById("periodGroupInfo").innerText = '';
-      document.getElementById("elementSymbol").innerText = '';
-      document.getElementById("elementSymbol").setAttribute("data-z", '');
+      positions.forEach(p => {
+        p.filled = 0;
+        p.actualElectrons = 0;
+        p.isGray = false;
+      });
+      document.getElementById("periodValue").textContent = '-';
+      document.getElementById("groupValue").textContent = '-';
+      document.getElementById("initialConfig").textContent = '-';
+      document.getElementById("finalConfig").textContent = '-';
       redraw();
     }
   </script>
