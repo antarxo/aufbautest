@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aufbau</title>
+  <title>Κανόνας Aufbau</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <style>
     body { text-align: center; font-family: Verdana, sans-serif; }
@@ -26,23 +26,17 @@
     #infoTable th {
       background-color: #f2f2f2;
     }
-    .explanation {
-      margin-top: 20px;
-      font-size: 14px;
-      color: #555;
-    }
     .instructions {
-      margin-top: 20px;
       font-size: 12px;
       color: #777;
     }
   </style>
 </head>
 <body>
-  <h1>Aufbau</h1>
-  <label for="atomicNumber">Ατομικός Αριθμός:</label>
+  <h1>Κανόνας Aufbau</h1>
+  <label for="atomicNumber">Z:</label>
   <input type="number" id="atomicNumber" min="1" max="118" value="1">
-  <button onclick="startFilling()">Ξεκίνα Δόμηση</button>
+  <button onclick="startFilling()">Έναρξη</button>
   <button onclick="resetDiagram()">Reset</button>
   <div id="elementInfo"></div>
   <table id="infoTable">
@@ -66,13 +60,12 @@
       <td>Τελική διαμόρφωση</td>
       <td id="electronConfigInfo"></td>
     </tr>
+    <tr>
+      <td colspan="2" class="instructions">
+        Οδηγίες: Εισάγετε τον ατομικό αριθμό του στοιχείου και πατήστε "Έναρξη" για να δείτε την ηλεκτρονική διαμόρφωση και το διάγραμμα. Πατήστε "Reset" για να επαναφέρετε το διάγραμμα.
+      </td>
+    </tr>
   </table>
-  <div class="explanation">
-    <p>Το διάγραμμα αυτό ακολουθεί την αρχή του Aufbau για την ηλεκτρονική δόμηση των ατόμων. Εισάγετε τον ατομικό αριθμό και κάντε κλικ στο "Ξεκίνα Δόμηση" για να δείτε την ηλεκτρονική διαμόρφωση και το διάγραμμα.</p>
-  </div>
-  <div class="instructions">
-    <p>Οδηγίες: Εισάγετε τον ατομικό αριθμό του στοιχείου και πατήστε "Ξεκίνα Δόμηση" για να δείτε την ηλεκτρονική διαμόρφωση και το διάγραμμα. Πατήστε "Reset" για να επαναφέρετε το διάγραμμα.</p>
-  </div>
   <script>
     const periods = [
       { label: "K", orbitals: ["1s"] },
