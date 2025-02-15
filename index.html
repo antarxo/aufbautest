@@ -112,6 +112,16 @@
       79: { from: "6s", to: "5d", amount: 1 }   // Au
     };
 
+    const elementSymbols = [
+      "H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar",
+      "K", "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As", "Se", "Br", "Kr",
+      "Rb", "Sr", "Y", "Zr", "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Ag", "Cd", "In", "Sn", "Sb", "Te", "I", "Xe",
+      "Cs", "Ba", "La", "Ce", "Pr", "Nd", "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm", "Yb", "Lu",
+      "Hf", "Ta", "W", "Re", "Os", "Ir", "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Po", "At", "Rn",
+      "Fr", "Ra", "Ac", "Th", "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No", "Lr",
+      "Rf", "Db", "Sg", "Bh", "Hs", "Mt", "Ds", "Rg", "Cn", "Nh", "Fl", "Mc", "Lv", "Ts", "Og"
+    ];
+
     let positions = [];
     let columnColors = [];
     let electronCounter = 0;
@@ -219,10 +229,10 @@
         let to = positions[fillOrder[i+1]];
         if (to.y > from.y) {
           drawArrow(
-            from.x + boxWidth / 2,
-            from.y + boxHeight / 2,
-            to.x + boxWidth / 2,
-            to.y - boxHeight / 2
+            from.x + boxWidth - 10,
+            from.y + 10,
+            to.x + boxWidth - 10,
+            to.y + 10
           );
         }
       }
@@ -243,10 +253,10 @@
         let to = positions[fillOrder[i+1]];
         if (to.y > from.y) {
           drawArrow(
-            from.x + boxWidth / 2,
-            from.y + boxHeight / 2,
-            to.x + boxWidth / 2,
-            to.y - boxHeight / 2
+            from.x + boxWidth - 10,
+            from.y + 10,
+            to.x + boxWidth - 10,
+            to.y + 10
           );
         }
       }
@@ -345,11 +355,22 @@
 
       // Ομάδα
       let group = '-';
-      if(valence.type === 's') group = `${valence.actualElectrons}A ή ${valence.actualElectrons}`;
-      else if(valence.type === 'p') group = `${valence.actualElectrons + 10}A ή ${valence.actualElectrons + 12}`;
-      else if(valence.type === 'd') group = `${valence.actualElectrons}B ή ${valence.actualElectrons + (valence.actualElectrons >= 10 ? 1 : 0)}`;
+      if(valence.type === 's') group = `${toRoman(valence.actualElectrons)}A ή ${valence.actualElectrons}`;
+      else if(valence.type === 'p') group = `${toRoman(valence.actualElectrons + 10)}A ή ${valence.actualElectrons + 12}`;
+      else if(valence.type === 'd') group = `${toRoman(valence.actualElectrons)}B ή ${valence.actualElectrons + (valence.actualElectrons >= 10 ? 1 : 0)}`;
       
       document.getElementById("groupValue").textContent = group;
+    }
+
+    function toRoman(num) {
+      const roman = { M: 1000, CM: 900, D: 500, CD: 400, C: 100, XC: 90, L: 50, XL: 40, X: 10, IX: 9, V: 5, IV: 4, I: 1 };
+      let str = '';
+      for (let i of Object.keys(roman)) {
+        let q = Math.floor(num / roman[i]);
+        num -= q * roman[i];
+        str += i.repeat(q);
+      }
+      return str;
     }
 
     function resetDiagram() {
@@ -362,6 +383,8 @@
       document.getElementById("groupValue").textContent = '-';
       document.getElementById("initialConfig").textContent = '-';
       document.getElementById("finalConfig").textContent = '-';
+      document.getElementById("elementSymbol").textContent = '';
+      document.getElementById("elementSymbol").setAttribute("data-z", '');
       redraw();
     }
   </script>
