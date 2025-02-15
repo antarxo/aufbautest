@@ -41,12 +41,8 @@
   <div id="elementInfo"></div>
   <table id="infoTable">
     <tr>
-      <td>Περίοδος</td>
-      <td id="periodInfo"></td>
-    </tr>
-    <tr>
-      <td>Ομάδα</td>
-      <td id="groupInfo"></td>
+      <td>Περίοδος και Ομάδα</td>
+      <td id="periodGroupInfo"></td>
     </tr>
     <tr>
       <td>Σύμβολο Στοιχείου</td>
@@ -79,7 +75,7 @@
     const maxElectrons = { "s": 2, "p": 6, "d": 10, "f": 14 };
     const boxWidth = 60, boxHeight = 40, verticalSpacing = 45;
     const horizontalGap = 5;
-    const canvasWidth = 800, canvasHeight = 500;
+    const canvasWidth = 600, canvasHeight = 500;
     const leftMargin = 120;
     const periodLabelWidth = 50;
     const fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18];
@@ -321,8 +317,7 @@
         groupNumber = lastFilledS.filled;
       }
       
-      document.getElementById("periodInfo").innerText = period || '-';
-      document.getElementById("groupInfo").innerText = `${groupRoman} ή ${groupNumber}`;
+      document.getElementById("periodGroupInfo").innerText = `Περίοδος: ${period || '-'} | Ομάδα: ${groupRoman} ή ${groupNumber}`;
     }
 
     function toRoman(num) {
@@ -346,8 +341,7 @@
       document.getElementById("atomicNumber").value = 1;
       document.getElementById("electronConfigInfo").innerText = '';
       document.getElementById("initialConfigInfo").innerText = '';
-      document.getElementById("periodInfo").innerText = '';
-      document.getElementById("groupInfo").innerText = '';
+      document.getElementById("periodGroupInfo").innerText = '';
       document.getElementById("elementSymbol").innerText = '';
       redraw();
     }
