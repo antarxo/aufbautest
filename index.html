@@ -130,6 +130,7 @@
       drawPeriodLabels();
       drawOrbitals();
       drawArrows();
+      drawElementSymbol();
     }
 
     function initColumnColors() {
@@ -265,6 +266,16 @@
       pop();
     }
 
+    function drawElementSymbol() {
+      const elementSymbol = document.getElementById("elementSymbol").textContent;
+      const z = document.getElementById("elementSymbol").getAttribute("data-z");
+      textSize(24);
+      textStyle(BOLD);
+      fill(0);
+      text(`${z} ${elementSymbol}`, 20, 30);
+      textStyle(NORMAL);
+    }
+
     function startFilling() {
       resetDiagram();
       const Z = parseInt(document.getElementById("atomicNumber").value);
@@ -342,6 +353,7 @@
       updatePeriodGroup();
 
       // Σύμβολο στοιχείου και δείκτης
+      document.getElementById("elementSymbol").textContent = elementSymbols[Z - 1];
       document.getElementById("elementSymbol").setAttribute("data-z", Z);
     }
 
