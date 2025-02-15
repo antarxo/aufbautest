@@ -39,7 +39,7 @@
     <tr>
       <th>Περίοδος</th>
       <th>Ομάδα</th>
-      <th>Αρχικό aufbau</th>
+      <th>Ηλεκτρονιακή Δόμηση</th>
     </tr>
     <tr>
       <td id="periodInfo"></td>
@@ -348,8 +348,8 @@
         groupNumber = lastFilledS.filled + dElectrons.filled;
       }
 
-      document.getElementById("periodInfo").innerText = period;
-      document.getElementById("groupInfo").innerText = `${groupRoman} ή ${groupNumber}`;
+      document.getElementById("periodInfo").innerText = `Περίοδος: ${period}`;
+      document.getElementById("groupInfo").innerText = `Ομάδα: ${groupRoman} ή ${groupNumber}`;
     }
 
     function toRoman(num) {
