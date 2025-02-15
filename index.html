@@ -13,13 +13,12 @@
     }
     canvas { 
       display: block; 
-      margin: 20px auto; 
+      margin: 10px auto; /* Μείωση του κενού κάτω από τον τίτλο */
       border: 2px solid #4CAF50;
       border-radius: 10px;
-      margin-left: 120px; /* Αριστερό περιθώριο 120px */
     }
     button { 
-      margin: 10px; 
+      margin: 5px; /* Μείωση του κενού κάτω από τα κουμπιά */
       padding: 10px 20px; 
       background-color: #4CAF50; 
       color: white; 
@@ -31,9 +30,9 @@
       background-color: #45a049;
     }
     #infoTable {
-      margin: 20px auto;
+      margin: 10px auto; /* Μείωση του κενού κάτω από το κάτω πλαίσιο */
       border-collapse: collapse;
-      width: 420px; /* Αλλαγή πλάτους σε 420px */
+      width: 420px; /* Μείωση πλάτους σε 420px */
       box-shadow: 0 0 15px rgba(0,0,0,0.2);
       background-color: white;
     }
@@ -66,7 +65,7 @@
   </style>
 </head>
 <body>
-  <h1 style="color: #2E8B57;">Κανόνας Aufbau <span id="elementSymbol" class="element-symbol" data-z=""></span></h1>
+  <h1 style="color: #2E8B57; margin-bottom: 10px;">Κανόνας Aufbau <span id="elementSymbol" class="element-symbol" data-z=""></span></h1>
   <div>
     <label for="atomicNumber" style="font-size: 16px;">Z:</label>
     <input type="number" id="atomicNumber" min="1" max="118" value="1" style="padding: 5px;">
@@ -102,9 +101,9 @@
     const maxElectrons = { "s": 2, "p": 6, "d": 10, "f": 14 };
     const boxWidth = 60, boxHeight = 40, verticalSpacing = 45;
     const horizontalGap = 5;
-    const canvasWidth = 420; // Αλλαγή πλάτους καμβά σε 420px
-    const canvasHeight = 400; // Μείωση του πλάτους του καμβά
-    const leftMargin = 120; // Αριστερό περιθώριο 120px
+    const canvasWidth = 420; // Μείωση πλάτους καμβά σε 420px
+    const canvasHeight = 400;
+    const leftMargin = 100; // Μείωση του αριστερού περιθωρίου σε 100px
     const periodLabelWidth = 50;
     const fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18];
     const exceptions = {
