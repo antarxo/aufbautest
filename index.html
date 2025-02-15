@@ -266,40 +266,41 @@
       pop();
     }
 
-    function startFilling() {
-      resetDiagram();
-      const Z = parseInt(document.getElementById("atomicNumber").value);
-      electronCounter = Z;
+   function startFilling() {
+  resetDiagram();
+  const Z = parseInt(document.getElementById("atomicNumber").value);
+  electronCounter = Z;
 
-      // Κανονικό γέμισμα (Aufbau)
-      fillOrder.forEach(idx => {
-        const orb = positions[idx];
-        const capacity = maxElectrons[orb.type];
-        const fill = Math.min(electronCounter, capacity);
-        orb.filled = fill;
-        electronCounter -= fill;
-      });
+  // Κανονικό γέμισμα (Aufbau)
+  fillOrder.forEach(idx => {
+    const orb = positions[idx];
+    const capacity = maxElectrons[orb.type];
+    const fill = Math.min(electronCounter, capacity);
+    orb.filled = fill;
+    electronCounter -= fill;
+  });
 
-      // Αντιγραφή για αρχική διαμόρφωση
-      positions.forEach(p => p.actualElectrons = p.filled);
+  // Αντιγραφή για αρχική διαμόρφωση
+  positions.forEach(p => p.actualElectrons = p.filled);
 
-      // Εφαρμογή εξαιρέσεων
-      if(exceptions[Z]) {
-        const {from, to, amount} = exceptions[Z];
-        const fromOrb = positions.find(p => p.label === from);
-        const toOrb = positions.find(p => p.label === to);
-        if(fromOrb && toOrb) {
-          fromOrb.actualElectrons -= amount;
-          toOrb.actualElectrons += amount;
-        }
-      }
+  // Ενημέρωση της ομάδας πριν εφαρμοστούν οι εξαιρέσεις
+  updatePeriodGroup(Z);
 
-      // Γκρίζα ορθογώνια εξωτερικής στιβάδας
-      markOuterShell();
-      updateDisplay(Z);
-      redraw();
+  // Εφαρμογή εξαιρέσεων
+  if (exceptions[Z]) {
+    const { from, to, amount } = exceptions[Z];
+    const fromOrb = positions.find(p => p.label === from);
+    const toOrb = positions.find(p => p.label === to);
+    if (fromOrb && toOrb) {
+      fromOrb.actualElectrons -= amount;
+      toOrb.actualElectrons += amount;
     }
+  }
 
+  markOuterShell();
+  updateDisplay(Z);
+  redraw();
+}
     function markOuterShell() {
       const filled = positions.filter(p => p.actualElectrons > 0);
       const maxPeriod = Math.max(...filled.map(p => parseInt(p.label)));
@@ -360,40 +361,15 @@
       document.getElementById("groupValue").textContent = group;
     }
 
-    function predictGroup(valence, Z) {
-  let group = '-';
-  const currentPeriod = parseInt(valence.label);
+ function updatePeriodGroup(Z) {
+  const filled = positions.filter(p => p.filled > 0); // Χρησιμοποιούμε τον πίνακα της αρχικής διαμόρφωσης
+  const valence = filled[filled.length - 1];
 
-  // Χρησιμοποιούμε τον πίνακα της αρχικής διαμόρφωσης για τον υπολογισμό της ομάδας
-  const sElectrons = positions.find(p => 
-    p.type === 's' && parseInt(p.label) === currentPeriod
-  )?.filled || 0; // Χρησιμοποιούμε το `filled` (αρχική διαμόρφωση)
+  const period = Math.max(...filled.map(p => parseInt(p.label)));
+  document.getElementById("periodValue").textContent = period;
 
-  const dElectrons = positions.filter(p => 
-    p.type === 'd' && parseInt(p.label) === currentPeriod - 1
-  ).reduce((sum, p) => sum + p.filled, 0); // Χρησιμοποιούμε το `filled` (αρχική διαμόρφωση)
-
-  if (valence.type === 's') {
-    group = `${toRoman(sElectrons)}A ή ${sElectrons}`;
-  } 
-  else if (valence.type === 'p') {
-    const pElectrons = positions.filter(p => 
-      p.type === 'p' && parseInt(p.label) === currentPeriod
-    ).reduce((sum, p) => sum + p.filled, 0); // Χρησιμοποιούμε το `filled` (αρχική διαμόρφωση)
-    
-    group = `${toRoman(sElectrons + pElectrons)}A ή ${sElectrons + pElectrons + 10}`;
-  } 
-  else if (valence.type === 'd') {
-    const total = sElectrons + dElectrons;
-    
-    // Ειδικές περιπτώσεις για στοιχεία μετάπτωσης
-    if(total >= 8 && total <= 10) group = "VIIIB ή 8-10";
-    else if(total === 11) group = "IB ή 11";
-    else if(total === 12) group = "IIB ή 12";
-    else group = `${toRoman(total)}B ή ${total}`;
-  }
-
-  return group;
+  let group = predictGroup(valence, Z);
+  document.getElementById("groupValue").textContent = group;
 }
     function toRoman(num) {
       const roman = { M: 1000, CM: 900, D: 500, CD: 400, C: 100, XC: 90, L: 50, XL: 40, X: 10, IX: 9, V: 5, IV: 4, I: 1 };
