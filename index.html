@@ -321,7 +321,8 @@
 
     function updateDisplay(Z) {
       // Αρχική διαμόρφωση
-      const initial = positions
+      const initial = fillOrder
+        .map(idx => positions[idx])
         .filter(p => p.filled > 0)
         .map(p => `${p.label}${numberToExponent(p.filled)}`);
 
