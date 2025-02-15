@@ -101,8 +101,8 @@
     const maxElectrons = { "s": 2, "p": 6, "d": 10, "f": 14 };
     const boxWidth = 60, boxHeight = 40, verticalSpacing = 45;
     const horizontalGap = 5;
-    const canvasWidth = 800, canvasHeight = 400; // Μείωση του ύψους του καμβά
-    const leftMargin = 120;
+    const canvasWidth = 450, canvasHeight = 400; // Μείωση του πλάτους του καμβά
+    const leftMargin = 20; // Μείωση του αριστερού περιθωρίου
     const periodLabelWidth = 50;
     const fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18];
     const exceptions = {
@@ -189,7 +189,7 @@
       for (let i = 0; i < periods.length; i++) {
         let y = 50 + i * verticalSpacing;
         const electrons = periodElectrons[i];
-        text(`${periods[i].label}${electrons > 0 ? ` (${electrons})` : ''}`, leftMargin - 10, y + 15); // Κατέβασμα των ονομάτων των στιβάδων
+        text(`${periods[i].label}${electrons > 0 ? ` (${electrons})` : ''}`, leftMargin - 10, y + 17); // Κατέβασμα των ονομάτων των στιβάδων κατά 2px ακόμα
       }
       textStyle(NORMAL);
     }
@@ -208,6 +208,7 @@
         // Εκθέτης (μαύρος σε γκρί ορθογώνια)
         if(pos.actualElectrons > 0) {
           textSize(14);
+          textStyle(BOLD); // Κάνουμε τους εκθέτες έντονους
           fill(pos.isGray ? 0 : {
             's': color(255,0,0),
             'p': color(0,100,0),
@@ -215,6 +216,7 @@
             'f': color(255,165,0)
           }[pos.type]);
           text(numberToExponent(pos.actualElectrons), pos.x + boxWidth - 15, pos.y + 10); // Επαναφορά των εκθετών στην αρχική θέση
+          textStyle(NORMAL); // Επαναφορά του κανονικού στυλ
         }
       });
     }
