@@ -32,19 +32,21 @@
   <h1>Σχήμα aufbau</h1>
   <label for="atomicNumber">Z=</label>
   <input type="number" id="atomicNumber" min="1" max="118" value="1">
-  <button onclick="startFilling()">Ξεκίνα Δόμηση</button>
+  <button onclick="startFilling()">Έναρξη</button>
   <button onclick="resetDiagram()">Reset</button>
   <div id="elementInfo"></div>
   <table id="infoTable">
     <tr>
-      <th>Περίοδος</th>
-      <th>Ομάδα</th>
-      <th>Ηλεκτρονιακή Δόμηση</th>
+      <td>Περίοδος: <span id="periodInfo"></span></td>
+      <td>Ομάδα: <span id="groupInfo"></span></td>
     </tr>
     <tr>
-      <td id="periodInfo"></td>
-      <td id="groupInfo"></td>
+      <td>Αρχική διαμόρφωση</td>
       <td id="electronConfigInfo"></td>
+    </tr>
+    <tr>
+      <td>Τελική Διαμόρφωση</td>
+      <td id="finalConfigInfo"></td>
     </tr>
   </table>
 
@@ -348,8 +350,8 @@
         groupNumber = lastFilledS.filled + dElectrons.filled;
       }
 
-      document.getElementById("periodInfo").innerText = `Περίοδος: ${period}`;
-      document.getElementById("groupInfo").innerText = `Ομάδα: ${groupRoman} ή ${groupNumber}`;
+      document.getElementById("periodInfo").innerText = period;
+      document.getElementById("groupInfo").innerText = `${groupRoman} ή ${groupNumber}`;
     }
 
     function toRoman(num) {
@@ -390,6 +392,7 @@
       document.getElementById("electronConfigInfo").innerText = '';
       document.getElementById("periodInfo").innerText = '';
       document.getElementById("groupInfo").innerText = '';
+      document.getElementById("finalConfigInfo").innerText = '';
       redraw();
     }
   </script>
