@@ -294,6 +294,16 @@
       // Προβλέψεις για την ομάδα και την περίοδο
       predictElementPosition(lastFilledPeriod, lastFilledS, lastFilledP);
 
+      // Ταξινόμηση της ηλεκτρονιακής δόμησης κατά κύριο κβαντικό αριθμό
+      let sortedElectronConfig = electronConfig.slice().sort((a, b) => {
+        let aMainQuantumNumber = parseInt(a.match(/\d+/)[0]);
+        let bMainQuantumNumber = parseInt(b.match(/\d+/)[0]);
+        return aMainQuantumNumber - bMainQuantumNumber;
+      });
+
+      // Εμφάνιση της τελικής διαμόρφωσης
+      document.getElementById("finalConfigInfo").innerHTML = sortedElectronConfig.join(", ");
+
       // Χρώμα γκρι για τα τελευταία γεμισμένα s και p τροχιακά της εξωτερικής περιόδου
       let outermostPeriod = Math.max(...positions.filter(p => p.filled > 0).map(p => parseInt(p.label.slice(0, -1))));
       if (outermostPeriod !== -1) {
