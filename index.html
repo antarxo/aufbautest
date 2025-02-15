@@ -365,12 +365,7 @@
       const sElectrons = positions.filter(p => p.type === 's' && parseInt(p.label) === parseInt(valence.label)).reduce((sum, p) => sum + p.actualElectrons, 0);
       const pElectrons = positions.filter(p => p.type === 'p' && parseInt(p.label) === parseInt(valence.label)).reduce((sum, p) => sum + p.actualElectrons, 0);
       const dElectrons = positions.filter(p => p.type === 'd' && parseInt(p.label) === parseInt(valence.label) - 1).reduce((sum, p) => sum + p.actualElectrons, 0);
-
-      if (valence.type === 's') {
-        group = `${toRoman(sElectrons)}A ή ${sElectrons}`;
-      } else if (valence.type === 'p') {
-        group = `${toRoman(sElectrons + pElectrons)}A ή ${sElectrons + pElectrons + 10}`;
-      } else if (valence.type === 'd') {
+if (valence.type === 'd') {
         const totalElectrons = sElectrons + dElectrons;
         if (totalElectrons === 8 || totalElectrons === 9 || totalElectrons === 10) {
           group = `VIIIB ή 8`;
@@ -381,7 +376,12 @@
         } else {
           group = `${toRoman(totalElectrons)}B ή ${totalElectrons}`;
         }
-      }
+      }else if (valence.type === 'p') {
+        group = `${toRoman(sElectrons + pElectrons)}A ή ${sElectrons + pElectrons + 10}`;
+       }else if (valence.type === 's') {
+        group = `${toRoman(sElectrons)}A ή ${sElectrons}`;
+       
+      } 
 
       return group;
     }
