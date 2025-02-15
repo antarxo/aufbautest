@@ -12,18 +12,12 @@
       background-color: #f0f8ff;
     }
     canvas { 
-display: flex;
-  justify-content: center;
-  margin: 20px 0 20px 50px; 
+      display: block; 
+      margin: 20px auto; 
       border: 2px solid #4CAF50;
       border-radius: 10px;
-      
+      margin-left: 50px; /* Αριστερό περιθώριο 50px */
     }
-#canvasContainer {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0 20px 50px; /* Προσθήκη αριστερού περιθωρίου */
-}
     button { 
       margin: 10px; 
       padding: 10px 20px; 
@@ -366,43 +360,32 @@ display: flex;
       document.getElementById("groupValue").textContent = group;
     }
 
-function predictGroup(valence, Z) {
-  let group = '-';
-  const currentPeriod = parseInt(valence.label);
-  
-  // Για d στοιχεία, ψάχνουμε τα s ηλεκτρόνια της επόμενης περιόδου
-  const sPeriod = valence.type === 'd' ? currentPeriod + 1 : currentPeriod;
-  
-  const sElectrons = positions.find(p => 
-    p.type === 's' && parseInt(p.label) === sPeriod
-  )?.actualElectrons || 0;
+    function predictGroup(valence) {
+      let group = '-';
+      const sElectrons = positions.filter(p => p.type === 's' && parseInt(p.label) === parseInt(valence.label)).reduce((sum, p) => sum + p.actualElectrons, 0);
+      const pElectrons = positions.filter(p => p.type === 'p' && parseInt(p.label) === parseInt(valence.label)).reduce((sum, p) => sum + p.actualElectrons, 0);
+      const dElectrons = positions.filter(p => p.type === 'd' && parseInt(p.label) === parseInt(valence.label) - 1).reduce((sum, p) => sum + p.actualElectrons, 0);
 
-  const dElectrons = positions.filter(p => 
-    p.type === 'd' && parseInt(p.label) === currentPeriod
-  ).reduce((sum, p) => sum + p.actualElectrons, 0);
+      if (valence.type === 's') {
+        group = `${toRoman(sElectrons)}A ή ${sElectrons}`;
+      } else if (valence.type === 'p') {
+        group = `${toRoman(sElectrons + pElectrons)}A ή ${sElectrons + pElectrons + 10}`;
+      } else if (valence.type === 'd') {
+        const totalElectrons = sElectrons + dElectrons;
+        if (totalElectrons === 8 || totalElectrons === 9 || totalElectrons === 10) {
+          group = `VIIIB ή 8`;
+        } else if (dElectrons === 9) {
+          group = `IB ή 11`;
+        } else if (dElectrons === 10) {
+          group = `IIB ή 12`;
+        } else {
+          group = `${toRoman(totalElectrons)}B ή ${totalElectrons}`;
+        }
+      }
 
-  if (valence.type === 's') {
-    group = `${toRoman(sElectrons)}A ή ${sElectrons}`;
-  } 
-  else if (valence.type === 'p') {
-    const pElectrons = positions.filter(p => 
-      p.type === 'p' && parseInt(p.label) === currentPeriod
-    ).reduce((sum, p) => sum + p.actualElectrons, 0);
-    
-    group = `${toRoman(sElectrons + pElectrons)}A ή ${sElectrons + pElectrons + 10}`;
-  } 
-  else if (valence.type === 'd') {
-    const total = sElectrons + dElectrons;
-    
-    // Ειδικές περιπτώσεις
-    if(total >= 8 && total <= 10) group = "VIIIB ή 8-10";
-    else if(total === 11) group = "IB ή 11";
-    else if(total === 12) group = "IIB ή 12";
-    else group = `${toRoman(total)}B ή ${total}`;
-  }
+      return group;
+    }
 
-  return group;
-}
     function toRoman(num) {
       const roman = { M: 1000, CM: 900, D: 500, CD: 400, C: 100, XC: 90, L: 50, XL: 40, X: 10, IX: 9, V: 5, IV: 4, I: 1 };
       let str = '';
