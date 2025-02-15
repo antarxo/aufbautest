@@ -32,7 +32,7 @@
     #infoTable {
       margin: 20px auto;
       border-collapse: collapse;
-      width: 60%;
+      width: 550px; /* Αλλαγή πλάτους σε 550px */
       box-shadow: 0 0 15px rgba(0,0,0,0.2);
       background-color: white;
     }
@@ -101,7 +101,8 @@
     const maxElectrons = { "s": 2, "p": 6, "d": 10, "f": 14 };
     const boxWidth = 60, boxHeight = 40, verticalSpacing = 45;
     const horizontalGap = 5;
-    const canvasWidth = 450, canvasHeight = 400; // Μείωση του πλάτους του καμβά
+    const canvasWidth = 550; // Αλλαγή πλάτους καμβά σε 550px
+    const canvasHeight = 400; // Μείωση του πλάτους του καμβά
     const leftMargin = 20; // Μείωση του αριστερού περιθωρίου
     const periodLabelWidth = 50;
     const fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18];
@@ -178,7 +179,7 @@
       fill(0);
       textSize(14);
       textStyle(BOLD);
-      
+
       // Υπολογισμός ηλεκτρονίων ανά περίοδο
       const periodElectrons = new Array(periods.length).fill(0);
       positions.forEach(pos => {
@@ -200,11 +201,11 @@
       positions.forEach(pos => {
         fill(pos.isGray ? 200 : columnColors[pos.col]);
         rect(pos.x, pos.y, boxWidth, boxHeight);
-        
+
         // Κύριο label
         fill(0);
         text(pos.label, pos.x + boxWidth/2, pos.y + boxHeight/2); // Επαναφορά των συμβόλων στην αρχική θέση
-        
+
         // Εκθέτης (μαύρος σε γκρί ορθογώνια)
         if(pos.actualElectrons > 0) {
           textSize(14);
@@ -238,7 +239,7 @@
           );
         }
       }
-      
+
       // Κόκκινα βέλη (πραγματική συμπλήρωση)
       stroke(255,0,0);
       drawingContext.setLineDash([]);
@@ -313,7 +314,7 @@
       const filled = positions.filter(p => p.actualElectrons > 0);
       const maxPeriod = Math.max(...filled.map(p => parseInt(p.label)));
       const lastOrbType = filled[filled.length-1].type;
-      
+
       positions.forEach(pos => {
         const currentPeriod = parseInt(pos.label);
         pos.isGray = (currentPeriod === maxPeriod) && 
@@ -332,7 +333,7 @@
       const initial = positions
         .filter(p => p.filled > 0)
         .map(p => `${p.label}${numberToExponent(p.filled)}`);
-      
+
       // Τελική διαμόρφωση
       const final = positions
         .filter(p => p.actualElectrons > 0)
@@ -353,7 +354,7 @@
     function updatePeriodGroup() {
       const filled = positions.filter(p => p.actualElectrons > 0);
       const valence = filled[filled.length-1];
-      
+
       // Περίοδος
       const period = Math.max(...filled.map(p => parseInt(p.label)));
       document.getElementById("periodValue").textContent = period;
@@ -363,7 +364,7 @@
       if(valence.type === 's') group = `${toRoman(valence.actualElectrons)}A ή ${valence.actualElectrons}`;
       else if(valence.type === 'p') group = `${toRoman(valence.actualElectrons + 10)}A ή ${valence.actualElectrons + 12}`;
       else if(valence.type === 'd') group = `${toRoman(valence.actualElectrons)}B ή ${valence.actualElectrons + (valence.actualElectrons >= 10 ? 1 : 0)}`;
-      
+
       document.getElementById("groupValue").textContent = group;
     }
 
