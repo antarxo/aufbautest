@@ -328,7 +328,7 @@
       // Τελική διαμόρφωση
       const final = positions
         .filter(p => p.actualElectrons > 0)
-        .sort((a,b) => {
+        .sort((a, b) => {
           const aN = parseInt(a.label);
           const bN = parseInt(b.label);
           if (aN !== bN) return aN - bN;
