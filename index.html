@@ -6,11 +6,11 @@
   <title>Κανόνας Aufbau</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <style>
-    body { text-align: center; font-family: Verdana, sans-serif; }
+    body { text-align: center; font-family: Verdana, sans-serif; line-height: 1.2; }
     canvas { display: block; margin: auto; }
-    button { margin: 5px; padding: 10px 20px; font-size: 14px; }
+    button { margin: 5px; padding: 5px 10px; font-size: 12px; }
     #infoTable {
-      margin-top: 20px;
+      margin-top: 10px;
       font-size: 14px;
       font-weight: normal;
       border-collapse: collapse;
@@ -33,14 +33,19 @@
     .element-symbol {
       font-size: 24px;
       font-weight: bold;
-      margin-right: 10px;
+      margin-left: 10px;
+    }
+    .element-symbol::before {
+      content: attr(data-z);
+      font-size: 14px;
+      vertical-align: super;
+      margin-right: 5px;
     }
   </style>
 </head>
 <body>
-  <h1>Κανόνας Aufbau</h1>
+  <h1>Κανόνας Aufbau<span id="elementSymbol" class="element-symbol" data-z=""></span></h1>
   <div>
-    <span id="elementSymbol" class="element-symbol"></span>
     <label for="atomicNumber">Z:</label>
     <input type="number" id="atomicNumber" min="1" max="118" value="1">
   </div>
@@ -49,8 +54,12 @@
   <div id="elementInfo"></div>
   <table id="infoTable">
     <tr>
-      <td>Περίοδος και Ομάδα</td>
-      <td id="periodGroupInfo"></td>
+      <td>Περίοδος</td>
+      <td id="periodInfo"></td>
+    </tr>
+    <tr>
+      <td>Ομάδα</td>
+      <td id="groupInfo"></td>
     </tr>
     <tr>
       <td>Αρχική διαμόρφωση</td>
@@ -271,11 +280,12 @@
       }
       document.getElementById("electronConfigInfo").innerText = electronConfig.join(", ");
       document.getElementById("elementSymbol").innerText = elementSymbols[atomicNumber - 1] || "Άγνωστο";
-      
+      document.getElementById("elementSymbol").setAttribute("data-z", atomicNumber);
+
       let initialConfig = electronConfig.map(config => {
         let [orbital, count] = config.split(/(\d+)/);
         return `${orbital}<sup>${count}</sup>`;
-      }).join(", ");
+      }).join(" ");
       document.getElementById("initialConfigInfo").innerHTML = initialConfig;
 
       let sortedConfig = electronConfig.slice().sort((a, b) => {
@@ -285,7 +295,7 @@
       }).map(config => {
         let [orbital, count] = config.split(/(\d+)/);
         return `${orbital}<sup>${count}</sup>`;
-      }).join(", ");
+      }).join(" ");
       document.getElementById("electronConfigInfo").innerHTML = sortedConfig;
 
       let outermostPeriod = Math.max(...positions.filter(p => p.filled > 0).map(p => parseInt(p.label.slice(0, -1))));
@@ -321,7 +331,8 @@
         groupNumber = lastFilledS.filled;
       }
       
-      document.getElementById("periodGroupInfo").innerText = `Περίοδος: ${period || '-'} | Ομάδα: ${groupRoman} ή ${groupNumber}`;
+      document.getElementById("periodInfo").innerText = period || '-';
+      document.getElementById("groupInfo").innerText = `${groupRoman} ή ${groupNumber}`;
     }
 
     function toRoman(num) {
@@ -345,8 +356,10 @@
       document.getElementById("atomicNumber").value = 1;
       document.getElementById("electronConfigInfo").innerText = '';
       document.getElementById("initialConfigInfo").innerText = '';
-      document.getElementById("periodGroupInfo").innerText = '';
+      document.getElementById("periodInfo").innerText = '';
+      document.getElementById("groupInfo").innerText = '';
       document.getElementById("elementSymbol").innerText = '';
+      document.getElementById("elementSymbol").setAttribute("data-z", "");
       redraw();
     }
   </script>
