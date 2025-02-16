@@ -227,7 +227,7 @@ const elementSymbols = {
   textSize(14);
   textStyle(BOLD);
 
-  const xOffset = 10; // Προσθήκη αριστερού περιθωρίου
+  const xOffset = 50; // Προσθήκη αριστερού περιθωρίου
 
   const periodElectrons = new Array(periods.length).fill(0);
   positions.forEach(pos => {
@@ -245,7 +245,7 @@ const elementSymbols = {
    function drawOrbitals() {
   noStroke();
   textAlign(CENTER, CENTER);
-  const xOffset = 10; // Προσθήκη αριστερού περιθωρίου
+  const xOffset = 60; // Προσθήκη αριστερού περιθωρίου
 
   positions.forEach(pos => {
     const boxWidthAdjusted = Math.max(boxWidth, textWidth(pos.label) + 20); // Προσαρμογή πλάτους ορθογωνίου
