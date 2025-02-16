@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="el">
 <head>
   <meta charset="UTF-8">
@@ -6,50 +6,110 @@
   <title>Κανόνας Aufbau</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <style>
-body { 
-  text-align: center; 
-  font-family: Verdana, sans-serif; 
-  background-color: #f0f8ff;
+    body { 
+      text-align: center; 
+      font-family: Verdana, sans-serif; 
+      background-color: #f0f8ff;
+    }
+
+    #mainContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0 auto;
+      width: 400px; /* Ίδιο πλάτος με τον καμβά και τον πίνακα */
+    }
+
+    h1 {
+      width: 100%; /* Ίδιο πλάτος με το container */
+      text-align: center;
+    }
+
+    #controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%; /* Ίδιο πλάτος με το container */
+      margin: 10px 0;
+    }
+
+    #controls label, #controls input, #controls button {
+      margin: 0 5px;
+    }
+
+    #canvasContainer {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+canvas { 
+  border: 2px solid #4CAF50;
+  border-radius: 10px;
+  padding-left: 10px; /* Προσθήκη αριστερού περιθωρίου */
 }
 
-#mainContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0 auto;
-  width: 400px; /* Ίδιο πλάτος με τον καμβά και τον πίνακα */
-  border: 2px solid red; /* Προσωρινό έγχρωμο περίγραμμα */
-}
 
-#controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%; /* Ίδιο πλάτος με το container */
-  margin: 10px 0;
-  border: 2px solid blue; /* Προσωρινό έγχρωμο περίγραμμα */
-}
+    button { 
+      padding: 10px 20px; 
+      background-color: #4CAF50; 
+      color: white; 
+      border: none; 
+      border-radius: 5px;
+      cursor: pointer;
+    }
 
-#infoTable {
-  margin: 20px 0;
-  border-collapse: collapse;
-  width: 100%; /* Ίδιο πλάτος με το container */
-  box-shadow: 0 0 15px rgba(0,0,0,0.2);
-  background-color: white;
-  border: 2px solid green; /* Προσωρινό έγχρωμο περίγραμμα */
-}
+    button:hover {
+      background-color: #45a049;
+    }
 
-#titleContainer {
+    #infoTable {
+      margin: 20px 0;
+      border-collapse: collapse;
+      width: 100%; /* Ίδιο πλάτος με το container */
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      background-color: white;
+    }
+
+    #infoTable th, #infoTable td {
+      border: 2px solid #4CAF50;
+      padding: 8px;
+      text-align: center;
+    }
+
+    #infoTable th {
+      background-color: #4CAF50;
+      color: white;
+      font-size: 14px;
+    }
+
+    #infoTable td {
+      font-size: 12px;
+    }
+
+    .element-symbol {
+      font-size: 24px;
+      font-weight: bold;
+      color: darkgreen;
+      margin-right: 10px;
+    }
+
+    .element-symbol::before {
+      content: attr(data-z);
+      font-size: 14px;
+      color: red;
+      vertical-align: baseline;
+      margin-right: 5px;
+    }
+    #titleContainer {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-bottom: 20px;
-  border: 2px solid orange; /* Προσωρινό έγχρωμο περίγραμμα */
 }
 
 #titleTable {
   border-collapse: collapse;
-  border: 2px solid purple; /* Προσωρινό έγχρωμο περίγραμμα */
 }
 
 #titleTable td {
@@ -60,26 +120,38 @@ body {
 #titleText {
   font-size: 20px;
   font-weight: bold;
-  border: 2px solid pink; /* Προσωρινό έγχρωμο περίγραμμα */
 }
 
 #elementSymbolText {
   font-size: 16px;
   font-weight: bold;
   margin-left: 5px;
-  border: 2px solid yellow; /* Προσωρινό έγχρωμο περίγραμμα */
+}
+    #titleContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-#contentContainer {
-  background-color: #f0f8ff; /* Ίδιο χρώμα με το καμβά */
-  width: 100%; /* Ίδιο πλάτος με το container */
-  height: 300px; /* Προσαρμοσμένο ύψος */
-  border: 2px solid #4CAF50; /* Προσωρινό έγχρωμο περίγραμμα */
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start; /* Τοποθέτηση περιεχομένων στην κορυφή */
-  align-items: center;
-  padding: 0; /* Μείωση του πάνω και κάτω περιθωρίου */
+#titleTable {
+  border-collapse: collapse;
+}
+
+#titleTable td {
+  border: none;
+  padding: 0;
+}
+
+#titleText {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#elementSymbolText {
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 5px;
 }
   </style>
 </head>
@@ -116,7 +188,7 @@ body {
       </table>
     </div>
 
-    <div id="contentContainer"></div>
+    <div id="canvasContainer"></div>
   </div>
 </body>
   <script>
@@ -160,8 +232,8 @@ const elementSymbols = {
     let columnColors = [];
     let electronCounter = 0;
 
-function setup() {
-  const canvas = createCanvas(400, 300); // Ίδιο πλάτος με το container και προσαρμοσμένο ύψος
+  function setup() {
+  const canvas = createCanvas(canvasWidth, canvasHeight);
   canvas.parent('canvasContainer');
   textSize(12);
   textFont("Verdana");
@@ -178,53 +250,12 @@ function draw() {
   updateTitleAndSymbol();
 }
 
-function drawPeriodLabels() {
-  textAlign(RIGHT, CENTER);
-  fill(0);
-  textSize(14);
-  textStyle(BOLD);
+function updateTitleAndSymbol() {
+  const Z = parseInt(document.getElementById("atomicNumber").value);
+  const elementSymbol = elementSymbols[Z] || '';
 
-  const xOffset = 10; // Προσθήκη αριστερού περιθωρίου
-
-  const periodElectrons = new Array(periods.length).fill(0);
-  positions.forEach(pos => {
-    const periodIndex = periods.findIndex(p => p.orbitals.includes(pos.label));
-    if (periodIndex !== -1) periodElectrons[periodIndex] += pos.actualElectrons;
-  });
-
-  for (let i = 0; i < periods.length; i++) {
-    let y = i * verticalSpacing; // Ξεκινάμε από την κορυφή του καμβά
-    const electrons = periodElectrons[i];
-    text(`${periods[i].label}${electrons > 0 ? ` (${electrons})` : ''}`, periodLabelWidth - 10 + xOffset, y + 17);
-  }
-  textStyle(NORMAL);
-}
-
-function drawOrbitals() {
-  noStroke();
-  textAlign(CENTER, CENTER);
-  const xOffset = 10; // Προσθήκη αριστερού περιθωρίου
-
-  positions.forEach(pos => {
-    fill(pos.isGray ? 200 : columnColors[pos.col]);
-    rect(pos.x + xOffset, pos.y, boxWidth, boxHeight);
-
-    fill(0);
-    text(pos.label, pos.x + boxWidth / 2 + xOffset, pos.y + boxHeight / 2);
-
-    if (pos.actualElectrons > 0) {
-      textSize(14);
-      textStyle(BOLD);
-      fill(pos.isGray ? 0 : {
-        's': color(255, 0, 0),
-        'p': color(0, 100, 0),
-        'd': color(0, 0, 255),
-        'f': color(255, 165, 0)
-      }[pos.type]);
-      text(numberToExponent(pos.actualElectrons), pos.x + boxWidth - 15 + xOffset, pos.y + 10);
-      textStyle(NORMAL);
-    }
-  });
+  // Ενημέρωση του πίνακα τίτλου
+  document.getElementById("elementSymbolText").textContent = `${Z} ${elementSymbol}`;
 }
 
 function drawArrows() {
@@ -284,15 +315,6 @@ function drawArrow(x1, y1, x2, y2) {
   triangle(-arrowSize, arrowSize / 2, -arrowSize, -arrowSize / 2, 0, 0);
   pop();
 }
-
-function updateTitleAndSymbol() {
-  const Z = parseInt(document.getElementById("atomicNumber").value);
-  const elementSymbol = elementSymbols[Z] || '';
-
-  // Ενημέρωση του πίνακα τίτλου
-  document.getElementById("elementSymbolText").textContent = `${Z} ${elementSymbol}`;
-}
-
     function initColumnColors() {
       columnColors = [
         color("#FFCDD2"), // s
@@ -375,46 +397,41 @@ function updateTitleAndSymbol() {
   });
 }
 
-  function startFilling() {
-  const contentContainer = document.getElementById('contentContainer');
-  contentContainer.innerHTML = ''; // Καθαρισμός του container
+    function startFilling() {
+      resetDiagram();
+      const Z = parseInt(document.getElementById("atomicNumber").value);
+      electronCounter = Z;
 
-  // Δημιουργία περιεχομένων
-  const content = document.createElement('div');
-  content.style.width = '100%';
-  content.style.height = '100%';
-  content.style.display = 'flex';
-  content.style.flexDirection = 'column';
-  content.style.justifyContent = 'flex-start'; // Τοποθέτηση περιεχομένων στην κορυφή
-  content.style.alignItems = 'center';
+      // Κανονικό γέμισμα (Aufbau)
+      fillOrder.forEach(idx => {
+        const orb = positions[idx];
+        const capacity = maxElectrons[orb.type];
+        const fill = Math.min(electronCounter, capacity);
+        orb.filled = fill;
+        electronCounter -= fill;
+      });
 
-  // Προσθήκη περιεχομένων
-  const box = document.createElement('div');
-  box.style.width = '50px';
-  box.style.height = '50px';
-  box.style.backgroundColor = '#4CAF50';
-  content.appendChild(box);
+      // Αντιγραφή για αρχική διαμόρφωση
+      positions.forEach(p => p.actualElectrons = p.filled);
 
-  contentContainer.appendChild(content);
-}
+      // Ενημέρωση της ομάδας πριν εφαρμοστούν οι εξαιρέσεις
+      updatePeriodGroup(Z);
 
-function resetDiagram() {
-  const contentContainer = document.getElementById('contentContainer');
-  contentContainer.innerHTML = ''; // Καθαρισμός του container
-}
-function resetDiagram() {
-  const contentContainer = document.getElementById('contentContainer');
-  contentContainer.innerHTML = ''; // Καθαρισμός του container
-}
-function resetDiagram() {
-  const contentContainer = document.getElementById('contentContainer');
-  contentContainer.innerHTML = ''; // Καθαρισμός του container
-}
+      // Εφαρμογή εξαιρέσεων
+      if (exceptions[Z]) {
+        const { from, to, amount } = exceptions[Z];
+        const fromOrb = positions.find(p => p.label === from);
+        const toOrb = positions.find(p => p.label === to);
+        if (fromOrb && toOrb) {
+          fromOrb.actualElectrons -= amount;
+          toOrb.actualElectrons += amount;
+        }
+      }
 
-function resetDiagram() {
-  const contentContainer = document.getElementById('contentContainer');
-  contentContainer.innerHTML = ''; // Καθαρισμός του container
-}
+      markOuterShell();
+      updateDisplay(Z);
+      redraw();
+    }
 
     function markOuterShell() {
       const filled = positions.filter(p => p.actualElectrons > 0);
