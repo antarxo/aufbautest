@@ -43,10 +43,12 @@
       margin: 20px 0;
     }
 
-    canvas { 
-      border: 2px solid #4CAF50;
-      border-radius: 10px;
-    }
+canvas { 
+  border: 2px solid #4CAF50;
+  border-radius: 10px;
+  padding-left: 10px; /* Προσθήκη αριστερού περιθωρίου */
+}
+
 
     button { 
       padding: 10px 20px; 
@@ -239,31 +241,32 @@ const elementSymbols = {
       textStyle(NORMAL);
     }
 
-    function drawOrbitals() {
-      noStroke();
-      textAlign(CENTER, CENTER);
-      positions.forEach(pos => {
-        fill(pos.isGray ? 200 : columnColors[pos.col]);
-        rect(pos.x, pos.y, boxWidth, boxHeight);
+   function drawOrbitals() {
+  noStroke();
+  textAlign(CENTER, CENTER);
+  const xOffset = 10; // Προσθήκη αριστερού περιθωρίου
 
-        fill(0);
-        text(pos.label, pos.x + boxWidth/2, pos.y + boxHeight/2);
+  positions.forEach(pos => {
+    fill(pos.isGray ? 200 : columnColors[pos.col]);
+    rect(pos.x + xOffset, pos.y, boxWidth, boxHeight);
 
-        if(pos.actualElectrons > 0) {
-          textSize(14);
-          textStyle(BOLD);
-          fill(pos.isGray ? 0 : {
-            's': color(255,0,0),
-            'p': color(0,100,0),
-            'd': color(0,0,255),
-            'f': color(255,165,0)
-          }[pos.type]);
-          text(numberToExponent(pos.actualElectrons), pos.x + boxWidth - 15, pos.y + 10);
-          textStyle(NORMAL);
-        }
-      });
+    fill(0);
+    text(pos.label, pos.x + boxWidth / 2 + xOffset, pos.y + boxHeight / 2);
+
+    if (pos.actualElectrons > 0) {
+      textSize(14);
+      textStyle(BOLD);
+      fill(pos.isGray ? 0 : {
+        's': color(255, 0, 0),
+        'p': color(0, 100, 0),
+        'd': color(0, 0, 255),
+        'f': color(255, 165, 0)
+      }[pos.type]);
+      text(numberToExponent(pos.actualElectrons), pos.x + boxWidth - 15 + xOffset, pos.y + 10);
+      textStyle(NORMAL);
     }
-
+  });
+}
     function drawArrows() {
       stroke(150);
       strokeWeight(2);
