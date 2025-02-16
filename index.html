@@ -199,7 +199,7 @@ function drawPeriodLabels() {
   });
 
   for (let i = 0; i < periods.length; i++) {
-    let y = 50 + i * verticalSpacing;
+    let y = i * verticalSpacing; // Ξεκινάμε από την κορυφή του καμβά
     const electrons = periodElectrons[i];
     text(`${periods[i].label}${electrons > 0 ? ` (${electrons})` : ''}`, periodLabelWidth - 10 + xOffset, y + 17);
   }
@@ -298,6 +298,7 @@ function updateTitleAndSymbol() {
   // Ενημέρωση του πίνακα τίτλου
   document.getElementById("elementSymbolText").textContent = `${Z} ${elementSymbol}`;
 }
+
     function initColumnColors() {
       columnColors = [
         color("#FFCDD2"), // s
