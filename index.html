@@ -33,13 +33,44 @@
     <div id="canvasContainer"></div>
   </div>
 </body>
+<style>
+body { 
+  text-align: center; 
+  font-family: Verdana, sans-serif; 
+  background-color: #f0f8ff;
+}
 
-  #mainContainer {
+#mainContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 0 auto;
   width: 420px; /* Ίδιο πλάτος με τον καμβά και τον πίνακα */
+}
+
+#canvasContainer {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+canvas { 
+  border: 2px solid #4CAF50;
+  border-radius: 10px;
+}
+
+button { 
+  margin: 10px; 
+  padding: 10px 20px; 
+  background-color: #4CAF50; 
+  color: white; 
+  border: none; 
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
 }
 
 #infoTable {
@@ -50,62 +81,36 @@
   background-color: white;
 }
 
-#canvasContainer {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
+#infoTable th, #infoTable td {
+  border: 2px solid #4CAF50;
+  padding: 8px;
+  text-align: center;
 }
-    
 
-    canvas { 
-      border: 2px solid #4CAF50;
-      border-radius: 10px;
-    }
-    button { 
-      margin: 10px; 
-      padding: 10px 20px; 
-      background-color: #4CAF50; 
-      color: white; 
-      border: none; 
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    #infoTable {
-      margin: 20px auto;
-      border-collapse: collapse;
-      width: 420px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
-      background-color: white;
-    }
-    #infoTable th, #infoTable td {
-      border: 2px solid #4CAF50;
-      padding: 8px;
-      text-align: center;
-    }
-    #infoTable th {
-      background-color: #4CAF50;
-      color: white;
-      font-size: 14px;
-    }
-    #infoTable td {
-      font-size: 12px;
-    }
-    .element-symbol {
-      font-size: 24px;
-      font-weight: bold;
-      color: darkgreen;
-      margin-right: 10px;
-    }
-    .element-symbol::before {
-      content: attr(data-z);
-      font-size: 14px;
-      color: red;
-      vertical-align: baseline;
-      margin-right: 5px;
-    }
+#infoTable th {
+  background-color: #4CAF50;
+  color: white;
+  font-size: 14px;
+}
+
+#infoTable td {
+  font-size: 12px;
+}
+
+.element-symbol {
+  font-size: 24px;
+  font-weight: bold;
+  color: darkgreen;
+  margin-right: 10px;
+}
+
+.element-symbol::before {
+  content: attr(data-z);
+  font-size: 14px;
+  color: red;
+  vertical-align: baseline;
+  margin-right: 5px;
+}
   </style>
 </head>
 <body>
