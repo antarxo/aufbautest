@@ -271,7 +271,7 @@ const elementSymbols = {
   });
 }
     function drawArrows() {
-  const xOffset = 110; // Προσθήκη οριζόντιου offset
+  const xOffset = 10; // Προσθήκη μικρότερου οριζόντιου offset
 
   stroke(150);
   strokeWeight(2);
@@ -323,7 +323,6 @@ function drawArrow(x1, y1, x2, y2) {
   triangle(-arrowSize, arrowSize / 2, -arrowSize, -arrowSize / 2, 0, 0);
   pop();
 }
-
     function startFilling() {
       resetDiagram();
       const Z = parseInt(document.getElementById("atomicNumber").value);
