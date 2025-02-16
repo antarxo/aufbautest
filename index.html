@@ -271,56 +271,58 @@ const elementSymbols = {
   });
 }
     function drawArrows() {
-      stroke(150);
-      strokeWeight(2);
-      drawingContext.setLineDash([5,5]);
-      for(let i=0; i<fillOrder.length-1; i++) {
-        let from = positions[fillOrder[i]];
-        let to = positions[fillOrder[i+1]];
-        if (to.y > from.y) {
-          drawArrow(
-            from.x + boxWidth,
-            from.y + 10,
-            to.x + boxWidth,
-            to.y + 10
-          );
-        }
-      }
+  const xOffset = 110; // Προσθήκη οριζόντιου offset
 
-      stroke(255,0,0);
-      drawingContext.setLineDash([]);
-      let lastFilledIndex = -1;
-      for (let i = fillOrder.length - 1; i >= 0; i--) {
-        let idx = fillOrder[i];
-        if (positions[idx].filled > 0) {
-          lastFilledIndex = i;
-          break;
-        }
-      }
-      for (let i = 0; i < lastFilledIndex; i++) {
-        let from = positions[fillOrder[i]];
-        let to = positions[fillOrder[i+1]];
-        if (to.y > from.y) {
-          drawArrow(
-            from.x + boxWidth,
-            from.y + 10,
-            to.x + boxWidth,
-            to.y + 10
-          );
-        }
-      }
+  stroke(150);
+  strokeWeight(2);
+  drawingContext.setLineDash([5, 5]);
+  for (let i = 0; i < fillOrder.length - 1; i++) {
+    let from = positions[fillOrder[i]];
+    let to = positions[fillOrder[i + 1]];
+    if (to.y > from.y) {
+      drawArrow(
+        from.x + boxWidth + xOffset,
+        from.y + 10,
+        to.x + boxWidth + xOffset,
+        to.y + 10
+      );
     }
+  }
 
-    function drawArrow(x1, y1, x2, y2) {
-      line(x1, y1, x2, y2);
-      let angle = atan2(y2 - y1, x2 - x1);
-      push();
-      translate(x2, y2);
-      rotate(angle);
-      let arrowSize = 7;
-      triangle(-arrowSize, arrowSize / 2, -arrowSize, -arrowSize / 2, 0, 0);
-      pop();
+  stroke(255, 0, 0);
+  drawingContext.setLineDash([]);
+  let lastFilledIndex = -1;
+  for (let i = fillOrder.length - 1; i >= 0; i--) {
+    let idx = fillOrder[i];
+    if (positions[idx].filled > 0) {
+      lastFilledIndex = i;
+      break;
     }
+  }
+  for (let i = 0; i < lastFilledIndex; i++) {
+    let from = positions[fillOrder[i]];
+    let to = positions[fillOrder[i + 1]];
+    if (to.y > from.y) {
+      drawArrow(
+        from.x + boxWidth + xOffset,
+        from.y + 10,
+        to.x + boxWidth + xOffset,
+        to.y + 10
+      );
+    }
+  }
+}
+
+function drawArrow(x1, y1, x2, y2) {
+  line(x1, y1, x2, y2);
+  let angle = atan2(y2 - y1, x2 - x1);
+  push();
+  translate(x2, y2);
+  rotate(angle);
+  let arrowSize = 7;
+  triangle(-arrowSize, arrowSize / 2, -arrowSize, -arrowSize / 2, 0, 0);
+  pop();
+}
 
     function startFilling() {
       resetDiagram();
