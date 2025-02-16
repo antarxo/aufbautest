@@ -85,8 +85,10 @@ body {
   height: 300px; /* Προσαρμοσμένο ύψος */
   border: 2px solid #4CAF50; /* Προσωρινό έγχρωμο περίγραμμα */
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start; /* Τοποθέτηση περιεχομένων στην κορυφή */
   align-items: center;
+  padding: 0; /* Μείωση του πάνω και κάτω περιθωρίου */
 }
   </style>
 </head>
@@ -394,7 +396,7 @@ function updateTitleAndSymbol() {
   content.style.height = '100%';
   content.style.display = 'flex';
   content.style.flexDirection = 'column';
-  content.style.justifyContent = 'center';
+  content.style.justifyContent = 'flex-start'; // Τοποθέτηση περιεχομένων στην κορυφή
   content.style.alignItems = 'center';
 
   // Προσθήκη περιεχομένων
@@ -405,6 +407,11 @@ function updateTitleAndSymbol() {
   content.appendChild(box);
 
   contentContainer.appendChild(content);
+}
+
+function resetDiagram() {
+  const contentContainer = document.getElementById('contentContainer');
+  contentContainer.innerHTML = ''; // Καθαρισμός του container
 }
 
 function resetDiagram() {
