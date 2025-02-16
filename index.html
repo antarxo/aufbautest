@@ -364,13 +364,13 @@ function predictGroup(valence, Z) {
   const currentPeriod = parseInt(valence.label);
   let sElectrons = 0, dElectrons = 0;
 
-  // Υπολογισμός s ηλεκτρονίων της τρέχουσας περιόδου
+  // Υπολογισμός s ηλεκτρονίων της τρέχουσας περιόδου από την αρχική διαμόρφωση
   const sOrb = positions.find(p => 
     p.type === 's' && parseInt(p.label) === currentPeriod
   );
   sElectrons = sOrb ? sOrb.filled : 0;
 
-  // Υπολογισμός d ηλεκτρονίων προηγούμενης περιόδου (για μεταβατικά μέταλλα)
+  // Υπολογισμός d ηλεκτρονίων προηγούμενης περιόδου από την αρχική διαμόρφωση
   if(valence.type === 'd') {
     dElectrons = positions.filter(p => 
       p.type === 'd' && parseInt(p.label) === currentPeriod - 1
@@ -399,7 +399,7 @@ function predictGroup(valence, Z) {
     } else if (total >= 8 && total <= 10) {
       return "VIIIB ή 8-10";
     } else if (total > 10) {
-      return `${toRoman(total - 10)}B ή ${total - 10}`;
+      return `${toRoman(total - 10)}B ή ${total}`;
     }
   }
   
