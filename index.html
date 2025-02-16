@@ -11,12 +11,14 @@
       font-family: Verdana, sans-serif; 
       background-color: #f0f8ff;
     }
+    #canvasContainer {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0 20px 50px; /* Αριστερό περιθώριο 50px */
+    }
     canvas { 
-      display: block; 
-      margin: 20px auto; 
       border: 2px solid #4CAF50;
       border-radius: 10px;
-      margin-left: 50px; /* Αριστερό περιθώριο 50px */
     }
     button { 
       margin: 10px; 
@@ -33,7 +35,7 @@
     #infoTable {
       margin: 20px auto;
       border-collapse: collapse;
-      width: 420px; /* Αλλαγή πλάτους σε 420px */
+      width: 420px;
       box-shadow: 0 0 15px rgba(0,0,0,0.2);
       background-color: white;
     }
@@ -88,6 +90,8 @@
     </tr>
   </table>
 
+  <div id="canvasContainer"></div>
+
   <script>
     const periods = [
       { label: "K", orbitals: ["1s"] },
@@ -102,10 +106,10 @@
     const maxElectrons = { "s": 2, "p": 6, "d": 10, "f": 14 };
     const boxWidth = 60, boxHeight = 40, verticalSpacing = 45;
     const horizontalGap = 5;
-    const canvasWidth = 420; // Αλλαγή πλάτους καμβά σε 420px
-    const canvasHeight = 400; // Μείωση του πλάτους του καμβά
+    const canvasWidth = 420;
+    const canvasHeight = 400;
     const periodLabelWidth = 50;
-    const fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18];
+    const fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18]; // Σωστή σειρά
     const exceptions = {
       24: { from: "4s", to: "3d", amount: 1 },  // Cr
       29: { from: "4s", to: "3d", amount: 1 },  // Cu
@@ -118,7 +122,8 @@
     let electronCounter = 0;
 
     function setup() {
-      createCanvas(canvasWidth, canvasHeight).parent('canvasContainer');
+      const canvas = createCanvas(canvasWidth, canvasHeight);
+      canvas.parent('canvasContainer');
       textSize(12);
       textFont("Verdana");
       initColumnColors();
@@ -152,7 +157,8 @@
         for (let j = 0; j < rowOrbitals.length; j++) {
           let x = startX + j * (boxWidth + horizontalGap);
           positions.push({ 
-            x: x, y: y, 
+            x: x, 
+            y: y, 
             label: rowOrbitals[j],
             type: rowOrbitals[j].slice(-1),
             filled: 0,
@@ -170,7 +176,6 @@
       textSize(14);
       textStyle(BOLD);
 
-      // Υπολογισμός ηλεκτρονίων ανά περίοδο
       const periodElectrons = new Array(periods.length).fill(0);
       positions.forEach(pos => {
         const periodIndex = periods.findIndex(p => p.orbitals.includes(pos.label));
@@ -180,7 +185,7 @@
       for (let i = 0; i < periods.length; i++) {
         let y = 50 + i * verticalSpacing;
         const electrons = periodElectrons[i];
-        text(`${periods[i].label}${electrons > 0 ? ` (${electrons})` : ''}`, periodLabelWidth - 10, y + 17); // Κατέβασμα των ονομάτων των στιβάδων κατά 2px ακόμα
+        text(`${periods[i].label}${electrons > 0 ? ` (${electrons})` : ''}`, periodLabelWidth - 10, y + 17);
       }
       textStyle(NORMAL);
     }
@@ -192,28 +197,25 @@
         fill(pos.isGray ? 200 : columnColors[pos.col]);
         rect(pos.x, pos.y, boxWidth, boxHeight);
 
-        // Κύριο label
         fill(0);
-        text(pos.label, pos.x + boxWidth/2, pos.y + boxHeight/2); // Επαναφορά των συμβόλων στην αρχική θέση
+        text(pos.label, pos.x + boxWidth/2, pos.y + boxHeight/2);
 
-        // Εκθέτης (μαύρος σε γκρί ορθογώνια)
         if(pos.actualElectrons > 0) {
           textSize(14);
-          textStyle(BOLD); // Κάνουμε τους εκθέτες έντονους
+          textStyle(BOLD);
           fill(pos.isGray ? 0 : {
             's': color(255,0,0),
             'p': color(0,100,0),
             'd': color(0,0,255),
             'f': color(255,165,0)
           }[pos.type]);
-          text(numberToExponent(pos.actualElectrons), pos.x + boxWidth - 15, pos.y + 10); // Επαναφορά των εκθετών στην αρχική θέση
-          textStyle(NORMAL); // Επαναφορά του κανονικού στυλ
+          text(numberToExponent(pos.actualElectrons), pos.x + boxWidth - 15, pos.y + 10);
+          textStyle(NORMAL);
         }
       });
     }
 
     function drawArrows() {
-      // Γκρίζα βέλη (θεωρητική σειρά)
       stroke(150);
       strokeWeight(2);
       drawingContext.setLineDash([5,5]);
@@ -230,7 +232,6 @@
         }
       }
 
-      // Κόκκινα βέλη (πραγματική συμπλήρωση)
       stroke(255,0,0);
       drawingContext.setLineDash([]);
       let lastFilledIndex = -1;
@@ -266,41 +267,42 @@
       pop();
     }
 
-   function startFilling() {
-  resetDiagram();
-  const Z = parseInt(document.getElementById("atomicNumber").value);
-  electronCounter = Z;
+    function startFilling() {
+      resetDiagram();
+      const Z = parseInt(document.getElementById("atomicNumber").value);
+      electronCounter = Z;
 
-  // Κανονικό γέμισμα (Aufbau)
-  fillOrder.forEach(idx => {
-    const orb = positions[idx];
-    const capacity = maxElectrons[orb.type];
-    const fill = Math.min(electronCounter, capacity);
-    orb.filled = fill;
-    electronCounter -= fill;
-  });
+      // Κανονικό γέμισμα (Aufbau)
+      fillOrder.forEach(idx => {
+        const orb = positions[idx];
+        const capacity = maxElectrons[orb.type];
+        const fill = Math.min(electronCounter, capacity);
+        orb.filled = fill;
+        electronCounter -= fill;
+      });
 
-  // Αντιγραφή για αρχική διαμόρφωση
-  positions.forEach(p => p.actualElectrons = p.filled);
+      // Αντιγραφή για αρχική διαμόρφωση
+      positions.forEach(p => p.actualElectrons = p.filled);
 
-  // Ενημέρωση της ομάδας πριν εφαρμοστούν οι εξαιρέσεις
-  updatePeriodGroup(Z);
+      // Ενημέρωση της ομάδας πριν εφαρμοστούν οι εξαιρέσεις
+      updatePeriodGroup(Z);
 
-  // Εφαρμογή εξαιρέσεων
-  if (exceptions[Z]) {
-    const { from, to, amount } = exceptions[Z];
-    const fromOrb = positions.find(p => p.label === from);
-    const toOrb = positions.find(p => p.label === to);
-    if (fromOrb && toOrb) {
-      fromOrb.actualElectrons -= amount;
-      toOrb.actualElectrons += amount;
+      // Εφαρμογή εξαιρέσεων
+      if (exceptions[Z]) {
+        const { from, to, amount } = exceptions[Z];
+        const fromOrb = positions.find(p => p.label === from);
+        const toOrb = positions.find(p => p.label === to);
+        if (fromOrb && toOrb) {
+          fromOrb.actualElectrons -= amount;
+          toOrb.actualElectrons += amount;
+        }
+      }
+
+      markOuterShell();
+      updateDisplay(Z);
+      redraw();
     }
-  }
 
-  markOuterShell();
-  updateDisplay(Z);
-  redraw();
-}
     function markOuterShell() {
       const filled = positions.filter(p => p.actualElectrons > 0);
       const maxPeriod = Math.max(...filled.map(p => parseInt(p.label)));
@@ -320,13 +322,11 @@
     }
 
     function updateDisplay(Z) {
-      // Αρχική διαμόρφωση
       const initial = fillOrder
         .map(idx => positions[idx])
         .filter(p => p.filled > 0)
         .map(p => `${p.label}${numberToExponent(p.filled)}`);
 
-      // Τελική διαμόρφωση
       const final = positions
         .filter(p => p.actualElectrons > 0)
         .sort((a,b) => {
@@ -341,36 +341,64 @@
       document.getElementById("initialConfig").textContent = initial.join(" ");
       document.getElementById("finalConfig").textContent = final.join(" ");
 
-      // Περίοδος και Ομάδα
-      updatePeriodGroup();
-
-      // Σύμβολο στοιχείου και δείκτης
       document.getElementById("elementSymbol").setAttribute("data-z", Z);
     }
 
-    function updatePeriodGroup() {
-      const filled = positions.filter(p => p.actualElectrons > 0);
-      const valence = filled[filled.length-1];
-
-      // Περίοδος
+    function updatePeriodGroup(Z) {
+      const filled = [];
+      for (const idx of fillOrder) {
+        const orb = positions[idx];
+        if (orb.filled > 0) filled.push(orb);
+      }
+      
+      const valence = filled[filled.length - 1]; // Τελευταίο γεμάτο τροχιακό σύμφωνα με Aufbau
       const period = Math.max(...filled.map(p => parseInt(p.label)));
+      
       document.getElementById("periodValue").textContent = period;
-
-      // Ομάδα
-      let group = predictGroup(valence);
-      document.getElementById("groupValue").textContent = group;
+      document.getElementById("groupValue").textContent = predictGroup(valence, Z);
     }
 
-function updatePeriodGroup(Z) {
-  const filled = positions.filter(p => p.filled > 0); // Χρησιμοποιούμε τον πίνακα της αρχικής διαμόρφωσης
-  const valence = filled[filled.length - 1];
+    function predictGroup(valence, Z) {
+      const currentPeriod = parseInt(valence.label);
+      let sElectrons = 0, dElectrons = 0;
 
-  const period = Math.max(...filled.map(p => parseInt(p.label)));
-  document.getElementById("periodValue").textContent = period;
+      // Υπολογισμός s ηλεκτρονίων της τρέχουσας περιόδου
+      const sOrb = positions.find(p => 
+        p.type === 's' && parseInt(p.label) === currentPeriod
+      );
+      sElectrons = sOrb ? sOrb.filled : 0;
 
-  let group = predictGroup(valence, Z);
-  document.getElementById("groupValue").textContent = group;
-}
+      // Υπολογισμός d ηλεκτρονίων προηγούμενης περιόδου (για μεταβατικά μέταλλα)
+      if(valence.type === 'd') {
+        dElectrons = positions.filter(p => 
+          p.type === 'd' && parseInt(p.label) === currentPeriod - 1
+        ).reduce((sum, p) => sum + p.filled, 0);
+      }
+
+      // Προσδιορισμός ομάδας
+      if(valence.type === 's') {
+        return `${toRoman(sElectrons)}A ή ${sElectrons}`;
+      }
+      else if(valence.type === 'p') {
+        const pElectrons = positions.filter(p => 
+          p.type === 'p' && parseInt(p.label) === currentPeriod
+        ).reduce((sum, p) => sum + p.filled, 0);
+        
+        return `${toRoman(sElectrons + pElectrons)}A ή ${sElectrons + pElectrons + 10}`;
+      }
+      else if(valence.type === 'd') {
+        const total = sElectrons + dElectrons;
+        
+        // Ειδικές περιπτώσεις
+        if(total >= 8 && total <= 10) return "VIIIB ή 8-10";
+        if(total === 11) return "IB ή 11";
+        if(total === 12) return "IIB ή 12";
+        return `${toRoman(total)}B ή ${total}`;
+      }
+      
+      return '-';
+    }
+
     function toRoman(num) {
       const roman = { M: 1000, CM: 900, D: 500, CD: 400, C: 100, XC: 90, L: 50, XL: 40, X: 10, IX: 9, V: 5, IV: 4, I: 1 };
       let str = '';
@@ -397,6 +425,5 @@ function updatePeriodGroup(Z) {
       redraw();
     }
   </script>
-  <div id="canvasContainer"></div>
 </body>
 </html>
