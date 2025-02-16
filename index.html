@@ -172,7 +172,7 @@ const elementSymbols = {
     let columnColors = [];
     let electronCounter = 0;
 
-   function setup() {
+  function setup() {
   const canvas = createCanvas(canvasWidth, canvasHeight);
   canvas.parent('canvasContainer');
   textSize(12);
@@ -200,14 +200,15 @@ function drawTitleAndSymbol() {
   fill(0);
   text("Ηλεκτρονιακή δόμηση", canvasWidth / 2, 30);
 
-  // Σχεδίαση συμβόλου με δείκτη ατομικού αριθμού
+  // Σχεδίαση συμβόλου με δείκτη ατομικού αριθμού στη συνέχεια του τίτλου
   textAlign(LEFT, BASELINE);
   textSize(16);
   textStyle(BOLD);
   fill(0);
-  text(`${Z}`, canvasWidth / 2 - 40, 30); // Δείκτης ατομικού αριθμού αριστερά
+  const titleWidth = textWidth("Ηλεκτρονιακή δόμηση");
+  text(`${Z}`, canvasWidth / 2 + titleWidth / 2 + 5, 25); // Δείκτης ατομικού αριθμού αριστερά
   textSize(20);
-  text(`${elementSymbol}`, canvasWidth / 2 - 20, 30); // Σύμβολο στοιχείου
+  text(`${elementSymbol}`, canvasWidth / 2 + titleWidth / 2 + 20, 30); // Σύμβολο στοιχείου
 }
 
 function drawArrows() {
