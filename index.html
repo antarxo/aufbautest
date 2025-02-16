@@ -48,13 +48,6 @@ body {
   border: 2px solid cyan; /* Προσωρινό έγχρωμο περίγραμμα */
 }
 
-canvas { 
-  border: 2px solid #4CAF50;
-  border-radius: 10px;
-  width: 100%; /* Ίδιο πλάτος με το container */
-  margin: 0; /* Μείωση του πάνω και κάτω περιθωρίου */
-}
-
 #titleContainer {
   display: flex;
   justify-content: center;
@@ -84,6 +77,16 @@ canvas {
   font-weight: bold;
   margin-left: 5px;
   border: 2px solid yellow; /* Προσωρινό έγχρωμο περίγραμμα */
+}
+
+#contentContainer {
+  background-color: #f0f8ff; /* Ίδιο χρώμα με το καμβά */
+  width: 100%; /* Ίδιο πλάτος με το container */
+  height: 300px; /* Προσαρμοσμένο ύψος */
+  border: 2px solid #4CAF50; /* Προσωρινό έγχρωμο περίγραμμα */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
   </style>
 </head>
@@ -120,7 +123,7 @@ canvas {
           </tr>
         </table>
       </div>
-      <!-- Ο καμβάς θα δημιουργηθεί εδώ από το p5.js -->
+      <div id="contentContainer"></div>
     </div>
   </div>
 </body>
@@ -382,40 +385,32 @@ function updateTitleAndSymbol() {
 }
 
     function startFilling() {
-      resetDiagram();
-      const Z = parseInt(document.getElementById("atomicNumber").value);
-      electronCounter = Z;
+  const contentContainer = document.getElementById('contentContainer');
+  contentContainer.innerHTML = ''; // Καθαρισμός του container
 
-      // Κανονικό γέμισμα (Aufbau)
-      fillOrder.forEach(idx => {
-        const orb = positions[idx];
-        const capacity = maxElectrons[orb.type];
-        const fill = Math.min(electronCounter, capacity);
-        orb.filled = fill;
-        electronCounter -= fill;
-      });
+  // Δημιουργία περιεχομένων
+  const content = document.createElement('div');
+  content.style.width = '100%';
+  content.style.height = '100%';
+  content.style.display = 'flex';
+  content.style.flexDirection = 'column';
+  content.style.justifyContent = 'center';
+  content.style.alignItems = 'center';
 
-      // Αντιγραφή για αρχική διαμόρφωση
-      positions.forEach(p => p.actualElectrons = p.filled);
+  // Προσθήκη περιεχομένων
+  const box = document.createElement('div');
+  box.style.width = '50px';
+  box.style.height = '50px';
+  box.style.backgroundColor = '#4CAF50';
+  content.appendChild(box);
 
-      // Ενημέρωση της ομάδας πριν εφαρμοστούν οι εξαιρέσεις
-      updatePeriodGroup(Z);
+  contentContainer.appendChild(content);
+}
 
-      // Εφαρμογή εξαιρέσεων
-      if (exceptions[Z]) {
-        const { from, to, amount } = exceptions[Z];
-        const fromOrb = positions.find(p => p.label === from);
-        const toOrb = positions.find(p => p.label === to);
-        if (fromOrb && toOrb) {
-          fromOrb.actualElectrons -= amount;
-          toOrb.actualElectrons += amount;
-        }
-      }
-
-      markOuterShell();
-      updateDisplay(Z);
-      redraw();
-    }
+function resetDiagram() {
+  const contentContainer = document.getElementById('contentContainer');
+  contentContainer.innerHTML = ''; // Καθαρισμός του container
+}
 
     function markOuterShell() {
       const filled = positions.filter(p => p.actualElectrons > 0);
