@@ -299,17 +299,21 @@ const elementSymbols = {
       break;
     }
   }
+
+  // Προσθήκη καθυστέρησης για τα κόκκινα βέλη
   for (let i = 0; i < lastFilledIndex; i++) {
-    let from = positions[fillOrder[i]];
-    let to = positions[fillOrder[i + 1]];
-    if (to.y > from.y) {
-      drawArrow(
-        from.x + boxWidth + xOffset,
-        from.y + 10,
-        to.x + boxWidth + xOffset,
-        to.y + 10
-      );
-    }
+    setTimeout(() => {
+      let from = positions[fillOrder[i]];
+      let to = positions[fillOrder[i + 1]];
+      if (to.y > from.y) {
+        drawArrow(
+          from.x + boxWidth + xOffset,
+          from.y + 10,
+          to.x + boxWidth + xOffset,
+          to.y + 10
+        );
+      }
+    }, i * 500); // Καθυστέρηση 500ms μεταξύ των βελών
   }
 }
 
