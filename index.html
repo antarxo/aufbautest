@@ -173,21 +173,98 @@ const elementSymbols = {
     let electronCounter = 0;
 
     function setup() {
-      const canvas = createCanvas(canvasWidth, canvasHeight);
-      canvas.parent('canvasContainer');
-      textSize(12);
-      textFont("Verdana");
-      initColumnColors();
-      calculatePositions();
-      noLoop();
-    }
+  const canvas = createCanvas(canvasWidth, canvasHeight);
+  canvas.parent('canvasContainer');
+  textSize(12);
+  textFont("Verdana");
+  initColumnColors();
+  calculatePositions();
+  noLoop();
+}
 
-    function draw() {
-      background(255);
-      drawPeriodLabels();
-      drawOrbitals();
-      drawArrows();
+function draw() {
+  background(255);
+  drawPeriodLabels();
+  drawOrbitals();
+  drawArrows();
+  drawTitleAndSymbol();
+}
+
+function drawTitleAndSymbol() {
+  const Z = parseInt(document.getElementById("atomicNumber").value);
+  const elementSymbol = elementSymbols[Z] || '';
+
+  // Σχεδίαση τίτλου
+  textAlign(CENTER, CENTER);
+  textSize(20);
+  fill(0);
+  text("Ηλεκτρονιακή δόμηση", canvasWidth / 2, 30);
+
+  // Σχεδίαση συμβόλου με δείκτη ατομικού αριθμού στην κάτω αριστερή γωνία
+  textAlign(LEFT, BASELINE);
+  textSize(16);
+  textStyle(BOLD);
+  fill(0);
+  text(`${elementSymbol}${Z}`, 10, canvasHeight - 10);
+}
+
+function drawArrows() {
+  const xOffset = 50; // Προσθήκη οριζόντιου offset 50 pixels
+
+  stroke(150);
+  strokeWeight(2);
+  drawingContext.setLineDash([5, 5]);
+  for (let i = 0; i < fillOrder.length - 1; i++) {
+    let from = positions[fillOrder[i]];
+    let to = positions[fillOrder[i + 1]];
+    if (to.y > from.y) {
+      drawArrow(
+        from.x + boxWidth + xOffset,
+        from.y + 10,
+        to.x + boxWidth + xOffset,
+        to.y + 10
+      );
     }
+  }
+
+  stroke(255, 0, 0);
+  drawingContext.setLineDash([]);
+  let lastFilledIndex = -1;
+  for (let i = fillOrder.length - 1; i >= 0; i--) {
+    let idx = fillOrder[i];
+    if (positions[idx].filled > 0) {
+      lastFilledIndex = i;
+      break;
+    }
+  }
+
+  // Προσθήκη καθυστέρησης για τα κόκκινα βέλη
+  for (let i = 0; i < lastFilledIndex; i++) {
+    setTimeout(() => {
+      let from = positions[fillOrder[i]];
+      let to = positions[fillOrder[i + 1]];
+      if (to.y > from.y) {
+        drawArrow(
+          from.x + boxWidth + xOffset,
+          from.y + 10,
+          to.x + boxWidth + xOffset,
+          to.y + 10
+        );
+      }
+    }, i * 500); // Καθυστέρηση 500ms μεταξύ των βελών
+  }
+}
+
+function drawArrow(x1, y1, x2, y2) {
+  line(x1, y1, x2, y2);
+  let angle = atan2(y2 - y1, x2 - x1);
+  push();
+  translate(x2, y2);
+  rotate(angle);
+  let arrowSize = 7;
+  triangle(-arrowSize, arrowSize / 2, -arrowSize, -arrowSize / 2, 0, 0);
+  pop();
+}
 
     function initColumnColors() {
       columnColors = [
@@ -270,63 +347,7 @@ const elementSymbols = {
     }
   });
 }
-    function drawArrows() {
-  const xOffset = 50; // Προσθήκη οριζόντιου offset 50 pixels
 
-  stroke(150);
-  strokeWeight(2);
-  drawingContext.setLineDash([5, 5]);
-  for (let i = 0; i < fillOrder.length - 1; i++) {
-    let from = positions[fillOrder[i]];
-    let to = positions[fillOrder[i + 1]];
-    if (to.y > from.y) {
-      drawArrow(
-        from.x + boxWidth + xOffset,
-        from.y + 10,
-        to.x + boxWidth + xOffset,
-        to.y + 10
-      );
-    }
-  }
-
-  stroke(255, 0, 0);
-  drawingContext.setLineDash([]);
-  let lastFilledIndex = -1;
-  for (let i = fillOrder.length - 1; i >= 0; i--) {
-    let idx = fillOrder[i];
-    if (positions[idx].filled > 0) {
-      lastFilledIndex = i;
-      break;
-    }
-  }
-
-  // Προσθήκη καθυστέρησης για τα κόκκινα βέλη
-  for (let i = 0; i < lastFilledIndex; i++) {
-    setTimeout(() => {
-      let from = positions[fillOrder[i]];
-      let to = positions[fillOrder[i + 1]];
-      if (to.y > from.y) {
-        drawArrow(
-          from.x + boxWidth + xOffset,
-          from.y + 10,
-          to.x + boxWidth + xOffset,
-          to.y + 10
-        );
-      }
-    }, i * 500); // Καθυστέρηση 500ms μεταξύ των βελών
-  }
-}
-
-function drawArrow(x1, y1, x2, y2) {
-  line(x1, y1, x2, y2);
-  let angle = atan2(y2 - y1, x2 - x1);
-  push();
-  translate(x2, y2);
-  rotate(angle);
-  let arrowSize = 7;
-  triangle(-arrowSize, arrowSize / 2, -arrowSize, -arrowSize / 2, 0, 0);
-  pop();
-}
     function startFilling() {
       resetDiagram();
       const Z = parseInt(document.getElementById("atomicNumber").value);
