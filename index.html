@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Κανόνας Aufbau</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+ <!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Κανόνας Aufbau</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <style>
     body { 
       text-align: center; 
@@ -18,11 +25,7 @@
       align-items: center;
       margin: 0 auto;
       width: 400px; /* Ίδιο πλάτος με τον καμβά και τον πίνακα */
-    }
-
-    h1 {
-      width: 100%; /* Ίδιο πλάτος με το container */
-      text-align: center;
+      border: 2px solid red; /* Προσωρινό έγχρωμο περίγραμμα */
     }
 
     #controls {
@@ -31,36 +34,7 @@
       align-items: center;
       width: 100%; /* Ίδιο πλάτος με το container */
       margin: 10px 0;
-    }
-
-    #controls label, #controls input, #controls button {
-      margin: 0 5px;
-    }
-
-    #canvasContainer {
-      display: flex;
-      justify-content: center;
-      margin: 20px 0;
-    }
-
-canvas { 
-  border: 2px solid #4CAF50;
-  border-radius: 10px;
-  padding-left: 10px; /* Προσθήκη αριστερού περιθωρίου */
-}
-
-
-    button { 
-      padding: 10px 20px; 
-      background-color: #4CAF50; 
-      color: white; 
-      border: none; 
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #45a049;
+      border: 2px solid blue; /* Προσωρινό έγχρωμο περίγραμμα */
     }
 
     #infoTable {
@@ -69,90 +43,51 @@ canvas {
       width: 100%; /* Ίδιο πλάτος με το container */
       box-shadow: 0 0 15px rgba(0,0,0,0.2);
       background-color: white;
+      border: 2px solid green; /* Προσωρινό έγχρωμο περίγραμμα */
     }
 
-    #infoTable th, #infoTable td {
-      border: 2px solid #4CAF50;
-      padding: 8px;
-      text-align: center;
+    #titleContainer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+      border: 2px solid orange; /* Προσωρινό έγχρωμο περίγραμμα */
     }
 
-    #infoTable th {
-      background-color: #4CAF50;
-      color: white;
-      font-size: 14px;
+    #titleTable {
+      border-collapse: collapse;
+      border: 2px solid purple; /* Προσωρινό έγχρωμο περίγραμμα */
     }
 
-    #infoTable td {
-      font-size: 12px;
+    #titleTable td {
+      border: none;
+      padding: 0;
     }
 
-    .element-symbol {
-      font-size: 24px;
+    #titleText {
+      font-size: 20px;
       font-weight: bold;
-      color: darkgreen;
-      margin-right: 10px;
+      border: 2px solid pink; /* Προσωρινό έγχρωμο περίγραμμα */
     }
 
-    .element-symbol::before {
-      content: attr(data-z);
-      font-size: 14px;
-      color: red;
-      vertical-align: baseline;
-      margin-right: 5px;
+    #elementSymbolText {
+      font-size: 16px;
+      font-weight: bold;
+      margin-left: 5px;
+      border: 2px solid yellow; /* Προσωρινό έγχρωμο περίγραμμα */
     }
-    #titleContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 20px;
-}
 
-#titleTable {
-  border-collapse: collapse;
-}
+    #canvasContainer {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+      border: 2px solid cyan; /* Προσωρινό έγχρωμο περίγραμμα */
+    }
 
-#titleTable td {
-  border: none;
-  padding: 0;
-}
-
-#titleText {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-#elementSymbolText {
-  font-size: 16px;
-  font-weight: bold;
-  margin-left: 5px;
-}
-    #titleContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-#titleTable {
-  border-collapse: collapse;
-}
-
-#titleTable td {
-  border: none;
-  padding: 0;
-}
-
-#titleText {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-#elementSymbolText {
-  font-size: 16px;
-  font-weight: bold;
-  margin-left: 5px;
-}
+    canvas { 
+      border: 2px solid #4CAF50;
+      border-radius: 10px;
+    }
   </style>
 </head>
 <body>
@@ -191,6 +126,7 @@ canvas {
     <div id="canvasContainer"></div>
   </div>
 </body>
+
   <script>
     const periods = [
       { label: "K", orbitals: ["1s"] },
