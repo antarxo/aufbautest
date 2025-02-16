@@ -119,7 +119,6 @@ body {
     <div id="contentContainer"></div>
   </div>
 </body>
-
   <script>
     const periods = [
       { label: "K", orbitals: ["1s"] },
@@ -376,7 +375,7 @@ function updateTitleAndSymbol() {
   });
 }
 
-   function startFilling() {
+  function startFilling() {
   const contentContainer = document.getElementById('contentContainer');
   contentContainer.innerHTML = ''; // Καθαρισμός του container
 
@@ -399,6 +398,10 @@ function updateTitleAndSymbol() {
   contentContainer.appendChild(content);
 }
 
+function resetDiagram() {
+  const contentContainer = document.getElementById('contentContainer');
+  contentContainer.innerHTML = ''; // Καθαρισμός του container
+}
 function resetDiagram() {
   const contentContainer = document.getElementById('contentContainer');
   contentContainer.innerHTML = ''; // Καθαρισμός του container
