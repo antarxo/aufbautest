@@ -402,6 +402,14 @@ function predictGroup(valence, Z) {
       return `${toRoman(total - 10)}B ή ${total}`;
     }
   }
+  else if(valence.type === 'f') {
+    const n = parseInt(valence.label.charAt(0));
+    if (n === 4) {
+      return `${valence.filled}ο μέλος Λανθανιδών`;
+    } else if (n === 5) {
+      return `${valence.filled}ο μέλος Ακτινιδών`;
+    }
+  }
   
   return '-';
 }
