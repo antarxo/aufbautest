@@ -360,7 +360,7 @@ function updatePeriodGroup(Z) {
   document.getElementById("groupValue").textContent = predictGroup(valence, Z);
 }
 
-    function predictGroup(valence, Z) {
+function predictGroup(valence, Z) {
   const currentPeriod = parseInt(valence.label);
   let sElectrons = 0, dElectrons = 0;
 
@@ -391,13 +391,16 @@ function updatePeriodGroup(Z) {
     return `${toRoman(sElectrons + pElectrons)}A ή ${sElectrons + pElectrons + 10}`;
   }
   else if(valence.type === 'd') {
-    const total = sElectrons + dElectrons;
-    
-    // Ειδικές περιπτώσεις
-    if(total >= 8 && total <= 10) return "VIIIB ή 8-10";
-    if(total === 11) return "IB ή 11";
-    if(total === 12) return "IIB ή 12";
-    return `${toRoman(total)}B ή ${total}`;
+    const m = valence.filled;
+    const total = m + 2;
+
+    if (total < 8) {
+      return `${toRoman(total)}B ή ${total}`;
+    } else if (total >= 8 && total <= 10) {
+      return "VIIIB ή 8-10";
+    } else if (total > 10) {
+      return `${toRoman(total - 10)}B ή ${total - 10}`;
+    }
   }
   
   return '-';
