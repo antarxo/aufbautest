@@ -244,14 +244,16 @@ const elementSymbols = {
    function drawOrbitals() {
   noStroke();
   textAlign(CENTER, CENTER);
-  const xOffset = 50; // Προσθήκη αριστερού περιθωρίου
+  const xOffset = 10; // Προσθήκη αριστερού περιθωρίου
 
   positions.forEach(pos => {
+    const boxWidthAdjusted = Math.max(boxWidth, textWidth(pos.label) + 20); // Προσαρμογή πλάτους ορθογωνίου
+
     fill(pos.isGray ? 200 : columnColors[pos.col]);
-    rect(pos.x + xOffset, pos.y, boxWidth, boxHeight);
+    rect(pos.x + xOffset, pos.y, boxWidthAdjusted, boxHeight);
 
     fill(0);
-    text(pos.label, pos.x + boxWidth / 2 + xOffset, pos.y + boxHeight / 2);
+    text(pos.label, pos.x + boxWidthAdjusted / 2 + xOffset, pos.y + boxHeight / 2);
 
     if (pos.actualElectrons > 0) {
       textSize(14);
@@ -262,7 +264,7 @@ const elementSymbols = {
         'd': color(0, 0, 255),
         'f': color(255, 165, 0)
       }[pos.type]);
-      text(numberToExponent(pos.actualElectrons), pos.x + boxWidth - 15 + xOffset, pos.y + 10);
+      text(numberToExponent(pos.actualElectrons), pos.x + boxWidthAdjusted - 15 + xOffset, pos.y + 10);
       textStyle(NORMAL);
     }
   });
