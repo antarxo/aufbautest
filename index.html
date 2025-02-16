@@ -101,6 +101,32 @@ canvas {
       vertical-align: baseline;
       margin-right: 5px;
     }
+    #titleContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+#titleTable {
+  border-collapse: collapse;
+}
+
+#titleTable td {
+  border: none;
+  padding: 0;
+}
+
+#titleText {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#elementSymbolText {
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 5px;
+}
   </style>
 </head>
 <body>
@@ -127,10 +153,18 @@ canvas {
       </tr>
     </table>
 
-    <div id="canvasContainer"></div>
+    <div id="canvasContainer">
+      <div id="titleContainer">
+        <table id="titleTable">
+          <tr>
+            <td id="titleText">Ηλεκτρονιακή δόμηση</td>
+            <td id="elementSymbolText"></td>
+          </tr>
+        </table>
+      </div>
+    </div>
   </div>
 </body>
-
   <script>
     const periods = [
       { label: "K", orbitals: ["1s"] },
@@ -187,28 +221,15 @@ function draw() {
   drawPeriodLabels();
   drawOrbitals();
   drawArrows();
-  drawTitleAndSymbol();
+  updateTitleAndSymbol();
 }
 
-function drawTitleAndSymbol() {
+function updateTitleAndSymbol() {
   const Z = parseInt(document.getElementById("atomicNumber").value);
   const elementSymbol = elementSymbols[Z] || '';
 
-  // Σχεδίαση τίτλου
-  textAlign(CENTER, CENTER);
-  textSize(20);
-  fill(0);
-  text("Ηλεκτρονιακή δόμηση", canvasWidth / 2, 30);
-
-  // Σχεδίαση συμβόλου με δείκτη ατομικού αριθμού στη συνέχεια του τίτλου
-  textAlign(LEFT, BASELINE);
-  textSize(16);
-  textStyle(BOLD);
-  fill(0);
-  const titleWidth = textWidth("Ηλεκτρονιακή δόμηση");
-  text(`${Z}`, canvasWidth / 2 + titleWidth / 2 + 5, 25); // Δείκτης ατομικού αριθμού αριστερά
-  textSize(20);
-  text(`${elementSymbol}`, canvasWidth / 2 + titleWidth / 2 + 20, 30); // Σύμβολο στοιχείου
+  // Ενημέρωση του πίνακα τίτλου
+  document.getElementById("elementSymbolText").textContent = `${Z} ${elementSymbol}`;
 }
 
 function drawArrows() {
