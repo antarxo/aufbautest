@@ -6,6 +6,101 @@
   <title>Κανόνας Aufbau</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <style>
+    body { 
+      text-align: center; 
+      font-family: Verdana, sans-serif; 
+      background-color: #f0f8ff;
+    }
+
+    #mainContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0 auto;
+      width: 400px; /* Ίδιο πλάτος με τον καμβά και τον πίνακα */
+    }
+
+    h1 {
+      width: 100%; /* Ίδιο πλάτος με το container */
+      text-align: center;
+    }
+
+    #controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%; /* Ίδιο πλάτος με το container */
+      margin: 10px 0;
+    }
+
+    #controls label, #controls input, #controls button {
+      margin: 0 5px;
+    }
+
+    #canvasContainer {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    canvas { 
+      border: 2px solid #4CAF50;
+      border-radius: 10px;
+    }
+
+    button { 
+      padding: 10px 20px; 
+      background-color: #4CAF50; 
+      color: white; 
+      border: none; 
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #infoTable {
+      margin: 20px 0;
+      border-collapse: collapse;
+      width: 100%; /* Ίδιο πλάτος με το container */
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      background-color: white;
+    }
+
+    #infoTable th, #infoTable td {
+      border: 2px solid #4CAF50;
+      padding: 8px;
+      text-align: center;
+    }
+
+    #infoTable th {
+      background-color: #4CAF50;
+      color: white;
+      font-size: 14px;
+    }
+
+    #infoTable td {
+      font-size: 12px;
+    }
+
+    .element-symbol {
+      font-size: 24px;
+      font-weight: bold;
+      color: darkgreen;
+      margin-right: 10px;
+    }
+
+    .element-symbol::before {
+      content: attr(data-z);
+      font-size: 14px;
+      color: red;
+      vertical-align: baseline;
+      margin-right: 5px;
+    }
+  </style>
+</head>
 <body>
   <div id="mainContainer">
     <h1 style="color: #2E8B57;">Κανόνας Aufbau <span id="elementSymbol" class="element-symbol" data-z=""></span></h1>
@@ -33,124 +128,6 @@
     <div id="canvasContainer"></div>
   </div>
 </body>
-body { 
-  text-align: center; 
-  font-family: Verdana, sans-serif; 
-  background-color: #f0f8ff;
-}
-
-#mainContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0 auto;
-  width: 400px; /* Ίδιο πλάτος με τον καμβά και τον πίνακα */
-}
-
-h1 {
-  width: 100%; /* Ίδιο πλάτος με το container */
-  text-align: center;
-}
-
-#controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%; /* Ίδιο πλάτος με το container */
-  margin: 10px 0;
-}
-
-#controls label, #controls input, #controls button {
-  margin: 0 5px;
-}
-
-#canvasContainer {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
-}
-
-canvas { 
-  border: 2px solid #4CAF50;
-  border-radius: 10px;
-}
-
-button { 
-  padding: 10px 20px; 
-  background-color: #4CAF50; 
-  color: white; 
-  border: none; 
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #45a049;
-}
-
-#infoTable {
-  margin: 20px 0;
-  border-collapse: collapse;
-  width: 100%; /* Ίδιο πλάτος με το container */
-  box-shadow: 0 0 15px rgba(0,0,0,0.2);
-  background-color: white;
-}
-
-#infoTable th, #infoTable td {
-  border: 2px solid #4CAF50;
-  padding: 8px;
-  text-align: center;
-}
-
-#infoTable th {
-  background-color: #4CAF50;
-  color: white;
-  font-size: 14px;
-}
-
-#infoTable td {
-  font-size: 12px;
-}
-
-.element-symbol {
-  font-size: 24px;
-  font-weight: bold;
-  color: darkgreen;
-  margin-right: 10px;
-}
-
-.element-symbol::before {
-  content: attr(data-z);
-  font-size: 14px;
-  color: red;
-  vertical-align: baseline;
-  margin-right: 5px;
-}
-</head>
-<body>
-  <h1 style="color: #2E8B57;">Κανόνας Aufbau <span id="elementSymbol" class="element-symbol" data-z=""></span></h1>
-  <div>
-    <label for="atomicNumber" style="font-size: 16px;">Z:</label>
-    <input type="number" id="atomicNumber" min="1" max="118" value="1" style="padding: 5px;">
-    <button onclick="startFilling()">Έναρξη</button>
-    <button onclick="resetDiagram()">Reset</button>
-  </div>
-
-  <table id="infoTable">
-    <tr>
-      <th colspan="2">Περίοδος: <span id="periodValue">-</span> | Ομάδα: <span id="groupValue">-</span></th>
-    </tr>
-    <tr>
-      <td><strong>Αρχική Διαμόρφωση</strong></td>
-      <td id="initialConfig">-</td>
-    </tr>
-    <tr>
-      <td><strong>Τελική Διαμόρφωση</strong></td>
-      <td id="finalConfig">-</td>
-    </tr>
-  </table>
-
-  <div id="canvasContainer"></div>
 
   <script>
     const periods = [
