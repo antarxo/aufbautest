@@ -222,25 +222,26 @@ const elementSymbols = {
     }
 
     function drawPeriodLabels() {
-      textAlign(RIGHT, CENTER);
-      fill(0);
-      textSize(14);
-      textStyle(BOLD);
+  textAlign(RIGHT, CENTER);
+  fill(0);
+  textSize(14);
+  textStyle(BOLD);
 
-      const periodElectrons = new Array(periods.length).fill(0);
-      positions.forEach(pos => {
-        const periodIndex = periods.findIndex(p => p.orbitals.includes(pos.label));
-        if (periodIndex !== -1) periodElectrons[periodIndex] += pos.actualElectrons;
-      });
+  const xOffset = 10; // Προσθήκη αριστερού περιθωρίου
 
-      for (let i = 0; i < periods.length; i++) {
-        let y = 50 + i * verticalSpacing;
-        const electrons = periodElectrons[i];
-        text(`${periods[i].label}${electrons > 0 ? ` (${electrons})` : ''}`, periodLabelWidth - 10, y + 17);
-      }
-      textStyle(NORMAL);
-    }
+  const periodElectrons = new Array(periods.length).fill(0);
+  positions.forEach(pos => {
+    const periodIndex = periods.findIndex(p => p.orbitals.includes(pos.label));
+    if (periodIndex !== -1) periodElectrons[periodIndex] += pos.actualElectrons;
+  });
 
+  for (let i = 0; i < periods.length; i++) {
+    let y = 50 + i * verticalSpacing;
+    const electrons = periodElectrons[i];
+    text(`${periods[i].label}${electrons > 0 ? ` (${electrons})` : ''}`, periodLabelWidth - 10 + xOffset, y + 17);
+  }
+  textStyle(NORMAL);
+}
    function drawOrbitals() {
   noStroke();
   textAlign(CENTER, CENTER);
