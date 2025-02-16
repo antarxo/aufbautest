@@ -1,729 +1,575 @@
 <!DOCTYPE html>
 <html lang="el">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Κανόνας Aufbau</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <style>
-      body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        min-height: 100vh;
-        margin: 0;
-        font-family: Verdana, sans-serif;
-        background-color: #f0f8ff;
-      }
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Κανόνας Aufbau</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <style>
+    body { 
+      text-align: center; 
+      font-family: Verdana, sans-serif; 
+      background-color: #f0f8ff;
+    }
 
-      #mainContainer {
-        width: 90%;
-        max-width: 800px;
-        padding: 20px;
-        box-sizing: border-box;
-      }
+    #mainContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0 auto;
+      width: 400px; /* Ίδιο πλάτος με τον καμβά και τον πίνακα */
+    }
 
-      h1 {
-        color: #2e8b57;
-        text-align: center;
-        margin: 20px 0;
-        font-size: 1.8em;
-      }
+    h1 {
+      width: 100%; /* Ίδιο πλάτος με το container */
+      text-align: center;
+    }
 
-      #controls {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin: 20px 0;
-        flex-wrap: wrap;
-      }
+    #controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%; /* Ίδιο πλάτος με το container */
+      margin: 10px 0;
+    }
 
-      #controls input {
-        width: 70px;
-        padding: 8px;
-        text-align: center;
-        border: 1px solid #4caf50;
-        border-radius: 4px;
-      }
+    #controls label, #controls input, #controls button {
+      margin: 0 5px;
+    }
 
-      button {
-        padding: 10px 25px;
-        background-color: #4caf50;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        font-size: 0.95em;
-      }
+    #canvasContainer {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
 
-      button:hover {
-        background-color: #45a049;
-      }
+canvas { 
+  border: 2px solid #4CAF50;
+  border-radius: 10px;
+  padding-left: 10px; /* Προσθήκη αριστερού περιθωρίου */
+}
 
-      #canvasContainer {
-        margin: 20px 0;
-        display: flex;
-        justify-content: center;
-        background: white;
-        padding: 15px;
-        border-radius: 10px;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-      }
 
-      canvas {
-        border: 2px solid #4caf50;
-        border-radius: 8px;
-      }
+    button { 
+      padding: 10px 20px; 
+      background-color: #4CAF50; 
+      color: white; 
+      border: none; 
+      border-radius: 5px;
+      cursor: pointer;
+    }
 
-      #infoTable {
-        width: 100%;
-        margin: 25px 0;
-        border-collapse: collapse;
-        background: white;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-      }
+    button:hover {
+      background-color: #45a049;
+    }
 
-      #infoTable th {
-        background-color: #4caf50;
-        color: white;
-        padding: 12px;
-        font-size: 0.95em;
-      }
+    #infoTable {
+      margin: 20px 0;
+      border-collapse: collapse;
+      width: 100%; /* Ίδιο πλάτος με το container */
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      background-color: white;
+    }
 
-      #infoTable td {
-        padding: 12px;
-        border: 1px solid #e0e0e0;
-        font-size: 0.9em;
-      }
+    #infoTable th, #infoTable td {
+      border: 2px solid #4CAF50;
+      padding: 8px;
+      text-align: center;
+    }
 
-      .element-symbol {
-        font-size: 1.4em;
-        color: #2e8b57;
-        margin-left: 8px;
-        vertical-align: middle;
-      }
+    #infoTable th {
+      background-color: #4CAF50;
+      color: white;
+      font-size: 14px;
+    }
 
-      #titleContainer {
-        margin: 20px 0;
-        text-align: center;
-        font-size: 1.1em;
-        color: #2e8b57;
-        font-weight: bold;
-      }
+    #infoTable td {
+      font-size: 12px;
+    }
 
-      .orbital-label {
-        font-size: 0.85em;
-        letter-spacing: 0.5px;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="mainContainer">
-      <h1>
-        Κανόνας Aufbau
-        <span
-          id="elementSymbol"
-          class="element-symbol"
-          data-z=""
-        ></span>
-      </h1>
+    .element-symbol {
+      font-size: 24px;
+      font-weight: bold;
+      color: darkgreen;
+      margin-right: 10px;
+    }
 
-      <div id="controls">
-        <label for="atomicNumber">Ατομικός Αριθμός (Z):</label>
-        <input type="number" id="atomicNumber" min="1" max="118" value="1" />
-        <button onclick="startFilling()">Εμφάνιση</button>
-        <button onclick="resetDiagram()">Επαναφορά</button>
-      </div>
+    .element-symbol::before {
+      content: attr(data-z);
+      font-size: 14px;
+      color: red;
+      vertical-align: baseline;
+      margin-right: 5px;
+    }
+    #titleContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
 
-      <table id="infoTable">
-        <tr>
-          <th colspan="2">Πληροφορίες Στοιχείου</th>
-        </tr>
-        <tr>
-          <td>Περίοδος</td>
-          <td id="periodValue">-</td>
-        </tr>
-        <tr>
-          <td>Ομάδα</td>
-          <td id="groupValue">-</td>
-        </tr>
-        <tr>
-          <td>Αρχική Διαμόρφωση</td>
-          <td id="initialConfig" class="orbital-label">-</td>
-        </tr>
-        <tr>
-          <td>Τελική Διαμόρφωση</td>
-          <td id="finalConfig" class="orbital-label">-</td>
-        </tr>
-      </table>
+#titleTable {
+  border-collapse: collapse;
+}
 
-      <div id="canvasContainer"></div>
+#titleTable td {
+  border: none;
+  padding: 0;
+}
+
+#titleText {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#elementSymbolText {
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 5px;
+}
+    #titleContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+#titleTable {
+  border-collapse: collapse;
+}
+
+#titleTable td {
+  border: none;
+  padding: 0;
+}
+
+#titleText {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#elementSymbolText {
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 5px;
+}
+  </style>
+</head>
+<body>
+  <div id="mainContainer">
+    <h1 style="color: #2E8B57;">Κανόνας Aufbau <span id="elementSymbol" class="element-symbol" data-z=""></span></h1>
+    <div id="controls">
+      <label for="atomicNumber" style="font-size: 16px;">Z:</label>
+      <input type="number" id="atomicNumber" min="1" max="118" value="1" style="padding: 5px;">
+      <button onclick="startFilling()">Έναρξη</button>
+      <button onclick="resetDiagram()">Reset</button>
     </div>
 
-    <script>
-      const periods = [
-        { label: "K", orbitals: ["1s"] },
-        { label: "L", orbitals: ["2s", "2p"] },
-        { label: "M", orbitals: ["3s", "3p", "3d"] },
-        { label: "N", orbitals: ["4s", "4p", "4d", "4f"] },
-        { label: "O", orbitals: ["5s", "5p", "5d", "5f"] },
-        { label: "P", orbitals: ["6s", "6p", "6d"] },
-        { label: "Q", orbitals: ["7s", "7p"] }
+    <table id="infoTable">
+      <tr>
+        <th colspan="2">Περίοδος: <span id="periodValue">-</span> | Ομάδα: <span id="groupValue">-</span></th>
+      </tr>
+      <tr>
+        <td><strong>Αρχική Διαμόρφωση</strong></td>
+        <td id="initialConfig">-</td>
+      </tr>
+      <tr>
+        <td><strong>Τελική Διαμόρφωση</strong></td>
+        <td id="finalConfig">-</td>
+      </tr>
+    </table>
+
+    <div id="titleContainer">
+      <table id="titleTable">
+        <tr>
+          <td id="titleText">Ηλεκτρονιακή δόμηση</td>
+          <td id="elementSymbolText"></td>
+        </tr>
+      </table>
+    </div>
+
+    <div id="canvasContainer"></div>
+  </div>
+</body>
+  <script>
+    const periods = [
+      { label: "K", orbitals: ["1s"] },
+      { label: "L", orbitals: ["2s", "2p"] },
+      { label: "M", orbitals: ["3s", "3p", "3d"] },
+      { label: "N", orbitals: ["4s", "4p", "4d", "4f"] },
+      { label: "O", orbitals: ["5s", "5p", "5d", "5f"] },
+      { label: "P", orbitals: ["6s", "6p", "6d"] },
+      { label: "Q", orbitals: ["7s", "7p"] }
+    ];
+
+    const maxElectrons = { "s": 2, "p": 6, "d": 10, "f": 14 };
+    const boxWidth = 60, boxHeight = 40, verticalSpacing = 45;
+    const horizontalGap = 5;
+    const canvasWidth = 420;
+    const canvasHeight = 400;
+    const periodLabelWidth = 50;
+    const fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18]; // Σωστή σειρά
+    const exceptions = {
+      24: { from: "4s", to: "3d", amount: 1 },  // Cr
+      29: { from: "4s", to: "3d", amount: 1 },  // Cu
+      47: { from: "5s", to: "4d", amount: 1 },  // Ag
+      79: { from: "6s", to: "5d", amount: 1 }   // Au
+    };
+const elementSymbols = {
+  1: "H", 2: "He", 3: "Li", 4: "Be", 5: "B", 6: "C", 7: "N", 8: "O", 9: "F", 10: "Ne",
+  11: "Na", 12: "Mg", 13: "Al", 14: "Si", 15: "P", 16: "S", 17: "Cl", 18: "Ar",
+  19: "K", 20: "Ca", 21: "Sc", 22: "Ti", 23: "V", 24: "Cr", 25: "Mn", 26: "Fe", 27: "Co", 28: "Ni", 29: "Cu", 30: "Zn",
+  31: "Ga", 32: "Ge", 33: "As", 34: "Se", 35: "Br", 36: "Kr",
+  37: "Rb", 38: "Sr", 39: "Y", 40: "Zr", 41: "Nb", 42: "Mo", 43: "Tc", 44: "Ru", 45: "Rh", 46: "Pd", 47: "Ag", 48: "Cd",
+  49: "In", 50: "Sn", 51: "Sb", 52: "Te", 53: "I", 54: "Xe",
+  55: "Cs", 56: "Ba", 57: "La", 58: "Ce", 59: "Pr", 60: "Nd", 61: "Pm", 62: "Sm", 63: "Eu", 64: "Gd", 65: "Tb", 66: "Dy", 67: "Ho", 68: "Er", 69: "Tm", 70: "Yb", 71: "Lu",
+  72: "Hf", 73: "Ta", 74: "W", 75: "Re", 76: "Os", 77: "Ir", 78: "Pt", 79: "Au", 80: "Hg",
+  81: "Tl", 82: "Pb", 83: "Bi", 84: "Po", 85: "At", 86: "Rn",
+  87: "Fr", 88: "Ra", 89: "Ac", 90: "Th", 91: "Pa", 92: "U", 93: "Np", 94: "Pu", 95: "Am", 96: "Cm", 97: "Bk", 98: "Cf", 99: "Es", 100: "Fm", 101: "Md", 102: "No", 103: "Lr",
+  104: "Rf", 105: "Db", 106: "Sg", 107: "Bh", 108: "Hs", 109: "Mt", 110: "Ds", 111: "Rg", 112: "Cn", 113: "Nh", 114: "Fl", 115: "Mc", 116: "Lv", 117: "Ts", 118: "Og"
+};
+    let positions = [];
+    let columnColors = [];
+    let electronCounter = 0;
+
+  function setup() {
+  const canvas = createCanvas(canvasWidth, canvasHeight);
+  canvas.parent('canvasContainer');
+  textSize(12);
+  textFont("Verdana");
+  initColumnColors();
+  calculatePositions();
+  noLoop();
+}
+
+function draw() {
+  background(255);
+  drawPeriodLabels();
+  drawOrbitals();
+  drawArrows();
+  updateTitleAndSymbol();
+}
+
+function updateTitleAndSymbol() {
+  const Z = parseInt(document.getElementById("atomicNumber").value);
+  const elementSymbol = elementSymbols[Z] || '';
+
+  // Ενημέρωση του πίνακα τίτλου
+  document.getElementById("elementSymbolText").textContent = `${Z} ${elementSymbol}`;
+}
+
+function drawArrows() {
+  const xOffset = 50; // Προσθήκη οριζόντιου offset 50 pixels
+
+  stroke(150);
+  strokeWeight(2);
+  drawingContext.setLineDash([5, 5]);
+  for (let i = 0; i < fillOrder.length - 1; i++) {
+    let from = positions[fillOrder[i]];
+    let to = positions[fillOrder[i + 1]];
+    if (to.y > from.y) {
+      drawArrow(
+        from.x + boxWidth + xOffset,
+        from.y + 10,
+        to.x + boxWidth + xOffset,
+        to.y + 10
+      );
+    }
+  }
+
+  stroke(255, 0, 0);
+  drawingContext.setLineDash([]);
+  let lastFilledIndex = -1;
+  for (let i = fillOrder.length - 1; i >= 0; i--) {
+    let idx = fillOrder[i];
+    if (positions[idx].filled > 0) {
+      lastFilledIndex = i;
+      break;
+    }
+  }
+
+  // Προσθήκη καθυστέρησης για τα κόκκινα βέλη
+  for (let i = 0; i < lastFilledIndex; i++) {
+    setTimeout(() => {
+      let from = positions[fillOrder[i]];
+      let to = positions[fillOrder[i + 1]];
+      if (to.y > from.y) {
+        drawArrow(
+          from.x + boxWidth + xOffset,
+          from.y + 10,
+          to.x + boxWidth + xOffset,
+          to.y + 10
+        );
+      }
+    }, i * 500); // Καθυστέρηση 500ms μεταξύ των βελών
+  }
+}
+
+function drawArrow(x1, y1, x2, y2) {
+  line(x1, y1, x2, y2);
+  let angle = atan2(y2 - y1, x2 - x1);
+  push();
+  translate(x2, y2);
+  rotate(angle);
+  let arrowSize = 7;
+  triangle(-arrowSize, arrowSize / 2, -arrowSize, -arrowSize / 2, 0, 0);
+  pop();
+}
+    function initColumnColors() {
+      columnColors = [
+        color("#FFCDD2"), // s
+        color("#C8E6C9"), // p
+        color("#BBDEFB"), // d
+        color("#FFF9C4")  // f
       ];
+    }
 
-      const maxElectrons = { s: 2, p: 6, d: 10, f: 14 };
-      const boxWidth = 60,
-        boxHeight = 40,
-        verticalSpacing = 45;
-      const horizontalGap = 5;
-      const canvasWidth = 420;
-      const canvasHeight = 400;
-      const periodLabelWidth = 50;
-      const fillOrder = [
-        0,
-        1,
-        2,
-        3,
-        4,
-        6,
-        5,
-        7,
-        10,
-        8,
-        11,
-        14,
-        9,
-        12,
-        15,
-        17,
-        13,
-        16,
-        18
-      ]; // Σωστή σειρά
-      const exceptions = {
-        24: { from: "4s", to: "3d", amount: 1 }, // Cr
-        29: { from: "4s", to: "3d", amount: 1 }, // Cu
-        47: { from: "5s", to: "4d", amount: 1 }, // Ag
-        79: { from: "6s", to: "5d", amount: 1 } // Au
-      };
-
-      const elementSymbols = {
-        1: "H",
-        2: "He",
-        3: "Li",
-        4: "Be",
-        5: "B",
-        6: "C",
-        7: "N",
-        8: "O",
-        9: "F",
-        10: "Ne",
-        11: "Na",
-        12: "Mg",
-        13: "Al",
-        14: "Si",
-        15: "P",
-        16: "S",
-        17: "Cl",
-        18: "Ar",
-        19: "K",
-        20: "Ca",
-        21: "Sc",
-        22: "Ti",
-        23: "V",
-        24: "Cr",
-        25: "Mn",
-        26: "Fe",
-        27: "Co",
-        28: "Ni",
-        29: "Cu",
-        30: "Zn",
-        31: "Ga",
-        32: "Ge",
-        33: "As",
-        34: "Se",
-        35: "Br",
-        36: "Kr",
-        37: "Rb",
-        38: "Sr",
-        39: "Y",
-        40: "Zr",
-        41: "Nb",
-        42: "Mo",
-        43: "Tc",
-        44: "Ru",
-        45: "Rh",
-        46: "Pd",
-        47: "Ag",
-        48: "Cd",
-        49: "In",
-        50: "Sn",
-        51: "Sb",
-        52: "Te",
-        53: "I",
-        54: "Xe",
-        55: "Cs",
-        56: "Ba",
-        57: "La",
-        58: "Ce",
-        59: "Pr",
-        60: "Nd",
-        61: "Pm",
-        62: "Sm",
-        63: "Eu",
-        64: "Gd",
-        65: "Tb",
-        66: "Dy",
-        67: "Ho",
-        68: "Er",
-        69: "Tm",
-        70: "Yb",
-        71: "Lu",
-        72: "Hf",
-        73: "Ta",
-        74: "W",
-        75: "Re",
-        76: "Os",
-        77: "Ir",
-        78: "Pt",
-        79: "Au",
-        80: "Hg",
-        81: "Tl",
-        82: "Pb",
-        83: "Bi",
-        84: "Po",
-        85: "At",
-        86: "Rn",
-        87: "Fr",
-        88: "Ra",
-        89: "Ac",
-        90: "Th",
-        91: "Pa",
-        92: "U",
-        93: "Np",
-        94: "Pu",
-        95: "Am",
-        96: "Cm",
-        97: "Bk",
-        98: "Cf",
-        99: "Es",
-        100: "Fm",
-        101: "Md",
-        102: "No",
-        103: "Lr",
-        104: "Rf",
-        105: "Db",
-        106: "Sg",
-        107: "Bh",
-        108: "Hs",
-        109: "Mt",
-        110: "Ds",
-        111: "Rg",
-        112: "Cn",
-        113: "Nh",
-        114: "Fl",
-        115: "Mc",
-        116: "Lv",
-        117: "Ts",
-        118: "Og"
-      };
-
-      let positions = [];
-      let columnColors = [];
-      let electronCounter = 0;
-
-      function setup() {
-        const canvas = createCanvas(canvasWidth, canvasHeight);
-        canvas.parent("canvasContainer");
-        textSize(12);
-        textFont("Verdana");
-        initColumnColors();
-        calculatePositions();
-        noLoop();
-      }
-
-      function draw() {
-        background(255);
-        drawPeriodLabels();
-        drawOrbitals();
-        drawArrows();
-        updateTitleAndSymbol();
-      }
-
-      function updateTitleAndSymbol() {
-        const Z = parseInt(document.getElementById("atomicNumber").value);
-        const elementSymbol = elementSymbols[Z] || "";
-
-        // Ενημέρωση του πίνακα τίτλου
-        document.getElementById("elementSymbolText").textContent = `${Z} ${elementSymbol}`;
-      }
-
-      function drawArrows() {
-        const xOffset = 50; // Προσθήκη οριζόντιου offset 50 pixels
-
-        stroke(150);
-        strokeWeight(2);
-        drawingContext.setLineDash([5, 5]);
-
-        for (let i = 0; i < fillOrder.length - 1; i++) {
-          let from = positions[fillOrder[i]];
-          let to = positions[fillOrder[i + 1]];
-          if (to.y > from.y) {
-            drawArrow(
-              from.x + boxWidth + xOffset,
-              from.y + 10,
-              to.x + boxWidth + xOffset,
-              to.y + 10
-            );
-          }
+    function calculatePositions() {
+      positions = [];
+      let startY = 50;
+      for (let i = 0; i < periods.length; i++) {
+        let rowOrbitals = periods[i].orbitals;
+        let startX = periodLabelWidth;
+        let y = startY + i * verticalSpacing;
+        for (let j = 0; j < rowOrbitals.length; j++) {
+          let x = startX + j * (boxWidth + horizontalGap);
+          positions.push({ 
+            x: x, 
+            y: y, 
+            label: rowOrbitals[j],
+            type: rowOrbitals[j].slice(-1),
+            filled: 0,
+            col: j,
+            isGray: false,
+            actualElectrons: 0
+          });
         }
+      }
+    }
 
-        stroke(255, 0, 0);
-        drawingContext.setLineDash([]);
-        let lastFilledIndex = -1;
-        for (let i = fillOrder.length - 1; i >= 0; i--) {
-          let idx = fillOrder[i];
-          if (positions[idx].filled > 0) {
-            lastFilledIndex = i;
-            break;
-          }
-        }
+    function drawPeriodLabels() {
+  textAlign(RIGHT, CENTER);
+  fill(0);
+  textSize(14);
+  textStyle(BOLD);
 
-        // Προσθήκη καθυστέρησης για τα κόκκινα βέλη
-        for (let i = 0; i < lastFilledIndex; i++) {
-          setTimeout(() => {
-            let from = positions[fillOrder[i]];
-            let to = positions[fillOrder[i + 1]];
-            if (to.y > from.y) {
-              drawArrow(
-                from.x + boxWidth + xOffset,
-                from.y + 10,
-                to.x + boxWidth + xOffset,
-                to.y + 10
-              );
-            }
-          }, i * 500); // Καθυστέρηση 500ms μεταξύ των βελών
+  const xOffset = 50; // Προσθήκη αριστερού περιθωρίου
+
+  const periodElectrons = new Array(periods.length).fill(0);
+  positions.forEach(pos => {
+    const periodIndex = periods.findIndex(p => p.orbitals.includes(pos.label));
+    if (periodIndex !== -1) periodElectrons[periodIndex] += pos.actualElectrons;
+  });
+
+  for (let i = 0; i < periods.length; i++) {
+    let y = 50 + i * verticalSpacing;
+    const electrons = periodElectrons[i];
+    text(`${periods[i].label}${electrons > 0 ? ` (${electrons})` : ''}`, periodLabelWidth - 10 + xOffset, y + 17);
+  }
+  textStyle(NORMAL);
+}
+   function drawOrbitals() {
+  noStroke();
+  textAlign(CENTER, CENTER);
+  const xOffset = 60; // Προσθήκη αριστερού περιθωρίου
+
+  positions.forEach(pos => {
+    const boxWidthAdjusted = Math.max(boxWidth, textWidth(pos.label) + 20); // Προσαρμογή πλάτους ορθογωνίου
+
+    fill(pos.isGray ? 200 : columnColors[pos.col]);
+    rect(pos.x + xOffset, pos.y, boxWidthAdjusted, boxHeight);
+
+    fill(0);
+    text(pos.label, pos.x + boxWidthAdjusted / 2 + xOffset, pos.y + boxHeight / 2);
+
+    if (pos.actualElectrons > 0) {
+      textSize(14);
+      textStyle(BOLD);
+      fill(pos.isGray ? 0 : {
+        's': color(255, 0, 0),
+        'p': color(0, 100, 0),
+        'd': color(0, 0, 255),
+        'f': color(255, 165, 0)
+      }[pos.type]);
+      text(numberToExponent(pos.actualElectrons), pos.x + boxWidthAdjusted - 15 + xOffset, pos.y + 10);
+      textStyle(NORMAL);
+    }
+  });
+}
+
+    function startFilling() {
+      resetDiagram();
+      const Z = parseInt(document.getElementById("atomicNumber").value);
+      electronCounter = Z;
+
+      // Κανονικό γέμισμα (Aufbau)
+      fillOrder.forEach(idx => {
+        const orb = positions[idx];
+        const capacity = maxElectrons[orb.type];
+        const fill = Math.min(electronCounter, capacity);
+        orb.filled = fill;
+        electronCounter -= fill;
+      });
+
+      // Αντιγραφή για αρχική διαμόρφωση
+      positions.forEach(p => p.actualElectrons = p.filled);
+
+      // Ενημέρωση της ομάδας πριν εφαρμοστούν οι εξαιρέσεις
+      updatePeriodGroup(Z);
+
+      // Εφαρμογή εξαιρέσεων
+      if (exceptions[Z]) {
+        const { from, to, amount } = exceptions[Z];
+        const fromOrb = positions.find(p => p.label === from);
+        const toOrb = positions.find(p => p.label === to);
+        if (fromOrb && toOrb) {
+          fromOrb.actualElectrons -= amount;
+          toOrb.actualElectrons += amount;
         }
       }
 
-      function drawArrow(x1, y1, x2, y2) {
-        line(x1, y1, x2, y2);
-        let angle = atan2(y2 - y1, x2 - x1);
-        push();
-        translate(x2, y2);
-        rotate(angle);
-        let arrowSize = 7;
-        triangle(-arrowSize, arrowSize / 2, -arrowSize, -arrowSize / 2, 0, 0);
-        pop();
+      markOuterShell();
+      updateDisplay(Z);
+      redraw();
+    }
+
+    function markOuterShell() {
+      const filled = positions.filter(p => p.actualElectrons > 0);
+      const maxPeriod = Math.max(...filled.map(p => parseInt(p.label)));
+      const lastOrbType = filled[filled.length-1].type;
+
+      positions.forEach(pos => {
+        const currentPeriod = parseInt(pos.label);
+        pos.isGray = (currentPeriod === maxPeriod) && 
+                     ((lastOrbType === 'p' && (pos.type === 's' || pos.type === 'p')) ||
+                      (lastOrbType === 's' && pos.type === 's'));
+      });
+    }
+
+    function numberToExponent(num) {
+      const exponents = ['⁰','¹','²','³','⁴','⁵','⁶','⁷','⁸','⁹'];
+      return num.toString().split('').map(d => exponents[d]).join('');
+    }
+
+function updateDisplay(Z) {
+  const initial = fillOrder
+    .map(idx => positions[idx])
+    .filter(p => p.filled > 0)
+    .map(p => `${p.label}${numberToExponent(p.filled)}`);
+
+  const final = positions
+    .filter(p => p.actualElectrons > 0)
+    .sort((a,b) => {
+      const aN = parseInt(a.label);
+      const bN = parseInt(b.label);
+      if (aN !== bN) return aN - bN;
+      const order = { 's': 1, 'p': 2, 'd': 3, 'f': 4 };
+      return order[a.type] - order[b.type];
+    })
+    .map(p => `${p.label}${numberToExponent(p.actualElectrons)}`);
+
+  document.getElementById("initialConfig").textContent = initial.join(" ");
+  document.getElementById("finalConfig").textContent = final.join(" ");
+
+  const elementSymbol = elementSymbols[Z] || '';
+  document.getElementById("elementSymbol").textContent = elementSymbol;
+  document.getElementById("elementSymbol").setAttribute("data-z", Z);
+}
+
+function updatePeriodGroup(Z) {
+  const filled = [];
+  for (const idx of fillOrder) {
+    const orb = positions[idx];
+    if (orb.filled > 0) filled.push(orb);
+  }
+  
+  const valence = filled[filled.length - 1]; // Τελευταίο γεμάτο τροχιακό σύμφωνα με Aufbau
+  const period = Math.max(...filled.map(p => parseInt(p.label)));
+  
+  console.log(`updatePeriodGroup: Z=${Z}, valence=${valence.label}, period=${period}`);
+  
+  document.getElementById("periodValue").textContent = period;
+  document.getElementById("groupValue").textContent = predictGroup(valence, Z);
+}
+
+function predictGroup(valence, Z) {
+  const currentPeriod = parseInt(valence.label);
+  let sElectrons = 0, dElectrons = 0;
+
+  // Υπολογισμός s ηλεκτρονίων της τρέχουσας περιόδου από την αρχική διαμόρφωση
+  const sOrb = positions.find(p => 
+    p.type === 's' && parseInt(p.label) === currentPeriod
+  );
+  sElectrons = sOrb ? sOrb.filled : 0;
+
+  // Υπολογισμός d ηλεκτρονίων προηγούμενης περιόδου από την αρχική διαμόρφωση
+  if(valence.type === 'd') {
+    dElectrons = positions.filter(p => 
+      p.type === 'd' && parseInt(p.label) === currentPeriod - 1
+    ).reduce((sum, p) => sum + p.filled, 0);
+  }
+
+  console.log(`Element Z=${Z}: sElectrons=${sElectrons}, dElectrons=${dElectrons}, valenceType=${valence.type}, currentPeriod=${currentPeriod}`);
+
+  // Προσδιορισμός ομάδας
+  if(valence.type === 's') {
+    return `${toRoman(sElectrons)}A ή ${sElectrons}`;
+  }
+  else if(valence.type === 'p') {
+    const pElectrons = positions.filter(p => 
+      p.type === 'p' && parseInt(p.label) === currentPeriod
+    ).reduce((sum, p) => sum + p.filled, 0);
+    
+    return `${toRoman(sElectrons + pElectrons)}A ή ${sElectrons + pElectrons + 10}`;
+  }
+  else if(valence.type === 'd') {
+    const m = valence.filled;
+    const total = m + 2;
+
+    if (total < 8) {
+      return `${toRoman(total)}B ή ${total}`;
+    } else if (total >= 8 && total <= 10) {
+      return "VIIIB ή 8-10";
+    } else if (total > 10) {
+      return `${toRoman(total - 10)}B ή ${total}`;
+    }
+  }
+  else if(valence.type === 'f') {
+    const n = parseInt(valence.label.charAt(0));
+    if (n === 4) {
+      return `${valence.filled}ο μέλος Λανθανιδών`;
+    } else if (n === 5) {
+      return `${valence.filled}ο μέλος Ακτινιδών`;
+    }
+  }
+  
+  return '-';
+}
+    function toRoman(num) {
+      const roman = { M: 1000, CM: 900, D: 500, CD: 400, C: 100, XC: 90, L: 50, XL: 40, X: 10, IX: 9, V: 5, IV: 4, I: 1 };
+      let str = '';
+      for (let i of Object.keys(roman)) {
+        let q = Math.floor(num / roman[i]);
+        num -= q * roman[i];
+        str += i.repeat(q);
       }
+      return str;
+    }
 
-      function initColumnColors() {
-        columnColors = [
-          color("#FFCDD2"), // s
-          color("#C8E6C9"), // p
-          color("#BBDEFB"), // d
-          color("#FFF9C4") // f
-        ];
-      }
-
-      function calculatePositions() {
-        positions = [];
-        let startY = 50;
-        for (let i = 0; i < periods.length; i++) {
-          let rowOrbitals = periods[i].orbitals;
-          let startX = periodLabelWidth;
-          let y = startY + i * verticalSpacing;
-          for (let j = 0; j < rowOrbitals.length; j++) {
-            let x = startX + j * (boxWidth + horizontalGap);
-            positions.push({
-              x: x,
-              y: y,
-              label: rowOrbitals[j],
-              type: rowOrbitals[j].slice(-1),
-              filled: 0,
-              col: j,
-              isGray: false,
-              actualElectrons: 0
-            });
-          }
-        }
-      }
-
-      function drawPeriodLabels() {
-        textAlign(RIGHT, CENTER);
-        fill(0);
-        textSize(14);
-        textStyle(BOLD);
-
-        const xOffset = 50; // Προσθήκη αριστερού περιθωρίου
-
-        const periodElectrons = new Array(periods.length).fill(0);
-        positions.forEach((pos) => {
-          const periodIndex = periods.findIndex((p) =>
-            p.orbitals.includes(pos.label)
-          );
-          if (periodIndex !== -1) periodElectrons[periodIndex] += pos.actualElectrons;
-        });
-
-        for (let i = 0; i < periods.length; i++) {
-          let y = 50 + i * verticalSpacing;
-          const electrons = periodElectrons[i];
-          text(
-            `${periods[i].label}${electrons > 0 ? ` (${electrons})` : ""}`,
-            periodLabelWidth - 10 + xOffset,
-            y + 17
-          );
-        }
-        textStyle(NORMAL);
-      }
-
-      function drawOrbitals() {
-        noStroke();
-        textAlign(CENTER, CENTER);
-        const xOffset = 60; // Προσθήκη αριστερού περιθωρίου
-
-        positions.forEach((pos) => {
-          const boxWidthAdjusted = Math.max(
-            boxWidth,
-            textWidth(pos.label) + 20
-          ); // Προσαρμογή πλάτους ορθογωνίου
-
-          fill(pos.isGray ? 200 : columnColors[pos.col]);
-          rect(pos.x + xOffset, pos.y, boxWidthAdjusted, boxHeight);
-
-          fill(0);
-          text(
-            pos.label,
-            pos.x + boxWidthAdjusted / 2 + xOffset,
-            pos.y + boxHeight / 2
-          );
-
-          if (pos.actualElectrons > 0) {
-            textSize(14);
-            textStyle(BOLD);
-            fill(
-              pos.isGray
-                ? 0
-                : {
-                    s: color(255, 0, 0),
-                    p: color(0, 100, 0),
-                    d: color(0, 0, 255),
-                    f: color(255, 165, 0)
-                  }[pos.type]
-            );
-            text(
-              numberToExponent(pos.actualElectrons),
-              pos.x + boxWidthAdjusted - 15 + xOffset,
-              pos.y + 10
-            );
-            textStyle(NORMAL);
-          }
-        });
-      }
-
-      function startFilling() {
-        resetDiagram();
-        const Z = parseInt(document.getElementById("atomicNumber").value);
-        electronCounter = Z;
-
-        // Κανονικό γέμισμα (Aufbau)
-        fillOrder.forEach((idx) => {
-          const orb = positions[idx];
-          const capacity = maxElectrons[orb.type];
-          const fill = Math.min(electronCounter, capacity);
-          orb.filled = fill;
-          electronCounter -= fill;
-        });
-
-        // Αντιγραφή για αρχική διαμόρφωση
-        positions.forEach((p) => (p.actualElectrons = p.filled));
-
-        // Ενημέρωση της ομάδας πριν εφαρμοστούν οι εξαιρέσεις
-        updatePeriodGroup(Z);
-
-        // Εφαρμογή εξαιρέσεων
-        if (exceptions[Z]) {
-          const { from, to, amount } = exceptions[Z];
-          const fromOrb = positions.find((p) => p.label === from);
-          const toOrb = positions.find((p) => p.label === to);
-          if (fromOrb && toOrb) {
-            fromOrb.actualElectrons -= amount;
-            toOrb.actualElectrons += amount;
-          }
-        }
-
-        markOuterShell();
-        updateDisplay(Z);
-        redraw();
-      }
-
-      function markOuterShell() {
-        const filled = positions.filter((p) => p.actualElectrons > 0);
-        const maxPeriod = Math.max(...filled.map((p) => parseInt(p.label)));
-        const lastOrbType = filled[filled.length - 1].type;
-
-        positions.forEach((pos) => {
-          const currentPeriod = parseInt(pos.label);
-          pos.isGray =
-            currentPeriod === maxPeriod &&
-            ((lastOrbType === "p" && (pos.type === "s" || pos.type === "p")) ||
-              (lastOrbType === "s" && pos.type === "s"));
-        });
-      }
-
-      function numberToExponent(num) {
-        const exponents = ["⁰", "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹"];
-        return num
-          .toString()
-          .split("")
-          .map((d) => exponents[d])
-          .join("");
-      }
-
-      function updateDisplay(Z) {
-        const initial = fillOrder
-          .map((idx) => positions[idx])
-          .filter((p) => p.filled > 0)
-          .map((p) => `${p.label}${numberToExponent(p.filled)}`);
-
-        const final = positions
-          .filter((p) => p.actualElectrons > 0)
-          .sort((a, b) => {
-            const aN = parseInt(a.label);
-            const bN = parseInt(b.label);
-            if (aN !== bN) return aN - bN;
-            const order = { s: 1, p: 2, d: 3, f: 4 };
-            return order[a.type] - order[b.type];
-          })
-          .map((p) => `${p.label}${numberToExponent(p.actualElectrons)}`);
-
-        document.getElementById("initialConfig").textContent = initial.join(" ");
-        document.getElementById("finalConfig").textContent = final.join(" ");
-
-        const elementSymbol = elementSymbols[Z] || "";
-        document.getElementById("elementSymbol").textContent = elementSymbol;
-        document
-          .getElementById("elementSymbol")
-          .setAttribute("data-z", Z);
-      }
-
-      function updatePeriodGroup(Z) {
-        const filled = [];
-        for (const idx of fillOrder) {
-          const orb = positions[idx];
-          if (orb.filled > 0) filled.push(orb);
-        }
-
-        const valence = filled[filled.length - 1]; // Τελευταίο γεμάτο τροχιακό σύμφωνα με Aufbau
-        const period = Math.max(...filled.map((p) => parseInt(p.label)));
-
-        console.log(
-          `updatePeriodGroup: Z=${Z}, valence=${valence.label}, period=${period}`
-        );
-
-        document.getElementById("periodValue").textContent = period;
-        document.getElementById("groupValue").textContent = predictGroup(valence, Z);
-      }
-
-      function predictGroup(valence, Z) {
-        const currentPeriod = parseInt(valence.label);
-        let sElectrons = 0,
-          dElectrons = 0;
-
-        // Υπολογισμός s ηλεκτρονίων της τρέχουσας περιόδου από την αρχική διαμόρφωση
-        const sOrb = positions.find(
-          (p) => p.type === "s" && parseInt(p.label) === currentPeriod
-        );
-        sElectrons = sOrb ? sOrb.filled : 0;
-
-        // Υπολογισμός d ηλεκτρονίων προηγούμενης περιόδου από την αρχική διαμόρφωση
-        if (valence.type === "d") {
-          dElectrons = positions
-            .filter(
-              (p) => p.type === "d" && parseInt(p.label) === currentPeriod - 1
-            )
-            .reduce((sum, p) => sum + p.filled, 0);
-        }
-
-        console.log(
-          `Element Z=${Z}: sElectrons=${sElectrons}, dElectrons=${dElectrons}, valenceType=${valence.type}, currentPeriod=${currentPeriod}`
-        );
-
-        // Προσδιορισμός ομάδας
-        if (valence.type === "s") {
-          return `${toRoman(sElectrons)}A ή ${sElectrons}`;
-        } else if (valence.type === "p") {
-          const pElectrons = positions
-            .filter(
-              (p) =>
-                p.type === "p" && parseInt(p.label) === currentPeriod
-            )
-            .reduce((sum, p) => sum + p.filled, 0);
-
-          return `${toRoman(sElectrons + pElectrons)}A ή ${sElectrons + pElectrons + 10}`;
-        } else if (valence.type === "d") {
-          const m = valence.filled;
-          const total = m + 2;
-
-          if (total < 8) {
-            return `${toRoman(total)}B ή ${total}`;
-          } else if (total >= 8 && total <= 10) {
-            return "VIIIB ή 8-10";
-          } else if (total > 10) {
-            return `${toRoman(total - 10)}B ή ${total}`;
-          }
-        } else if (valence.type === "f") {
-          const n = parseInt(valence.label.charAt(0));
-          if (n === 4) {
-            return `${valence.filled}ο μέλος Λανθανιδών`;
-          } else if (n === 5) {
-            return `${valence.filled}ο μέλος Ακτινιδών`;
-          }
-        }
-
-        return "-";
-      }
-
-      function toRoman(num) {
-        const roman = {
-          M: 1000,
-          CM: 900,
-          D: 500,
-          CD: 400,
-          C: 100,
-          XC: 90,
-          L: 50,
-          XL: 40,
-          X: 10,
-          IX: 9,
-          V: 5,
-          IV: 4,
-          I: 1
-        };
-        let str = "";
-        for (let i of Object.keys(roman)) {
-          let q = Math.floor(num / roman[i]);
-          num -= q * roman[i];
-          str += i.repeat(q);
-        }
-        return str;
-      }
-
-      function resetDiagram() {
-        positions.forEach((p) => {
-          p.filled = 0;
-          p.actualElectrons = 0;
-          p.isGray = false;
-        });
-        document.getElementById("periodValue").textContent = "-";
-        document.getElementById("groupValue").textContent = "-";
-        document.getElementById("initialConfig").textContent = "-";
-        document.getElementById("finalConfig").textContent = "-";
-        document.getElementById("elementSymbol").textContent = "";
-        document.getElementById("elementSymbol").setAttribute("data-z", "");
-        redraw();
-      }
-    </script>
-  </body>
+    function resetDiagram() {
+      positions.forEach(p => {
+        p.filled = 0;
+        p.actualElectrons = 0;
+        p.isGray = false;
+      });
+      document.getElementById("periodValue").textContent = '-';
+      document.getElementById("groupValue").textContent = '-';
+      document.getElementById("initialConfig").textContent = '-';
+      document.getElementById("finalConfig").textContent = '-';
+      document.getElementById("elementSymbol").textContent = '';
+      document.getElementById("elementSymbol").setAttribute("data-z", '');
+      redraw();
+    }
+  </script>
+</body>
 </html>
