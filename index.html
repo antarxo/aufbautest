@@ -6,191 +6,154 @@
   <title>Κανόνας Aufbau</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <style>
-    body { 
-      text-align: center; 
-      font-family: Verdana, sans-serif; 
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: Verdana, sans-serif;
       background-color: #f0f8ff;
     }
 
     #mainContainer {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 0 auto;
-      width: 400px; /* Ίδιο πλάτος με τον καμβά και τον πίνακα */
+      width: 90%;
+      max-width: 800px;
+      padding: 20px;
+      box-sizing: border-box;
     }
 
     h1 {
-      width: 100%; /* Ίδιο πλάτος με το container */
+      color: #2E8B57;
       text-align: center;
+      margin: 20px 0;
+      font-size: 1.8em;
     }
 
     #controls {
       display: flex;
       justify-content: center;
-      align-items: center;
-      width: 100%; /* Ίδιο πλάτος με το container */
-      margin: 10px 0;
-    }
-
-    #controls label, #controls input, #controls button {
-      margin: 0 5px;
-    }
-
-    #canvasContainer {
-      display: flex;
-      justify-content: center;
+      gap: 10px;
       margin: 20px 0;
+      flex-wrap: wrap;
     }
 
-canvas { 
-  border: 2px solid #4CAF50;
-  border-radius: 10px;
-  padding-left: 10px; /* Προσθήκη αριστερού περιθωρίου */
-}
+    #controls input {
+      width: 70px;
+      padding: 8px;
+      text-align: center;
+      border: 1px solid #4CAF50;
+      border-radius: 4px;
+    }
 
-
-    button { 
-      padding: 10px 20px; 
-      background-color: #4CAF50; 
-      color: white; 
-      border: none; 
+    button {
+      padding: 10px 25px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
       border-radius: 5px;
       cursor: pointer;
+      transition: background-color 0.3s;
+      font-size: 0.95em;
     }
 
     button:hover {
       background-color: #45a049;
     }
 
-    #infoTable {
+    #canvasContainer {
       margin: 20px 0;
-      border-collapse: collapse;
-      width: 100%; /* Ίδιο πλάτος με το container */
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
-      background-color: white;
+      display: flex;
+      justify-content: center;
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
     }
 
-    #infoTable th, #infoTable td {
+    canvas {
       border: 2px solid #4CAF50;
-      padding: 8px;
-      text-align: center;
+      border-radius: 8px;
+    }
+
+    #infoTable {
+      width: 100%;
+      margin: 25px 0;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
     }
 
     #infoTable th {
       background-color: #4CAF50;
       color: white;
-      font-size: 14px;
+      padding: 12px;
+      font-size: 0.95em;
     }
 
     #infoTable td {
-      font-size: 12px;
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      font-size: 0.9em;
     }
 
     .element-symbol {
-      font-size: 24px;
+      font-size: 1.4em;
+      color: #2E8B57;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    #titleContainer {
+      margin: 20px 0;
+      text-align: center;
+      font-size: 1.1em;
+      color: #2E8B57;
       font-weight: bold;
-      color: darkgreen;
-      margin-right: 10px;
     }
 
-    .element-symbol::before {
-      content: attr(data-z);
-      font-size: 14px;
-      color: red;
-      vertical-align: baseline;
-      margin-right: 5px;
+    .orbital-label {
+      font-size: 0.85em;
+      letter-spacing: 0.5px;
     }
-    #titleContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-#titleTable {
-  border-collapse: collapse;
-}
-
-#titleTable td {
-  border: none;
-  padding: 0;
-}
-
-#titleText {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-#elementSymbolText {
-  font-size: 16px;
-  font-weight: bold;
-  margin-left: 5px;
-}
-    #titleContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-#titleTable {
-  border-collapse: collapse;
-}
-
-#titleTable td {
-  border: none;
-  padding: 0;
-}
-
-#titleText {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-#elementSymbolText {
-  font-size: 16px;
-  font-weight: bold;
-  margin-left: 5px;
-}
   </style>
 </head>
 <body>
   <div id="mainContainer">
-    <h1 style="color: #2E8B57;">Κανόνας Aufbau <span id="elementSymbol" class="element-symbol" data-z=""></span></h1>
+    <h1>Κανόνας Aufbau <span id="elementSymbol" class="element-symbol" data-z=""></span></h1>
+    
     <div id="controls">
-      <label for="atomicNumber" style="font-size: 16px;">Z:</label>
-      <input type="number" id="atomicNumber" min="1" max="118" value="1" style="padding: 5px;">
-      <button onclick="startFilling()">Έναρξη</button>
-      <button onclick="resetDiagram()">Reset</button>
+      <label for="atomicNumber">Ατομικός Αριθμός (Z):</label>
+      <input type="number" id="atomicNumber" min="1" max="118" value="1">
+      <button onclick="startFilling()">Εμφάνιση</button>
+      <button onclick="resetDiagram()">Επαναφορά</button>
     </div>
 
     <table id="infoTable">
       <tr>
-        <th colspan="2">Περίοδος: <span id="periodValue">-</span> | Ομάδα: <span id="groupValue">-</span></th>
+        <th colspan="2">Πληροφορίες Στοιχείου</th>
       </tr>
       <tr>
-        <td><strong>Αρχική Διαμόρφωση</strong></td>
-        <td id="initialConfig">-</td>
+        <td>Περίοδος</td>
+        <td id="periodValue">-</td>
       </tr>
       <tr>
-        <td><strong>Τελική Διαμόρφωση</strong></td>
-        <td id="finalConfig">-</td>
+        <td>Ομάδα</td>
+        <td id="groupValue">-</td>
+      </tr>
+      <tr>
+        <td>Αρχική Διαμόρφωση</td>
+        <td id="initialConfig" class="orbital-label">-</td>
+      </tr>
+      <tr>
+        <td>Τελική Διαμόρφωση</td>
+        <td id="finalConfig" class="orbital-label">-</td>
       </tr>
     </table>
 
-    <div id="titleContainer">
-      <table id="titleTable">
-        <tr>
-          <td id="titleText">Ηλεκτρονιακή δόμηση</td>
-          <td id="elementSymbolText"></td>
-        </tr>
-      </table>
-    </div>
-
     <div id="canvasContainer"></div>
   </div>
-</body>
+
   <script>
     const periods = [
       { label: "K", orbitals: ["1s"] },
