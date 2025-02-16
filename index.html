@@ -9,7 +9,7 @@
 <body>
   <div id="mainContainer">
     <h1 style="color: #2E8B57;">Κανόνας Aufbau <span id="elementSymbol" class="element-symbol" data-z=""></span></h1>
-    <div>
+    <div id="controls">
       <label for="atomicNumber" style="font-size: 16px;">Z:</label>
       <input type="number" id="atomicNumber" min="1" max="118" value="1" style="padding: 5px;">
       <button onclick="startFilling()">Έναρξη</button>
@@ -32,9 +32,7 @@
 
     <div id="canvasContainer"></div>
   </div>
-
 </body>
-<style>
 body { 
   text-align: center; 
   font-family: Verdana, sans-serif; 
@@ -54,6 +52,18 @@ h1 {
   text-align: center;
 }
 
+#controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* Ίδιο πλάτος με το container */
+  margin: 10px 0;
+}
+
+#controls label, #controls input, #controls button {
+  margin: 0 5px;
+}
+
 #canvasContainer {
   display: flex;
   justify-content: center;
@@ -66,7 +76,6 @@ canvas {
 }
 
 button { 
-  margin: 10px; 
   padding: 10px 20px; 
   background-color: #4CAF50; 
   color: white; 
@@ -117,7 +126,6 @@ button:hover {
   vertical-align: baseline;
   margin-right: 5px;
 }
-  </style>
 </head>
 <body>
   <h1 style="color: #2E8B57;">Κανόνας Aufbau <span id="elementSymbol" class="element-symbol" data-z=""></span></h1>
