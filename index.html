@@ -321,4 +321,276 @@
           color("#FFCDD2"), // s
           color("#C8E6C9"), // p
           color("#BBDEFB"), // d
-         
+          color("#FFF9C4")  // f
+        ];
+      }
+
+      function calculatePositions() {
+        positions = [];
+        for (let i = 0; i < periods.length; i++) {
+          let rowOrbitals = periods[i].orbitals;
+          let startX = periodLabelWidth;
+          let y = startY + i * verticalSpacing;
+          for (let j = 0; j < rowOrbitals.length; j++) {
+            let x = startX + j * (boxWidth + horizontalGap);
+            positions.push({
+              x: x,
+              y: y,
+              label: rowOrbitals[j],
+              type: rowOrbitals[j].slice(-1),
+              filled: 0,
+              col: j,
+              isGray: false,
+              actualElectrons: 0
+            });
+          }
+        }
+      }
+
+      function drawPeriodLabels() {
+        textAlign(RIGHT, CENTER);
+        fill(0);
+        textSize(14);
+        textStyle(BOLD);
+        const periodElectrons = new Array(periods.length).fill(0);
+        positions.forEach((pos) => {
+          const periodIndex = periods.findIndex((p) =>
+            p.orbitals.includes(pos.label)
+          );
+          if (periodIndex !== -1) {
+            periodElectrons[periodIndex] += pos.actualElectrons;
+          }
+        });
+        for (let i = 0; i < periods.length; i++) {
+          let y = startY + i * verticalSpacing;
+          const electrons = periodElectrons[i];
+          text(
+            `${periods[i].label}${electrons > 0 ? ` (${electrons})` : ""}`,
+            periodLabelWidth - 10 + xOffset,
+            y + 17
+          );
+        }
+        textStyle(NORMAL);
+      }
+
+      function drawOrbitals() {
+        noStroke();
+        textAlign(CENTER, CENTER);
+        positions.forEach((pos) => {
+          const boxWidthAdjusted = Math.max(
+            boxWidth,
+            textWidth(pos.label) + 20
+          );
+          fill(pos.isGray ? 200 : columnColors[pos.col]);
+          rect(pos.x + xOffset, pos.y, boxWidthAdjusted, boxHeight);
+          fill(0);
+          text(
+            pos.label,
+            pos.x + boxWidthAdjusted / 2 + xOffset,
+            pos.y + boxHeight / 2
+          );
+          if (pos.actualElectrons > 0) {
+            textSize(14);
+            textStyle(BOLD);
+            fill(
+              pos.isGray
+                ? 0
+                : {
+                    s: color(255, 0, 0),
+                    p: color(0, 100, 0),
+                    d: color(0, 0, 255),
+                    f: color(255, 165, 0)
+                  }[pos.type]
+            );
+            text(
+              numberToExponent(pos.actualElectrons),
+              pos.x + boxWidthAdjusted - 15 + xOffset,
+              pos.y + 10
+            );
+            textStyle(NORMAL);
+          }
+        });
+      }
+
+      function startFilling() {
+        resetDiagram();
+        const Z = parseInt(document.getElementById("atomicNumber").value);
+        electronCounter = Z;
+        // Γέμισμα σύμφωνα με τον κανόνα Aufbau
+        fillOrder.forEach((idx) => {
+          const orb = positions[idx];
+          const capacity = { s: 2, p: 6, d: 10, f: 14 }[orb.type];
+          const fill = Math.min(electronCounter, capacity);
+          orb.filled = fill;
+          electronCounter -= fill;
+        });
+        // Αντιγραφή για αρχική διαμόρφωση
+        positions.forEach((p) => (p.actualElectrons = p.filled));
+        updatePeriodGroup(Z);
+        // Εφαρμογή εξαιρέσεων (αν υπάρχουν)
+        if (exceptions[Z]) {
+          const { from, to, amount } = exceptions[Z];
+          const fromOrb = positions.find((p) => p.label === from);
+          const toOrb = positions.find((p) => p.label === to);
+          if (fromOrb && toOrb) {
+            fromOrb.actualElectrons -= amount;
+            toOrb.actualElectrons += amount;
+          }
+        }
+        markOuterShell();
+        updateDisplay(Z);
+        redraw();
+      }
+
+      function markOuterShell() {
+        const filled = positions.filter((p) => p.actualElectrons > 0);
+        const maxPeriod = Math.max(...filled.map((p) => parseInt(p.label)));
+        const lastOrbType = filled[filled.length - 1].type;
+        positions.forEach((pos) => {
+          const currentPeriod = parseInt(pos.label);
+          pos.isGray =
+            currentPeriod === maxPeriod &&
+            ((lastOrbType === "p" &&
+              (pos.type === "s" || pos.type === "p")) ||
+             (lastOrbType === "s" && pos.type === "s"));
+        });
+      }
+
+      function numberToExponent(num) {
+        const exponents = ["⁰", "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹"];
+        return num
+          .toString()
+          .split("")
+          .map((d) => exponents[d])
+          .join("");
+      }
+
+      function updateDisplay(Z) {
+        const initial = fillOrder
+          .map((idx) => positions[idx])
+          .filter((p) => p.filled > 0)
+          .map((p) => `${p.label}${numberToExponent(p.filled)}`);
+
+        const final = positions
+          .filter((p) => p.actualElectrons > 0)
+          .sort((a, b) => {
+            const aN = parseInt(a.label);
+            const bN = parseInt(b.label);
+            if (aN !== bN) return aN - bN;
+            const order = { s: 1, p: 2, d: 3, f: 4 };
+            return order[a.type] - order[b.type];
+          })
+          .map((p) => `${p.label}${numberToExponent(p.actualElectrons)}`);
+
+        document.getElementById("initialConfig").textContent = initial.join(" ");
+        document.getElementById("finalConfig").textContent = final.join(" ");
+
+        const elementSymbol = elementSymbols[Z] || "";
+        document.getElementById("elementSymbol").textContent = elementSymbol;
+        document.getElementById("elementSymbol").setAttribute("data-z", Z);
+      }
+
+      function updatePeriodGroup(Z) {
+        const filled = [];
+        for (const idx of fillOrder) {
+          const orb = positions[idx];
+          if (orb.filled > 0) filled.push(orb);
+        }
+        const valence = filled[filled.length - 1];
+        const period = Math.max(...filled.map((p) => parseInt(p.label)));
+        console.log(`updatePeriodGroup: Z=${Z}, valence=${valence.label}, period=${period}`);
+        document.getElementById("periodValue").textContent = period;
+        document.getElementById("groupValue").textContent = predictGroup(valence, Z);
+      }
+
+      function predictGroup(valence, Z) {
+        const currentPeriod = parseInt(valence.label);
+        let sElectrons = 0,
+          dElectrons = 0;
+        const sOrb = positions.find(
+          (p) => p.type === "s" && parseInt(p.label) === currentPeriod
+        );
+        sElectrons = sOrb ? sOrb.filled : 0;
+        if (valence.type === "d") {
+          dElectrons = positions
+            .filter(
+              (p) => p.type === "d" && parseInt(p.label) === currentPeriod - 1
+            )
+            .reduce((sum, p) => sum + p.filled, 0);
+        }
+        console.log(
+          `Element Z=${Z}: sElectrons=${sElectrons}, dElectrons=${dElectrons}, valenceType=${valence.type}, currentPeriod=${currentPeriod}`
+        );
+        if (valence.type === "s") {
+          return `${toRoman(sElectrons)}A ή ${sElectrons}`;
+        } else if (valence.type === "p") {
+          const pElectrons = positions
+            .filter(
+              (p) =>
+                p.type === "p" && parseInt(p.label) === currentPeriod
+            )
+            .reduce((sum, p) => sum + p.filled, 0);
+          return `${toRoman(sElectrons + pElectrons)}A ή ${sElectrons + pElectrons + 10}`;
+        } else if (valence.type === "d") {
+          const m = valence.filled;
+          const total = m + 2;
+          if (total < 8) {
+            return `${toRoman(total)}B ή ${total}`;
+          } else if (total >= 8 && total <= 10) {
+            return "VIIIB ή 8-10";
+          } else if (total > 10) {
+            return `${toRoman(total - 10)}B ή ${total}`;
+          }
+        } else if (valence.type === "f") {
+          const n = parseInt(valence.label.charAt(0));
+          if (n === 4) {
+            return `${valence.filled}ο μέλος Λανθανιδών`;
+          } else if (n === 5) {
+            return `${valence.filled}ο μέλος Ακτινιδών`;
+          }
+        }
+        return "-";
+      }
+
+      function toRoman(num) {
+        const roman = {
+          M: 1000,
+          CM: 900,
+          D: 500,
+          CD: 400,
+          C: 100,
+          XC: 90,
+          L: 50,
+          XL: 40,
+          X: 10,
+          IX: 9,
+          V: 5,
+          IV: 4,
+          I: 1
+        };
+        let str = "";
+        for (let i of Object.keys(roman)) {
+          let q = Math.floor(num / roman[i]);
+          num -= q * roman[i];
+          str += i.repeat(q);
+        }
+        return str;
+      }
+
+      function resetDiagram() {
+        positions.forEach((p) => {
+          p.filled = 0;
+          p.actualElectrons = 0;
+          p.isGray = false;
+        });
+        document.getElementById("periodValue").textContent = "-";
+        document.getElementById("groupValue").textContent = "-";
+        document.getElementById("initialConfig").textContent = "-";
+        document.getElementById("finalConfig").textContent = "-";
+        document.getElementById("elementSymbol").textContent = "";
+        document.getElementById("elementSymbol").setAttribute("data-z", "");
+        redraw();
+      }
+    </script>
+  </body>
+</html>
