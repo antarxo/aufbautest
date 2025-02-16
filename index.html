@@ -6,7 +6,7 @@
   <title>Κανόνας Aufbau</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <style>
-   body { 
+body { 
   text-align: center; 
   font-family: Verdana, sans-serif; 
   background-color: #f0f8ff;
@@ -37,6 +37,15 @@
   box-shadow: 0 0 15px rgba(0,0,0,0.2);
   background-color: white;
   border: 2px solid green; /* Προσωρινό έγχρωμο περίγραμμα */
+}
+
+#canvasContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px 0;
+  width: 100%; /* Ίδιο πλάτος με το container */
+  border: 2px solid cyan; /* Προσωρινό έγχρωμο περίγραμμα */
 }
 
 #titleContainer {
@@ -70,14 +79,6 @@
   border: 2px solid yellow; /* Προσωρινό έγχρωμο περίγραμμα */
 }
 
-#canvasContainer {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
-  width: 100%; /* Ίδιο πλάτος με το container */
-  border: 2px solid cyan; /* Προσωρινό έγχρωμο περίγραμμα */
-}
-
 canvas { 
   border: 2px solid #4CAF50;
   border-radius: 10px;
@@ -109,16 +110,17 @@ canvas {
       </tr>
     </table>
 
-    <div id="titleContainer">
-      <table id="titleTable">
-        <tr>
-          <td id="titleText">Ηλεκτρονιακή δόμηση</td>
-          <td id="elementSymbolText"></td>
-        </tr>
-      </table>
+    <div id="canvasContainer">
+      <div id="titleContainer">
+        <table id="titleTable">
+          <tr>
+            <td id="titleText">Ηλεκτρονιακή δόμηση</td>
+            <td id="elementSymbolText"></td>
+          </tr>
+        </table>
+      </div>
+      <!-- Ο καμβάς θα δημιουργηθεί εδώ από το p5.js -->
     </div>
-
-    <div id="canvasContainer"></div>
   </div>
 </body>
 
