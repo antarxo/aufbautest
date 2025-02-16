@@ -39,15 +39,6 @@ body {
   border: 2px solid green; /* Προσωρινό έγχρωμο περίγραμμα */
 }
 
-#canvasContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0; /* Μείωση του πάνω και κάτω περιθωρίου */
-  width: 100%; /* Ίδιο πλάτος με το container */
-  border: 2px solid cyan; /* Προσωρινό έγχρωμο περίγραμμα */
-}
-
 #titleContainer {
   display: flex;
   justify-content: center;
@@ -116,17 +107,16 @@ body {
       </tr>
     </table>
 
-    <div id="canvasContainer">
-      <div id="titleContainer">
-        <table id="titleTable">
-          <tr>
-            <td id="titleText">Ηλεκτρονιακή δόμηση</td>
-            <td id="elementSymbolText"></td>
-          </tr>
-        </table>
-      </div>
-      <div id="contentContainer"></div>
+    <div id="titleContainer">
+      <table id="titleTable">
+        <tr>
+          <td id="titleText">Ηλεκτρονιακή δόμηση</td>
+          <td id="elementSymbolText"></td>
+        </tr>
+      </table>
     </div>
+
+    <div id="contentContainer"></div>
   </div>
 </body>
 
@@ -386,7 +376,7 @@ function updateTitleAndSymbol() {
   });
 }
 
-    function startFilling() {
+   function startFilling() {
   const contentContainer = document.getElementById('contentContainer');
   contentContainer.innerHTML = ''; // Καθαρισμός του container
 
@@ -409,6 +399,10 @@ function updateTitleAndSymbol() {
   contentContainer.appendChild(content);
 }
 
+function resetDiagram() {
+  const contentContainer = document.getElementById('contentContainer');
+  contentContainer.innerHTML = ''; // Καθαρισμός του container
+}
 function resetDiagram() {
   const contentContainer = document.getElementById('contentContainer');
   contentContainer.innerHTML = ''; // Καθαρισμός του container
