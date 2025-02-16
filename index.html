@@ -127,6 +127,32 @@ canvas {
   font-weight: bold;
   margin-left: 5px;
 }
+    #titleContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+#titleTable {
+  border-collapse: collapse;
+}
+
+#titleTable td {
+  border: none;
+  padding: 0;
+}
+
+#titleText {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#elementSymbolText {
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 5px;
+}
   </style>
 </head>
 <body>
@@ -153,16 +179,16 @@ canvas {
       </tr>
     </table>
 
-    <div id="canvasContainer">
-      <div id="titleContainer">
-        <table id="titleTable">
-          <tr>
-            <td id="titleText">Ηλεκτρονιακή δόμηση</td>
-            <td id="elementSymbolText"></td>
-          </tr>
-        </table>
-      </div>
+    <div id="titleContainer">
+      <table id="titleTable">
+        <tr>
+          <td id="titleText">Ηλεκτρονιακή δόμηση</td>
+          <td id="elementSymbolText"></td>
+        </tr>
+      </table>
     </div>
+
+    <div id="canvasContainer"></div>
   </div>
 </body>
   <script>
