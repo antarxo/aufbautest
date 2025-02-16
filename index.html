@@ -1,10 +1,3 @@
-<!DOCTYPE html>
-<html lang="el">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Κανόνας Aufbau</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
  <!DOCTYPE html>
 <html lang="el">
 <head>
@@ -13,81 +6,83 @@
   <title>Κανόνας Aufbau</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <style>
-    body { 
-      text-align: center; 
-      font-family: Verdana, sans-serif; 
-      background-color: #f0f8ff;
-    }
+   body { 
+  text-align: center; 
+  font-family: Verdana, sans-serif; 
+  background-color: #f0f8ff;
+}
 
-    #mainContainer {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 0 auto;
-      width: 400px; /* Ίδιο πλάτος με τον καμβά και τον πίνακα */
-      border: 2px solid red; /* Προσωρινό έγχρωμο περίγραμμα */
-    }
+#mainContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+  width: 400px; /* Ίδιο πλάτος με τον καμβά και τον πίνακα */
+  border: 2px solid red; /* Προσωρινό έγχρωμο περίγραμμα */
+}
 
-    #controls {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%; /* Ίδιο πλάτος με το container */
-      margin: 10px 0;
-      border: 2px solid blue; /* Προσωρινό έγχρωμο περίγραμμα */
-    }
+#controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* Ίδιο πλάτος με το container */
+  margin: 10px 0;
+  border: 2px solid blue; /* Προσωρινό έγχρωμο περίγραμμα */
+}
 
-    #infoTable {
-      margin: 20px 0;
-      border-collapse: collapse;
-      width: 100%; /* Ίδιο πλάτος με το container */
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
-      background-color: white;
-      border: 2px solid green; /* Προσωρινό έγχρωμο περίγραμμα */
-    }
+#infoTable {
+  margin: 20px 0;
+  border-collapse: collapse;
+  width: 100%; /* Ίδιο πλάτος με το container */
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  background-color: white;
+  border: 2px solid green; /* Προσωρινό έγχρωμο περίγραμμα */
+}
 
-    #titleContainer {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 20px;
-      border: 2px solid orange; /* Προσωρινό έγχρωμο περίγραμμα */
-    }
+#titleContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  border: 2px solid orange; /* Προσωρινό έγχρωμο περίγραμμα */
+}
 
-    #titleTable {
-      border-collapse: collapse;
-      border: 2px solid purple; /* Προσωρινό έγχρωμο περίγραμμα */
-    }
+#titleTable {
+  border-collapse: collapse;
+  border: 2px solid purple; /* Προσωρινό έγχρωμο περίγραμμα */
+}
 
-    #titleTable td {
-      border: none;
-      padding: 0;
-    }
+#titleTable td {
+  border: none;
+  padding: 0;
+}
 
-    #titleText {
-      font-size: 20px;
-      font-weight: bold;
-      border: 2px solid pink; /* Προσωρινό έγχρωμο περίγραμμα */
-    }
+#titleText {
+  font-size: 20px;
+  font-weight: bold;
+  border: 2px solid pink; /* Προσωρινό έγχρωμο περίγραμμα */
+}
 
-    #elementSymbolText {
-      font-size: 16px;
-      font-weight: bold;
-      margin-left: 5px;
-      border: 2px solid yellow; /* Προσωρινό έγχρωμο περίγραμμα */
-    }
+#elementSymbolText {
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 5px;
+  border: 2px solid yellow; /* Προσωρινό έγχρωμο περίγραμμα */
+}
 
-    #canvasContainer {
-      display: flex;
-      justify-content: center;
-      margin: 20px 0;
-      border: 2px solid cyan; /* Προσωρινό έγχρωμο περίγραμμα */
-    }
+#canvasContainer {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  width: 100%; /* Ίδιο πλάτος με το container */
+  border: 2px solid cyan; /* Προσωρινό έγχρωμο περίγραμμα */
+}
 
-    canvas { 
-      border: 2px solid #4CAF50;
-      border-radius: 10px;
-    }
+canvas { 
+  border: 2px solid #4CAF50;
+  border-radius: 10px;
+  width: 100%; /* Ίδιο πλάτος με το container */
+}
   </style>
 </head>
 <body>
@@ -168,8 +163,8 @@ const elementSymbols = {
     let columnColors = [];
     let electronCounter = 0;
 
-  function setup() {
-  const canvas = createCanvas(canvasWidth, canvasHeight);
+ function setup() {
+  const canvas = createCanvas(400, 400); // Ίδιο πλάτος με το container
   canvas.parent('canvasContainer');
   textSize(12);
   textFont("Verdana");
