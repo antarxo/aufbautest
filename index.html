@@ -40,16 +40,16 @@
         margin: 0 5px;
       }
 
+      /* Μειωμένα πάνω και κάτω περιθώρια για τον καμβά */
       #canvasContainer {
         display: flex;
         justify-content: center;
-        margin: 20px 0;
+        margin: 10px 0;
       }
 
       canvas { 
         border: 2px solid #4CAF50;
         border-radius: 10px;
-        /* Αφαιρέσαμε το padding για να μην επηρεάζεται η διάταξη */
       }
 
       button { 
@@ -183,19 +183,18 @@
     </div>
 
     <script>
-      /* Ορισμοί παραμέτρων για πιο συμπαγή διάταξη */
+      /* Ρυθμίσεις για συμπαγή κάθετη διάταξη (χωρίς να αλλάζουν οι οριζόντιες αποστάσεις) */
       const boxWidth = 60,
         boxHeight = 40,
-        verticalSpacing = 35,
+        verticalSpacing = 45,     // Διατηρούμε τις οριζόντιες αποστάσεις στα ορθογώνια
         horizontalGap = 5,
-        canvasWidth = 350,
-        canvasHeight = 300,
+        canvasWidth = 420,
+        canvasHeight = 400,
         periodLabelWidth = 50;
       
-      const startY = 30; // Μειωμένη αρχική θέση στον κατακόρυφο άξονα
-      const xOffset = 40; // Μειωμένο οριζόντιο offset για όλα τα στοιχεία
+      const startY = 20;  // Μειώνουμε το πάνω περιθώριο (αντί για 50)
+      const xOffset = 60; // Διατηρούμε τα οριζόντια κενά όπως ήταν
 
-      // Ορισμός των περιόδων και των τροχιακών
       const periods = [
         { label: "K", orbitals: ["1s"] },
         { label: "L", orbitals: ["2s", "2p"] },
@@ -206,7 +205,7 @@
         { label: "Q", orbitals: ["7s", "7p"] }
       ];
 
-      const fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18]; // Σωστή σειρά
+      const fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18];
 
       const exceptions = {
         24: { from: "4s", to: "3d", amount: 1 }, // Cr
@@ -237,7 +236,6 @@
       let columnColors = [];
       let electronCounter = 0;
 
-      // Δημιουργία καμβά με τις νέες διαστάσεις
       function setup() {
         const canvas = createCanvas(canvasWidth, canvasHeight);
         canvas.parent("canvasContainer");
@@ -288,7 +286,6 @@
             break;
           }
         }
-        // Καθυστέρηση για τα κόκκινα βέλη
         for (let i = 0; i < lastFilledIndex; i++) {
           setTimeout(() => {
             let from = positions[fillOrder[i]];
@@ -416,7 +413,6 @@
         resetDiagram();
         const Z = parseInt(document.getElementById("atomicNumber").value);
         electronCounter = Z;
-        // Γέμισμα σύμφωνα με τον κανόνα Aufbau
         fillOrder.forEach((idx) => {
           const orb = positions[idx];
           const capacity = { s: 2, p: 6, d: 10, f: 14 }[orb.type];
@@ -424,10 +420,8 @@
           orb.filled = fill;
           electronCounter -= fill;
         });
-        // Αντιγραφή για αρχική διαμόρφωση
         positions.forEach((p) => (p.actualElectrons = p.filled));
         updatePeriodGroup(Z);
-        // Εφαρμογή εξαιρέσεων (αν υπάρχουν)
         if (exceptions[Z]) {
           const { from, to, amount } = exceptions[Z];
           const fromOrb = positions.find((p) => p.label === from);
