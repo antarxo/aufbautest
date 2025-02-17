@@ -12,19 +12,20 @@
         background-color: #f0f8ff;
       }
 
+      /* Αύξηση πλάτους του container στο 450px */
       #mainContainer {
         display: flex;
         flex-direction: column;
         align-items: center;
         margin: 0 auto;
-        width: 400px; /* Διατηρούμε το ίδιο πλάτος για ομοιομορφία */
+        width: 450px; 
       }
 
-      /* Στυλ του πίνακα πληροφοριών */
+      /* Στυλ του πίνακα πληροφοριών με πλάτος 450px */
       #infoTable {
-        margin: 5px 0; /* Μείωση του κενού μεταξύ καμβά και πίνακα */
+        margin: 5px 0; /* Μείωση του κενού μεταξύ καμβά και πίνακα στα 5px */
         border-collapse: collapse;
-        width: 100%;
+        width: 450px;
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         background-color: white;
       }
@@ -46,16 +47,18 @@
         font-size: 12px;
       }
 
-      /* Header (τίτλος) του πίνακα με αυξημένη γραμματοσειρά */
+      /* Header του πίνακα: "Ηλεκτρονιακή δόμηση" με μεγαλύτερη γραμματοσειρά */
       .header-title {
-        font-size: 1.2em;
+        font-size: 1.5em;
         font-weight: bold;
         color: #2E8B57;
         text-align: center;
         padding: 5px;
       }
 
-      /* Μορφοποίηση του συμβόλου του στοιχείου */
+      /* Μορφοποίηση του συμβόλου του στοιχείου:
+         - Το περιεχόμενο του span δείχνει μόνο το σύμβολο (π.χ. "Sn")
+         - Ο κόκκινος δείκτης (με το Z) εμφανίζεται μέσω του ::before */
       .element-symbol {
         font-size: 32px; /* Μεγαλύτερο μέγεθος για το σύμβολο */
         font-weight: bold;
@@ -134,7 +137,7 @@
       <table id="infoTable">
         <tr class="header-title">
           <td colspan="2">
-            Ηλεκτρονιακή δόμηση - <span id="elementSymbolText" class="element-symbol"></span>
+            Ηλεκτρονιακή δόμηση <span id="elementSymbolText" class="element-symbol"></span>
           </td>
         </tr>
         <tr>
@@ -163,8 +166,8 @@
             canvasHeight = 330,   // Ύψος καμβά 330px (μείωση κατά 5px από 335)
             periodLabelWidth = 50;
       
-      // Νέο xOffset ώστε να μετακινηθεί το περιεχόμενο δεξιά κατά 20px:
-      const xOffset = 28; // (8 + 20)
+      // Μετατόπιση περιεχομένου δεξιά κατά 20px (παλιό xOffset 8 + 20 = 28)
+      const xOffset = 28;
       
       const startY = 10;  // Ξεκινάει κοντά στην κορυφή
       
@@ -233,11 +236,13 @@
         updateTitleAndSymbol();
       }
       
+      // Τροποποιημένη συνάρτηση: το span εμφανίζει μόνο το σύμβολο, ενώ το data-z δείχνει το Z
       function updateTitleAndSymbol() {
         const Z = parseInt(document.getElementById("atomicNumber").value);
         const elementSymbol = elementSymbols[Z] || "";
-        document.getElementById("elementSymbolText").textContent = `${Z} ${elementSymbol}`;
-        document.getElementById("elementSymbolText").setAttribute("data-z", Z);
+        const elSpan = document.getElementById("elementSymbolText");
+        elSpan.textContent = elementSymbol;
+        elSpan.setAttribute("data-z", Z);
       }
       
       function drawArrows() {
@@ -459,9 +464,7 @@
         document.getElementById("initialConfig").textContent = initial.join(" ");
         document.getElementById("finalConfig").textContent = final.join(" ");
       
-        const elementSymbol = elementSymbols[parseInt(document.getElementById("atomicNumber").value)] || "";
-        document.getElementById("elementSymbolText").textContent = `${document.getElementById("atomicNumber").value} ${elementSymbol}`;
-        document.getElementById("elementSymbolText").setAttribute("data-z", document.getElementById("atomicNumber").value);
+        // Η ενημέρωση γίνεται μέσω της updateTitleAndSymbol
       }
       
       function updatePeriodGroup(Z) {
