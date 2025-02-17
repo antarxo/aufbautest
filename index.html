@@ -27,7 +27,7 @@
         margin: 10px 0;
       }
       
-      /* Overlay – ενημερωμένο για δύο γραμμές, νέο πλάτος και θέση */
+      /* Overlay – με δύο γραμμές, νέο πλάτος και θέση */
       #controlsOverlay {
         position: absolute;
         top: 10px;
@@ -43,9 +43,9 @@
         align-items: center;
       }
       
-      /* Πρώτη γραμμή του overlay (τίτλος) */
+      /* Πρώτη γραμμή του overlay: ενημερωμένος τίτλος */
       #controlsOverlay #controlsTitle {
-        font-size: 10px;
+        font-size: 12px;  /* αυξημένο μέγεθος */
         font-weight: bold;
         margin-bottom: 4px;
       }
@@ -58,13 +58,14 @@
         margin-top: 4px;
       }
       
-      /* Ετικέτα "Ζ:" */
+      /* Ετικέτα "Ζ:" με έντονα και μεγαλύτερα γράμματα */
       #controlsOverlay #zLabel {
-        font-size: 10px;
+        font-size: 12px;
+        font-weight: bold;
         margin-right: 2px;
       }
       
-      /* Επιλογέας Ζ με μικρότερο πλάτος και font */
+      /* Επιλογέας Ζ */
       #controlsOverlay input {
         width: 30px;
         font-size: 10px;
@@ -115,16 +116,16 @@
         font-size: 12px;
       }
       
-      /* Τίτλος του πίνακα – αυξημένο μέγεθος γραμματοσειράς */
+      /* Τίτλος του πίνακα – αυξημένο μέγεθος ώστε να γεμίζει το πλάτος του κελιού */
       .header-title {
-        font-size: 2.5em; /* Αυξημένο μέγεθος */
+        font-size: 3em; /* Μεγαλύτερη γραμματοσειρά */
         font-weight: bold;
         color: #2E8B57;
         text-align: center;
         padding: 5px;
       }
       
-      /* Μορφοποίηση του συμβόλου του στοιχείου */
+      /* Στυλ για το σύμβολο του στοιχείου */
       .element-symbol {
         font-size: 32px;
         font-weight: bold;
@@ -138,6 +139,12 @@
         color: red;
         vertical-align: sub;
         margin-right: 4px;
+      }
+      
+      /* Στυλ για το όνομα του στοιχείου */
+      .element-name {
+        font-size: 0.5em;  /* Συμβατό με το μέγεθος του header */
+        vertical-align: middle;
       }
       
       /* Στυλ του καμβά */
@@ -154,7 +161,7 @@
         <!-- Ο καμβάς δημιουργείται δυναμικά από την p5.js -->
         <!-- Overlay με τους ελέγχους -->
         <div id="controlsOverlay">
-          <div id="controlsTitle">Επέλεξε στοιχείο</div>
+          <div id="controlsTitle">Επιλογή Ζ στοιχείου</div>
           <div id="controlsInputs">
             <span id="zLabel">Ζ:</span>
             <input type="number" id="atomicNumber" min="1" max="118" value="1" />
@@ -168,7 +175,9 @@
       <table id="infoTable">
         <tr class="header-title">
           <td colspan="2">
-            Ηλεκτρονιακή δόμηση <span id="elementSymbolText" class="element-symbol"></span>
+            Ηλεκτρονιακή δόμηση 
+            <span id="elementSymbolText" class="element-symbol"></span>
+            <span id="elementNameText" class="element-name"></span>
           </td>
         </tr>
         <tr>
@@ -244,6 +253,128 @@
         113: "Nh", 114: "Fl", 115: "Mc", 116: "Lv", 117: "Ts", 118: "Og"
       };
       
+      // Πίνακας με τα ονόματα των στοιχείων στα Ελληνικά
+      const elementNames = {
+        1: "Υδρογόνο",
+        2: "Ήλιο",
+        3: "Λίθιο",
+        4: "Βηρύλλιο",
+        5: "Βόριο",
+        6: "Άνθρακας",
+        7: "Άζωτο",
+        8: "Οξυγόνο",
+        9: "Φθόριο",
+        10: "Νέον",
+        11: "Νάτριο",
+        12: "Μαγνήσιο",
+        13: "Αλουμίνιο",
+        14: "Πυρίτιο",
+        15: "Φώσφορος",
+        16: "Θείο",
+        17: "Χλώριο",
+        18: "Αργόνο",
+        19: "Κάλιο",
+        20: "Ασβέστιο",
+        21: "Σκάνδιο",
+        22: "Τιτάνιο",
+        23: "Βανάδιο",
+        24: "Χρώμιο",
+        25: "Μαγγάνιο",
+        26: "Σίδηρος",
+        27: "Κοβάλτιο",
+        28: "Νικέλιο",
+        29: "Χαλκός",
+        30: "Ψευδάργυρος",
+        31: "Γάλλιο",
+        32: "Γερμάνιο",
+        33: "Αρσενικό",
+        34: "Σελήνιο",
+        35: "Βρώμιο",
+        36: "Κρυπτόν",
+        37: "Ρουβιδίου",
+        38: "Στρόντιο",
+        39: "Ύτριο",
+        40: "Ζιρκόνιο",
+        41: "Νιόβιο",
+        42: "Μολυβδαίνιο",
+        43: "Τεχνητό",
+        44: "Ρουθήνιο",
+        45: "Ρόδιο",
+        46: "Παλλάδιο",
+        47: "Ασήμι",
+        48: "Καδμίου",
+        49: "Ινδίου",
+        50: "Κασσίτερο",
+        51: "Αντίμιο",
+        52: "Τελλούριο",
+        53: "Ιώδιο",
+        54: "Ξένον",
+        55: "Καίσιο",
+        56: "Βάριο",
+        57: "Λανθάνιο",
+        58: "Κήριο",
+        59: "Πρασεοδύμιο",
+        60: "Νεοδύμιο",
+        61: "Προμηθέιο",
+        62: "Σαμάριο",
+        63: "Ευροπίο",
+        64: "Γαδολίνιο",
+        65: "Τερβίδιο",
+        66: "Δυσπρόσιο",
+        67: "Ολόμιο",
+        68: "Ερβόλιο",
+        69: "Θουλμίου",
+        70: "Ύττεροβύλλιο",
+        71: "Λουτεσίο",
+        72: "Χαφνίο",
+        73: "Ταντάλιο",
+        74: "Βολφράμιο",
+        75: "Ρενίο",
+        76: "Όσμιο",
+        77: "Ιρίδιο",
+        78: "Πλατίνα",
+        79: "Χρυσός",
+        80: "Υδράργυρος",
+        81: "Θαλίιο",
+        82: "Μόλυβδος",
+        83: "Βισμούθιο",
+        84: "Πολώνιο",
+        85: "Αστατίνη",
+        86: "Ραδόν",
+        87: "Φραγκίσιο",
+        88: "Ραδίου",
+        89: "Ακτίνιο",
+        90: "Θόριο",
+        91: "Πρωτοκτακτίνιο",
+        92: "Ουράνιο",
+        93: "Νεπτούνιο",
+        94: "Πλουτώνιο",
+        95: "Αμερικίνιο",
+        96: "Κούριο",
+        97: "Μπέρκελλιο",
+        98: "Καλιφόρνιο",
+        99: "Αϊνστάινιο",
+        100: "Φερμίο",
+        101: "Μεντελεβίου",
+        102: "Νομπελλίου",
+        103: "Λώρενσιο",
+        104: "Ρουθενέργιο",
+        105: "Ντουμπίνιο",
+        106: "Σέιμποργκιο",
+        107: "Μπόριο",
+        108: "Χάσιο",
+        109: "Μάιτνεριουμ",
+        110: "Νταρμσταδτιουμ",
+        111: "Ρεντγένιο",
+        112: "Κοπέρνικιο",
+        113: "Νιχόνιο",
+        114: "Φλερόβιο",
+        115: "Μοσκόβιο",
+        116: "Λίβερμονιο",
+        117: "Τενεσίνιο",
+        118: "Ογανέσον"
+      };
+      
       let positions = [];
       let columnColors = [];
       let electronCounter = 0;
@@ -266,14 +397,15 @@
         updateTitleAndSymbol();
       }
       
-      // Ενημέρωση του στοιχείου του τίτλου: το span εμφανίζει μόνο το σύμβολο,
-      // ενώ το data-z περιέχει το Z (που εμφανίζεται ως κόκκινος δείκτης μέσω CSS)
+      // Ενημέρωση του τίτλου με το σύμβολο και το όνομα του στοιχείου
       function updateTitleAndSymbol() {
         const Z = parseInt(document.getElementById("atomicNumber").value);
         const elementSymbol = elementSymbols[Z] || "";
+        const elementName = elementNames[Z] || "";
         const elSpan = document.getElementById("elementSymbolText");
         elSpan.textContent = elementSymbol;
         elSpan.setAttribute("data-z", Z);
+        document.getElementById("elementNameText").textContent = elementName;
       }
       
       function drawArrows() {
@@ -594,6 +726,7 @@
         document.getElementById("initialConfig").textContent = "-";
         document.getElementById("finalConfig").textContent = "-";
         document.getElementById("elementSymbolText").textContent = "";
+        document.getElementById("elementNameText").textContent = "";
         redraw();
       }
     </script>
