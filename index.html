@@ -20,7 +20,7 @@
         width: 400px; /* Ίδιο πλάτος με τον καμβά και τον πίνακα */
       }
 
-      /* Στυλ του πίνακα */
+      /* Στυλ του πίνακα πληροφοριών */
       #infoTable {
         margin: 20px 0;
         border-collapse: collapse;
@@ -46,9 +46,9 @@
         font-size: 12px;
       }
 
-      /* Νέα γραμμή για τον τίτλο με μειωμένο μέγεθος γραμματοσειράς */
+      /* Νέα γραμμή για τον τίτλο με αυξημένη γραμματοσειρά */
       .header-title {
-        font-size: 0.9em;
+        font-size: 1.2em; /* αυξημένο μέγεθος */
         font-weight: bold;
         color: #2E8B57;
         text-align: center;
@@ -56,7 +56,7 @@
       }
 
       .element-symbol {
-        font-size: 24px;
+        font-size: 32px; /* αυξημένο μέγεθος συμβόλου */
         font-weight: bold;
         color: darkgreen;
         margin-right: 10px;
@@ -64,10 +64,10 @@
 
       .element-symbol::before {
         content: attr(data-z);
-        font-size: 14px;
+        font-size: 10px; /* μειωμένος δείκτης */
         color: red;
-        vertical-align: baseline;
-        margin-right: 5px;
+        vertical-align: sub; /* κατέμασμα για εμφάνιση δείκτη */
+        margin-right: 2px; /* πλησίον στο σύμβολο */
       }
 
       #controls {
@@ -97,12 +97,13 @@
       }
 
       button { 
-        padding: 10px 20px; 
+        padding: 5px 10px; /* μικρότερη επένδυση για μικρότερα κουμπιά */
         background-color: #4CAF50; 
         color: white; 
         border: none; 
         border-radius: 5px;
         cursor: pointer;
+        font-size: 0.8em; /* μικρότερη γραμματοσειρά */
       }
 
       button:hover {
@@ -157,12 +158,12 @@
         boxHeight = 40,
         verticalSpacing = 45,
         horizontalGap = 5,
-        canvasWidth = 420,
-        canvasHeight = 335,  // Αυξημένο ύψος καμβά κατά 20px (315 + 20)
+        canvasWidth = 320, // μείωση πλάτους κατά 100px (από 420)
+        canvasHeight = 330,  // ύψος καμβά 330px (μείωση κατά 5px από 335)
         periodLabelWidth = 50;
       
       const startY = 10;  // Ξεκινάει κοντά στην κορυφή
-      const xOffset = 60; // Οριζόντιες αποστάσεις
+      const xOffset = 60; // Οριζόντια μετατόπιση
       
       const periods = [
         { label: "K", orbitals: ["1s"] },
@@ -175,18 +176,17 @@
       ];
       
       // Εξαιρέσεις για τα στοιχεία μετάπτωσης:
-      // Οι μεταφορές καθορίζουν το 'from' orbital, το 'to' orbital και το πλήθος των ηλεκτρονίων που μεταφέρονται.
+      // Ορίζουμε το 'from' orbital, το 'to' orbital και το πλήθος των ηλεκτρονίων που μεταφέρονται.
       const exceptions = {
         24: { from: "4s", to: "3d", amount: 1 },  // Cr
         29: { from: "4s", to: "3d", amount: 1 },  // Cu
         42: { from: "5s", to: "4d", amount: 1 },  // Mo
         46: { from: "5s", to: "4d", amount: 2 },  // Pd
         47: { from: "5s", to: "4d", amount: 1 },  // Ag
-        74: { from: "6s", to: "5d", amount: 1 },  // W (Τουρστένιο)
-        78: { from: "6s", to: "5d", amount: 1 },  // Pt
+        74: { from: "6s", to: "5d", amount: 1 },  // W
         79: { from: "6s", to: "5d", amount: 1 },  // Au
-        106: { from: "7s", to: "6d", amount: 1 }, // Sg (Seaborgium)
-        111: { from: "7s", to: "6d", amount: 1 }  // Rg (Roentgenium)
+        106: { from: "7s", to: "6d", amount: 1 }, // Sg
+        111: { from: "7s", to: "6d", amount: 1 }  // Rg
       };
       
       const fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18];
