@@ -12,13 +12,14 @@
         background-color: #f0f8ff;
       }
       
-      /* Container ολόκληρης της εφαρμογής – πλάτος 450px */
+      /* Κεντρικό container - ευέλικτο πλάτος */
       #mainContainer {
         display: flex;
         flex-direction: column;
         align-items: center;
         margin: 0 auto;
-        width: 450px;
+        width: 90%;
+        max-width: 600px;
       }
       
       /* Container του καμβά με relative θέση για τα overlays */
@@ -27,11 +28,11 @@
         margin: 10px 0;
       }
       
-      /* Overlay για τους ελέγχους (πάνω δεξιά) */
+      /* Overlay ελέγχων - τοποθετείται στο επάνω περίγραμμα του καμβά */
       #controlsOverlay {
         position: absolute;
-        top: 10px;
-        right: 0; /* Εφαπτόμενο στο δεξί περίγραμμα του καμβά */
+        top: 0;              /* Ανεβασμένο στο επάνω περίγραμμα */
+        right: 0;
         width: calc(3 * 60px + 6px); /* 186px */
         z-index: 10;
         background-color: #fff;
@@ -43,37 +44,37 @@
         align-items: center;
       }
       
-      /* Τίτλος overlay: "Επιλογή Ζ στοιχείου" */
-      #controlsOverlay #controlsTitle {
+      /* Τίτλος overlay */
+      #controlsTitle {
         font-size: 12px;
         font-weight: bold;
-        margin-bottom: 4px;
+        margin-bottom: 2px;  /* Μείωση διαστήματος */
       }
       
-      /* Δεύτερη γραμμή του overlay (εισαγωγή και κουμπιά) */
+      /* Κοντέινερ για τα κουμπιά και τον επιλογέα */
       #controlsInputs {
         display: flex;
         align-items: center;
         gap: 2px;
-        margin-top: 4px;
+        margin-top: 2px;     /* Μείωση διαστήματος */
       }
       
-      /* Ετικέτα "Ζ:" με ακόμα μεγαλύτερα γράμματα */
-      #controlsOverlay #zLabel {
-        font-size: 16px;  /* Μεγαλύτερο μέγεθος */
+      /* Ετικέτα "Ζ:" */
+      #zLabel {
+        font-size: 16px;
         font-weight: bold;
         margin-right: 4px;
       }
       
-      /* Επιλογέας Ζ – μεγαλύτερο font-size, πλάτος και padding */
-      #controlsOverlay input {
-        width: 40px;       /* Αυξημένο πλάτος */
-        font-size: 14px;   /* Μεγαλύτερη γραμματοσειρά */
+      /* Επιλογέας Ζ */
+      #atomicNumber {
+        width: 40px;
+        font-size: 14px;
         padding: 4px;
         margin: 0;
       }
       
-      /* Κουμπιά στο overlay – αυξημένα ύψος και πλάτος (με padding και font-size) */
+      /* Κουμπιά στο overlay */
       #controlsOverlay button {
         font-size: 12px;
         padding: 4px 6px;
@@ -91,11 +92,41 @@
         background-color: #45a049;
       }
       
-      /* Πίνακας πληροφοριών – πλάτος 450px, αρχικά κρυμμένος */
+      /* Κουμπί toggle για τον πίνακα πληροφοριών (στο κάτω δεξί μέρος του καμβά) */
+      #infoToggleButton {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background-color: #4CAF50;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 12px;
+        z-index: 15;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+        transition: background-color 0.3s ease;
+      }
+      
+      #infoToggleButton:hover {
+        background-color: #45a049;
+      }
+      
+      /* Όταν ο πίνακας εμφανίζεται, το κουμπί γίνεται κόκκινο */
+      #infoToggleButton.visible {
+        background-color: #E53935;
+      }
+      
+      #infoToggleButton.visible:hover {
+        background-color: #D32F2F;
+      }
+      
+      /* Πίνακας πληροφοριών - ευέλικτο πλάτος */
       #infoTable {
         margin: 5px 0;
         border-collapse: collapse;
-        width: 450px;
+        width: auto;
+        max-width: 100%;
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         background-color: white;
         display: none;
@@ -118,14 +149,17 @@
         font-size: 12px;
       }
       
-      /* Τίτλος του πίνακα – συγχωνευμένα κελιά, μεγαλύτερη γραμματοσειρά */
+      /* Τίτλος του πίνακα (συγχωνευμένα κελιά) - επιτρέπεται το wrapping */
       .header-title {
-        font-size: 4em !important;
+        font-size: 4em;
         font-weight: bold;
         color: #2E8B57;
         text-align: center;
         padding: 5px;
         display: block;
+        white-space: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
       }
       
       /* Στυλ για το σύμβολο του στοιχείου */
@@ -144,40 +178,11 @@
         margin-right: 4px;
       }
       
-      /* Στυλ για το όνομα του στοιχείου – μεγαλύτερα γράμματα */
+      /* Στυλ για το όνομα του στοιχείου */
       .element-name {
         font-size: 1.2em;
         font-weight: bold;
         vertical-align: middle;
-      }
-      
-      /* Κουμπί toggle για τον πίνακα πληροφοριών (overlay στο κάτω δεξιά) */
-      #infoToggleButton {
-        position: absolute;
-        bottom: 10px;
-        right: 10px;
-        background-color: #4CAF50; /* Default color */
-        color: white;
-        padding: 5px 10px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 12px;
-        z-index: 15;
-        box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
-        transition: background-color 0.3s ease;
-      }
-      
-      #infoToggleButton:hover {
-        background-color: #45a049;
-      }
-      
-      /* Όταν ο πίνακας εμφανίζεται, το κουμπί αλλάζει σε κόκκινο */
-      #infoToggleButton.visible {
-        background-color: #E53935;
-      }
-      
-      #infoToggleButton.visible:hover {
-        background-color: #D32F2F;
       }
       
       /* Στυλ του καμβά */
@@ -189,10 +194,8 @@
   </head>
   <body>
     <div id="mainContainer">
-      <!-- Container του καμβά με overlays -->
       <div id="canvasContainer">
         <!-- Ο καμβάς δημιουργείται δυναμικά από την p5.js -->
-        <!-- Overlay για τους ελέγχους -->
         <div id="controlsOverlay">
           <div id="controlsTitle">Επιλογή Ζ στοιχείου</div>
           <div id="controlsInputs">
@@ -202,11 +205,9 @@
             <button id="resetButton" onclick="resetDiagram()">Reset</button>
           </div>
         </div>
-        <!-- Κουμπί toggle για εμφάνιση/απόκρυψη του πίνακα πληροφοριών -->
         <div id="infoToggleButton" onclick="toggleInfo()">Δες!</div>
       </div>
       
-      <!-- Πίνακας πληροφοριών (αρχικά κρυμμένος) -->
       <table id="infoTable">
         <tr class="header-title">
           <td colspan="2">
@@ -237,13 +238,12 @@
             boxHeight = 40,
             verticalSpacing = 45,
             horizontalGap = 5,
-            canvasWidth = 350,    // Αύξηση πλάτους κατά 30px (από 320)
-            canvasHeight = 330,   // Ύψος 330px (μείωση κατά 5px από 335)
+            canvasWidth = 350,
+            canvasHeight = 330,
             periodLabelWidth = 50;
       
-      // Μετατόπιση περιεχομένου δεξιά (προηγούμενο xOffset: 8+20 = 28)
       const xOffset = 28;
-      const startY = 10;  // Ξεκινάει κοντά στην κορυφή
+      const startY = 10;
       
       const periods = [
         { label: "K", orbitals: ["1s"] },
@@ -255,17 +255,16 @@
         { label: "Q", orbitals: ["7s", "7p"] }
       ];
       
-      // Εξαιρέσεις για τα στοιχεία μετάπτωσης:
       const exceptions = {
-        24: { from: "4s", to: "3d", amount: 1 },  // Cr
-        29: { from: "4s", to: "3d", amount: 1 },  // Cu
-        42: { from: "5s", to: "4d", amount: 1 },  // Mo
-        46: { from: "5s", to: "4d", amount: 2 },  // Pd
-        47: { from: "5s", to: "4d", amount: 1 },  // Ag
-        74: { from: "6s", to: "5d", amount: 1 },  // W
-        79: { from: "6s", to: "5d", amount: 1 },  // Au
-        106: { from: "7s", to: "6d", amount: 1 }, // Sg
-        111: { from: "7s", to: "6d", amount: 1 }  // Rg
+        24: { from: "4s", to: "3d", amount: 1 },
+        29: { from: "4s", to: "3d", amount: 1 },
+        42: { from: "5s", to: "4d", amount: 1 },
+        46: { from: "5s", to: "4d", amount: 2 },
+        47: { from: "5s", to: "4d", amount: 1 },
+        74: { from: "6s", to: "5d", amount: 1 },
+        79: { from: "6s", to: "5d", amount: 1 },
+        106: { from: "7s", to: "6d", amount: 1 },
+        111: { from: "7s", to: "6d", amount: 1 }
       };
       
       const fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18];
@@ -288,7 +287,6 @@
         113: "Nh", 114: "Fl", 115: "Mc", 116: "Lv", 117: "Ts", 118: "Og"
       };
       
-      // Πίνακας με τα ονόματα των στοιχείων στα Ελληνικά
       const elementNames = {
         1: "Υδρογόνο",
         2: "Ήλιο",
@@ -432,7 +430,6 @@
         updateTitleAndSymbol();
       }
       
-      // Ενημέρωση του τίτλου με το σύμβολο και το όνομα του στοιχείου
       function updateTitleAndSymbol() {
         const Z = parseInt(document.getElementById("atomicNumber").value);
         const elementSymbol = elementSymbols[Z] || "";
@@ -451,12 +448,8 @@
           let from = positions[fillOrder[i]];
           let to = positions[fillOrder[i + 1]];
           if (to.y > from.y) {
-            drawArrow(
-              from.x + boxWidth + xOffset,
-              from.y + 10,
-              to.x + boxWidth + xOffset,
-              to.y + 10
-            );
+            drawArrow(from.x + boxWidth + xOffset, from.y + 10,
+                      to.x + boxWidth + xOffset, to.y + 10);
           }
         }
         stroke(255, 0, 0);
@@ -474,12 +467,8 @@
             let from = positions[fillOrder[i]];
             let to = positions[fillOrder[i + 1]];
             if (to.y > from.y) {
-              drawArrow(
-                from.x + boxWidth + xOffset,
-                from.y + 10,
-                to.x + boxWidth + xOffset,
-                to.y + 10
-              );
+              drawArrow(from.x + boxWidth + xOffset, from.y + 10,
+                        to.x + boxWidth + xOffset, to.y + 10);
             }
           }, i * 500);
         }
@@ -498,10 +487,10 @@
       
       function initColumnColors() {
         columnColors = [
-          color("#FFCDD2"), // s
-          color("#C8E6C9"), // p
-          color("#BBDEFB"), // d
-          color("#FFF9C4")  // f
+          color("#FFCDD2"),
+          color("#C8E6C9"),
+          color("#BBDEFB"),
+          color("#FFF9C4")
         ];
       }
       
@@ -544,11 +533,8 @@
         for (let i = 0; i < periods.length; i++) {
           let y = startY + i * verticalSpacing;
           const electrons = periodElectrons[i];
-          text(
-            `${periods[i].label}${electrons > 0 ? ` (${electrons})` : ""}`,
-            periodLabelWidth - 10 + xOffset,
-            y + 17
-          );
+          text(`${periods[i].label}${electrons > 0 ? ` (${electrons})` : ""}`,
+               periodLabelWidth - 10 + xOffset, y + 17);
         }
         textStyle(NORMAL);
       }
@@ -557,36 +543,19 @@
         noStroke();
         textAlign(CENTER, CENTER);
         positions.forEach((pos) => {
-          const boxWidthAdjusted = Math.max(
-            boxWidth,
-            textWidth(pos.label) + 20
-          );
+          const boxWidthAdjusted = Math.max(boxWidth, textWidth(pos.label) + 20);
           fill(pos.isGray ? 200 : columnColors[pos.col]);
           rect(pos.x + xOffset, pos.y, boxWidthAdjusted, boxHeight);
           fill(0);
-          text(
-            pos.label,
-            pos.x + boxWidthAdjusted / 2 + xOffset,
-            pos.y + boxHeight / 2
-          );
+          text(pos.label, pos.x + boxWidthAdjusted / 2 + xOffset, pos.y + boxHeight / 2);
           if (pos.actualElectrons > 0) {
             textSize(14);
             textStyle(BOLD);
-            fill(
-              pos.isGray
-                ? 0
-                : {
-                    s: color(255, 0, 0),
-                    p: color(0, 100, 0),
-                    d: color(0, 0, 255),
-                    f: color(255, 165, 0)
-                  }[pos.type]
+            fill(pos.isGray ? 0 : 
+              { s: color(255, 0, 0), p: color(0, 100, 0), d: color(0, 0, 255), f: color(255, 165, 0) }[pos.type]
             );
-            text(
-              numberToExponent(pos.actualElectrons),
-              pos.x + boxWidthAdjusted - 15 + xOffset,
-              pos.y + 10
-            );
+            text(numberToExponent(pos.actualElectrons),
+                 pos.x + boxWidthAdjusted - 15 + xOffset, pos.y + 10);
             textStyle(NORMAL);
           }
         });
@@ -625,21 +594,15 @@
         const lastOrbType = filled[filled.length - 1].type;
         positions.forEach((pos) => {
           const currentPeriod = parseInt(pos.label);
-          pos.isGray =
-            currentPeriod === maxPeriod &&
-            ((lastOrbType === "p" &&
-              (pos.type === "s" || pos.type === "p")) ||
-             (lastOrbType === "s" && pos.type === "s"));
+          pos.isGray = currentPeriod === maxPeriod &&
+                       ((lastOrbType === "p" && (pos.type === "s" || pos.type === "p")) ||
+                        (lastOrbType === "s" && pos.type === "s"));
         });
       }
       
       function numberToExponent(num) {
         const exponents = ["⁰", "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹"];
-        return num
-          .toString()
-          .split("")
-          .map((d) => exponents[d])
-          .join("");
+        return num.toString().split("").map((d) => exponents[d]).join("");
       }
       
       function updateDisplay(Z) {
@@ -647,7 +610,6 @@
           .map((idx) => positions[idx])
           .filter((p) => p.filled > 0)
           .map((p) => `${p.label}${numberToExponent(p.filled)}`);
-      
         const final = positions
           .filter((p) => p.actualElectrons > 0)
           .sort((a, b) => {
@@ -658,7 +620,6 @@
             return order[a.type] - order[b.type];
           })
           .map((p) => `${p.label}${numberToExponent(p.actualElectrons)}`);
-      
         document.getElementById("initialConfig").textContent = initial.join(" ");
         document.getElementById("finalConfig").textContent = final.join(" ");
       }
@@ -671,37 +632,25 @@
         }
         const valence = filled[filled.length - 1];
         const period = Math.max(...filled.map((p) => parseInt(p.label)));
-        console.log(`updatePeriodGroup: Z=${Z}, valence=${valence.label}, period=${period}`);
         document.getElementById("periodValue").textContent = period;
         document.getElementById("groupValue").textContent = predictGroup(valence, Z);
       }
       
       function predictGroup(valence, Z) {
         const currentPeriod = parseInt(valence.label);
-        let sElectrons = 0,
-            dElectrons = 0;
-        const sOrb = positions.find(
-          (p) => p.type === "s" && parseInt(p.label) === currentPeriod
-        );
+        let sElectrons = 0, dElectrons = 0;
+        const sOrb = positions.find((p) => p.type === "s" && parseInt(p.label) === currentPeriod);
         sElectrons = sOrb ? sOrb.filled : 0;
         if (valence.type === "d") {
           dElectrons = positions
-            .filter(
-              (p) => p.type === "d" && parseInt(p.label) === currentPeriod - 1
-            )
+            .filter((p) => p.type === "d" && parseInt(p.label) === currentPeriod - 1)
             .reduce((sum, p) => sum + p.filled, 0);
         }
-        console.log(
-          `Element Z=${Z}: sElectrons=${sElectrons}, dElectrons=${dElectrons}, valenceType=${valence.type}, currentPeriod=${currentPeriod}`
-        );
         if (valence.type === "s") {
           return `${toRoman(sElectrons)}A ή ${sElectrons}`;
         } else if (valence.type === "p") {
           const pElectrons = positions
-            .filter(
-              (p) =>
-                p.type === "p" && parseInt(p.label) === currentPeriod
-            )
+            .filter((p) => p.type === "p" && parseInt(p.label) === currentPeriod)
             .reduce((sum, p) => sum + p.filled, 0);
           return `${toRoman(sElectrons + pElectrons)}A ή ${sElectrons + pElectrons + 10}`;
         } else if (valence.type === "d") {
@@ -727,19 +676,9 @@
       
       function toRoman(num) {
         const roman = {
-          M: 1000,
-          CM: 900,
-          D: 500,
-          CD: 400,
-          C: 100,
-          XC: 90,
-          L: 50,
-          XL: 40,
-          X: 10,
-          IX: 9,
-          V: 5,
-          IV: 4,
-          I: 1
+          M: 1000, CM: 900, D: 500, CD: 400, C: 100,
+          XC: 90, L: 50, XL: 40, X: 10, IX: 9,
+          V: 5, IV: 4, I: 1
         };
         let str = "";
         for (let i of Object.keys(roman)) {
@@ -750,7 +689,6 @@
         return str;
       }
       
-      // Συνάρτηση toggle για τον πίνακα πληροφοριών
       function toggleInfo() {
         const infoTable = document.getElementById("infoTable");
         const toggleButton = document.getElementById("infoToggleButton");
@@ -765,7 +703,6 @@
         }
       }
       
-      // Reset της διάταξης (επαναφορά πίνακα πληροφοριών στην αρχική κατάσταση)
       function resetDiagram() {
         positions.forEach((p) => {
           p.filled = 0;
@@ -778,7 +715,6 @@
         document.getElementById("finalConfig").textContent = "-";
         document.getElementById("elementSymbolText").textContent = "";
         document.getElementById("elementNameText").textContent = "";
-        // Επαναφορά εμφάνισης πίνακα πληροφοριών
         document.getElementById("infoTable").style.display = "none";
         const toggleButton = document.getElementById("infoToggleButton");
         toggleButton.textContent = "Δες!";
