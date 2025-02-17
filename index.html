@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Κανόνας Aufbau</title>
+    <!-- Χρήση της p5.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <style>
       body { 
@@ -11,7 +12,7 @@
         font-family: Verdana, sans-serif; 
         background-color: #f0f8ff;
       }
-
+      
       /* Αύξηση πλάτους του container στο 450px */
       #mainContainer {
         display: flex;
@@ -20,33 +21,74 @@
         margin: 0 auto;
         width: 450px; 
       }
-
-      /* Στυλ του πίνακα πληροφοριών με πλάτος 450px */
+      
+      /* Το container του καμβά ορίζεται ως relative για το overlay */
+      #canvasContainer {
+        position: relative;
+        margin: 10px 0;
+      }
+      
+      /* Το overlay με τους ελέγχους, τοποθετείται απόλυτα μέσα στο canvasContainer.
+         Εδώ τοποθετούμε το overlay μετά το 1s ορθογώνιο:
+         - Το 1s ορθογώνιο σχεδιάζεται στο positions[0] με x = periodLabelWidth (50) και xOffset = 28,
+           επομένως το αριστερό του όριο είναι 50+28 = 78 και έχει πλάτος περίπου 60, άρα περίπου 78+60=138.
+         Επιλέγουμε left: 148px (δηλαδή περίπου 10px μετά) και top: 10px (ίσο με το y του 1s).
+      */
+      #controlsOverlay {
+        position: absolute;
+        left: 148px;
+        top: 10px;
+        z-index: 10;
+      }
+      
+      /* Στυλ για τα στοιχεία ελέγχου μέσα στο overlay */
+      #controlsOverlay input {
+        width: 30px;
+        font-size: 12px;
+        padding: 2px;
+      }
+      
+      #controlsOverlay button {
+        font-size: 12px;
+        padding: 3px 5px;
+        margin-left: 5px;
+        background-color: #4CAF50; 
+        color: white; 
+        border: none; 
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      
+      #controlsOverlay button:hover {
+        background-color: #45a049;
+      }
+      
+      /* Στυλ του πίνακα πληροφοριών – πλάτος 450px */
       #infoTable {
-        margin: 5px 0; /* Μείωση του κενού μεταξύ καμβά και πίνακα στα 5px */
+        margin: 5px 0; /* Διάστημα 5px ανάμεσα στον καμβά και τον πίνακα */
         border-collapse: collapse;
         width: 450px;
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         background-color: white;
       }
-
+      
       #infoTable th,
       #infoTable td {
         border: 2px solid #4CAF50;
         padding: 8px;
         text-align: center;
       }
-
+      
       #infoTable th {
         background-color: #4CAF50;
         color: white;
         font-size: 14px;
       }
-
+      
       #infoTable td {
         font-size: 12px;
       }
-
+      
       /* Header του πίνακα: "Ηλεκτρονιακή δόμηση" με μεγαλύτερη γραμματοσειρά */
       .header-title {
         font-size: 1.5em;
@@ -55,85 +97,47 @@
         text-align: center;
         padding: 5px;
       }
-
+      
       /* Μορφοποίηση του συμβόλου του στοιχείου:
-         - Το περιεχόμενο του span δείχνει μόνο το σύμβολο (π.χ. "Sn")
-         - Ο κόκκινος δείκτης (με το Z) εμφανίζεται μέσω του ::before */
+         Το span εμφανίζει μόνο το σύμβολο (π.χ. "Sn") και ο κόκκινος δείκτης (με το Z)
+         εμφανίζεται μέσω του ::before.
+      */
       .element-symbol {
-        font-size: 32px; /* Μεγαλύτερο μέγεθος για το σύμβολο */
+        font-size: 32px;
         font-weight: bold;
         color: darkgreen;
         margin-right: 10px;
       }
-
+      
       .element-symbol::before {
         content: attr(data-z);
         font-size: 16px; /* Μεγαλύτερος κόκκινος δείκτης */
         color: red;
-        vertical-align: sub; /* Κατέμασμα ως δείκτης */
-        margin-right: 4px; /* Πλησίωση στο σύμβολο */
+        vertical-align: sub;
+        margin-right: 4px;
       }
-
-      #controls {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        margin: 10px 0;
-      }
-
-      #controls label,
-      #controls input,
-      #controls button {
-        margin: 0 5px;
-      }
-
-      /* Διάταξη του καμβά */
-      #canvasContainer {
-        display: flex;
-        justify-content: center;
-        margin: 10px 0;
-      }
-
+      
+      /* Στυλ για το canvas */
       canvas { 
         border: 2px solid #4CAF50;
         border-radius: 10px;
-      }
-
-      button { 
-        padding: 5px 10px; /* Μικρότερα κουμπιά */
-        background-color: #4CAF50; 
-        color: white; 
-        border: none; 
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 0.8em; /* Μικρότερη γραμματοσειρά */
-      }
-
-      button:hover {
-        background-color: #45a049;
       }
     </style>
   </head>
   <body>
     <div id="mainContainer">
-      <div id="controls">
-        <label for="atomicNumber" style="font-size: 16px;">Z:</label>
-        <input
-          type="number"
-          id="atomicNumber"
-          min="1"
-          max="118"
-          value="1"
-          style="padding: 5px;"
-        />
-        <button onclick="startFilling()">Έναρξη</button>
-        <button onclick="resetDiagram()">Reset</button>
+      <!-- Το container του καμβά, μέσα στο οποίο θα τοποθετηθούν ο καμβάς και το overlay με τους ελέγχους -->
+      <div id="canvasContainer">
+        <!-- Ο καμβάς δημιουργείται δυναμικά από την p5.js -->
+        <!-- Το overlay με τους ελέγχους -->
+        <div id="controlsOverlay">
+          <input type="number" id="atomicNumber" min="1" max="118" value="1" />
+          <button id="startButton" onclick="startFilling()">Έναρξη</button>
+          <button id="resetButton" onclick="resetDiagram()">Reset</button>
+        </div>
       </div>
-
-      <div id="canvasContainer"></div>
-
-      <!-- Ο πίνακας πληροφοριών μεταφέρεται κάτω από τον καμβά -->
+      
+      <!-- Ο πίνακας πληροφοριών τοποθετείται κάτω από τον καμβά -->
       <table id="infoTable">
         <tr class="header-title">
           <td colspan="2">
@@ -155,20 +159,19 @@
         </tr>
       </table>
     </div>
-
+    
     <script>
-      // Ρυθμίσεις διάταξης:
+      // Ρυθμίσεις διάταξης
       const boxWidth = 60,
             boxHeight = 40,
             verticalSpacing = 45,
             horizontalGap = 5,
-            canvasWidth = 350,    // Αύξηση πλάτους καμβά κατά 30px (προηγούμενα 320)
-            canvasHeight = 330,   // Ύψος καμβά 330px (μείωση κατά 5px από 335)
+            canvasWidth = 350,    // Αύξηση πλάτους κατά 30px (από 320)
+            canvasHeight = 330,   // Ύψος 330px (μείωση κατά 5px από 335)
             periodLabelWidth = 50;
       
-      // Μετατόπιση περιεχομένου δεξιά κατά 20px (παλιό xOffset 8 + 20 = 28)
+      // Μετατόπιση περιεχομένου δεξιά κατά 20px (προηγούμενο xOffset 8 + 20 = 28)
       const xOffset = 28;
-      
       const startY = 10;  // Ξεκινάει κοντά στην κορυφή
       
       const periods = [
@@ -236,7 +239,8 @@
         updateTitleAndSymbol();
       }
       
-      // Τροποποιημένη συνάρτηση: το span εμφανίζει μόνο το σύμβολο, ενώ το data-z δείχνει το Z
+      // Η ενημέρωση του στοιχείου του τίτλου: το span εμφανίζει μόνο το σύμβολο,
+      // ενώ το data-z περιέχει το Z (που θα εμφανιστεί ως κόκκινος δείκτης μέσω CSS)
       function updateTitleAndSymbol() {
         const Z = parseInt(document.getElementById("atomicNumber").value);
         const elementSymbol = elementSymbols[Z] || "";
@@ -463,8 +467,6 @@
       
         document.getElementById("initialConfig").textContent = initial.join(" ");
         document.getElementById("finalConfig").textContent = final.join(" ");
-      
-        // Η ενημέρωση γίνεται μέσω της updateTitleAndSymbol
       }
       
       function updatePeriodGroup(Z) {
