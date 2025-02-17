@@ -13,7 +13,7 @@
         background-color: #f0f8ff;
       }
       
-      /* Αύξηση πλάτους του container στο 450px */
+      /* Το container ολόκληρης της εφαρμογής - αυξημένο πλάτος στο 450px */
       #mainContainer {
         display: flex;
         flex-direction: column;
@@ -28,35 +28,50 @@
         margin: 10px 0;
       }
       
-      /* Το overlay με τους ελέγχους, τοποθετείται απόλυτα μέσα στο canvasContainer.
-         Εδώ τοποθετούμε το overlay μετά το 1s ορθογώνιο:
-         - Το 1s ορθογώνιο σχεδιάζεται στο positions[0] με x = periodLabelWidth (50) και xOffset = 28,
-           επομένως το αριστερό του όριο είναι 50+28 = 78 και έχει πλάτος περίπου 60, άρα περίπου 78+60=138.
-         Επιλέγουμε left: 148px (δηλαδή περίπου 10px μετά) και top: 10px (ίσο με το y του 1s).
-      */
+      /* Το overlay με τους ελέγχους, με περίγραμμα και σκίαση */
       #controlsOverlay {
         position: absolute;
         left: 148px;
         top: 10px;
         z-index: 10;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #ccc;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
       }
       
-      /* Στυλ για τα στοιχεία ελέγχου μέσα στο overlay */
+      /* Τίτλος μέσα στο overlay */
+      #controlsOverlay #controlsTitle {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        text-align: center;
+      }
+      
+      /* Ο ετικετοδόχος για το "Ζ:" */
+      #controlsOverlay #zLabel {
+        font-size: 14px;
+        margin-right: 4px;
+      }
+      
+      /* Ο επιλογέας του Z με μεγαλύτερο πλάτος */
       #controlsOverlay input {
-        width: 30px;
-        font-size: 12px;
+        width: 60px;
+        font-size: 14px;
         padding: 2px;
       }
       
+      /* Τα κουμπιά - περιβάλλονται από περίγραμμα και σκίαση */
       #controlsOverlay button {
         font-size: 12px;
         padding: 3px 5px;
         margin-left: 5px;
         background-color: #4CAF50; 
         color: white; 
-        border: none; 
+        border: 1px solid #ccc;
         border-radius: 5px;
         cursor: pointer;
+        box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
       }
       
       #controlsOverlay button:hover {
@@ -89,17 +104,17 @@
         font-size: 12px;
       }
       
-      /* Header του πίνακα: "Ηλεκτρονιακή δόμηση" με μεγαλύτερη γραμματοσειρά */
+      /* Τίτλος του πίνακα - αυξημένο μέγεθος γραμματοσειράς */
       .header-title {
-        font-size: 1.5em;
+        font-size: 2em;
         font-weight: bold;
         color: #2E8B57;
         text-align: center;
         padding: 5px;
       }
       
-      /* Μορφοποίηση του συμβόλου του στοιχείου:
-         Το span εμφανίζει μόνο το σύμβολο (π.χ. "Sn") και ο κόκκινος δείκτης (με το Z)
+      /* Μορφοποίηση του συμβόλου του στοιχείου: 
+         Το span εμφανίζει μόνο το σύμβολο, ενώ ο κόκκινος δείκτης (με το Z)
          εμφανίζεται μέσω του ::before.
       */
       .element-symbol {
@@ -111,13 +126,13 @@
       
       .element-symbol::before {
         content: attr(data-z);
-        font-size: 16px; /* Μεγαλύτερος κόκκινος δείκτης */
+        font-size: 16px;
         color: red;
         vertical-align: sub;
         margin-right: 4px;
       }
       
-      /* Στυλ για το canvas */
+      /* Στυλ του καμβά */
       canvas { 
         border: 2px solid #4CAF50;
         border-radius: 10px;
@@ -126,18 +141,20 @@
   </head>
   <body>
     <div id="mainContainer">
-      <!-- Το container του καμβά, μέσα στο οποίο θα τοποθετηθούν ο καμβάς και το overlay με τους ελέγχους -->
+      <!-- Container του καμβά με overlay για τους ελέγχους -->
       <div id="canvasContainer">
         <!-- Ο καμβάς δημιουργείται δυναμικά από την p5.js -->
-        <!-- Το overlay με τους ελέγχους -->
+        <!-- Overlay με τους ελέγχους -->
         <div id="controlsOverlay">
+          <div id="controlsTitle">Επέλεξε Ζ</div>
+          <span id="zLabel">Ζ:</span>
           <input type="number" id="atomicNumber" min="1" max="118" value="1" />
           <button id="startButton" onclick="startFilling()">Έναρξη</button>
           <button id="resetButton" onclick="resetDiagram()">Reset</button>
         </div>
       </div>
       
-      <!-- Ο πίνακας πληροφοριών τοποθετείται κάτω από τον καμβά -->
+      <!-- Πίνακας πληροφοριών κάτω από τον καμβά -->
       <table id="infoTable">
         <tr class="header-title">
           <td colspan="2">
@@ -161,7 +178,7 @@
     </div>
     
     <script>
-      // Ρυθμίσεις διάταξης
+      // Ρυθμίσεις διάταξης:
       const boxWidth = 60,
             boxHeight = 40,
             verticalSpacing = 45,
@@ -239,7 +256,7 @@
         updateTitleAndSymbol();
       }
       
-      // Η ενημέρωση του στοιχείου του τίτλου: το span εμφανίζει μόνο το σύμβολο,
+      // Ενημέρωση του στοιχείου του τίτλου: το span εμφανίζει μόνο το σύμβολο,
       // ενώ το data-z περιέχει το Z (που θα εμφανιστεί ως κόκκινος δείκτης μέσω CSS)
       function updateTitleAndSymbol() {
         const Z = parseInt(document.getElementById("atomicNumber").value);
