@@ -21,13 +21,13 @@
         width: 450px; 
       }
       
-      /* Container του καμβά με relative θέση για το overlay */
+      /* Container του καμβά με relative θέση για τα overlays */
       #canvasContainer {
         position: relative;
         margin: 10px 0;
       }
       
-      /* Overlay – με δύο γραμμές, νέο πλάτος και θέση */
+      /* Overlay για τους ελέγχους (πάνω δεξιά) */
       #controlsOverlay {
         position: absolute;
         top: 10px;
@@ -43,9 +43,9 @@
         align-items: center;
       }
       
-      /* Πρώτη γραμμή του overlay: ενημερωμένος τίτλος */
+      /* Τίτλος overlay: "Επιλογή Ζ στοιχείου" με αυξημένο μέγεθος */
       #controlsOverlay #controlsTitle {
-        font-size: 12px;  /* αυξημένο μέγεθος */
+        font-size: 12px;
         font-weight: bold;
         margin-bottom: 4px;
       }
@@ -58,7 +58,7 @@
         margin-top: 4px;
       }
       
-      /* Ετικέτα "Ζ:" με έντονα και μεγαλύτερα γράμματα */
+      /* Ετικέτα "Ζ:" με μεγαλύτερα και έντονα γράμματα */
       #controlsOverlay #zLabel {
         font-size: 12px;
         font-weight: bold;
@@ -90,13 +90,14 @@
         background-color: #45a049;
       }
       
-      /* Πίνακας πληροφοριών – πλάτος 450px */
+      /* Πίνακας πληροφοριών – πλάτος 450px, αρχικά κρυμμένος */
       #infoTable {
         margin: 5px 0;
         border-collapse: collapse;
         width: 450px;
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         background-color: white;
+        display: none;
       }
       
       #infoTable th,
@@ -116,13 +117,14 @@
         font-size: 12px;
       }
       
-      /* Τίτλος του πίνακα – αυξημένο μέγεθος ώστε να γεμίζει το πλάτος του κελιού */
+      /* Τίτλος του πίνακα – αυξημένο μέγεθος και πλήρες πλάτος */
       .header-title {
-        font-size: 3em; /* Μεγαλύτερη γραμματοσειρά */
+        font-size: 4em;
         font-weight: bold;
         color: #2E8B57;
         text-align: center;
         padding: 5px;
+        display: block;
       }
       
       /* Στυλ για το σύμβολο του στοιχείου */
@@ -141,10 +143,25 @@
         margin-right: 4px;
       }
       
-      /* Στυλ για το όνομα του στοιχείου */
+      /* Στυλ για το όνομα του στοιχείου – τώρα με μεγαλύτερα γράμματα */
       .element-name {
-        font-size: 0.5em;  /* Συμβατό με το μέγεθος του header */
+        font-size: 1.2em;
+        font-weight: bold;
         vertical-align: middle;
+      }
+      
+      /* Κουμπί toggle για τον πίνακα πληροφοριών (overlay στο κάτω δεξιά) */
+      #infoToggleButton {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background-color: #4CAF50;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 12px;
+        z-index: 15;
       }
       
       /* Στυλ του καμβά */
@@ -156,10 +173,10 @@
   </head>
   <body>
     <div id="mainContainer">
-      <!-- Container του καμβά με overlay για τους ελέγχους -->
+      <!-- Container του καμβά με overlays -->
       <div id="canvasContainer">
         <!-- Ο καμβάς δημιουργείται δυναμικά από την p5.js -->
-        <!-- Overlay με τους ελέγχους -->
+        <!-- Overlay για τους ελέγχους -->
         <div id="controlsOverlay">
           <div id="controlsTitle">Επιλογή Ζ στοιχείου</div>
           <div id="controlsInputs">
@@ -169,9 +186,11 @@
             <button id="resetButton" onclick="resetDiagram()">Reset</button>
           </div>
         </div>
+        <!-- Κουμπί toggle για εμφάνιση/απόκρυψη του πίνακα πληροφοριών -->
+        <div id="infoToggleButton" onclick="toggleInfo()">Δες!</div>
       </div>
       
-      <!-- Πίνακας πληροφοριών κάτω από τον καμβά -->
+      <!-- Πίνακας πληροφοριών (αρχικά κρυμμένος) -->
       <table id="infoTable">
         <tr class="header-title">
           <td colspan="2">
@@ -715,6 +734,20 @@
         return str;
       }
       
+      // Συνάρτηση toggle για τον πίνακα πληροφοριών
+      function toggleInfo() {
+        const infoTable = document.getElementById("infoTable");
+        const toggleButton = document.getElementById("infoToggleButton");
+        if (infoTable.style.display === "none" || infoTable.style.display === "") {
+          infoTable.style.display = "table";
+          toggleButton.textContent = "Κρύψε";
+        } else {
+          infoTable.style.display = "none";
+          toggleButton.textContent = "Δες!";
+        }
+      }
+      
+      // Reset της διάταξης (επαναφορά πίνακα πληροφοριών στην αρχική κατάσταση)
       function resetDiagram() {
         positions.forEach((p) => {
           p.filled = 0;
@@ -727,6 +760,9 @@
         document.getElementById("finalConfig").textContent = "-";
         document.getElementById("elementSymbolText").textContent = "";
         document.getElementById("elementNameText").textContent = "";
+        // Επαναφορά εμφάνισης πίνακα πληροφοριών
+        document.getElementById("infoTable").style.display = "none";
+        document.getElementById("infoToggleButton").textContent = "Δες!";
         redraw();
       }
     </script>
