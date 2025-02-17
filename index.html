@@ -17,7 +17,7 @@
         flex-direction: column;
         align-items: center;
         margin: 0 auto;
-        width: 400px; /* Ίδιο πλάτος με τον καμβά και τον πίνακα */
+        width: 400px; /* Διατηρούμε το ίδιο πλάτος για ομοιομορφία */
       }
 
       /* Στυλ του πίνακα πληροφοριών */
@@ -46,17 +46,18 @@
         font-size: 12px;
       }
 
-      /* Νέα γραμμή για τον τίτλο με αυξημένη γραμματοσειρά */
+      /* Header (τίτλος) του πίνακα με αυξημένη γραμματοσειρά */
       .header-title {
-        font-size: 1.2em; /* αυξημένο μέγεθος */
+        font-size: 1.2em;
         font-weight: bold;
         color: #2E8B57;
         text-align: center;
         padding: 5px;
       }
 
+      /* Μορφοποίηση του συμβόλου του στοιχείου */
       .element-symbol {
-        font-size: 32px; /* αυξημένο μέγεθος συμβόλου */
+        font-size: 32px; /* Μεγαλύτερο μέγεθος για το σύμβολο */
         font-weight: bold;
         color: darkgreen;
         margin-right: 10px;
@@ -64,10 +65,10 @@
 
       .element-symbol::before {
         content: attr(data-z);
-        font-size: 10px; /* μειωμένος δείκτης */
+        font-size: 10px; /* Μικρότερος δείκτης */
         color: red;
-        vertical-align: sub; /* κατέμασμα για εμφάνιση δείκτη */
-        margin-right: 2px; /* πλησίον στο σύμβολο */
+        vertical-align: sub; /* Κατέμασμα ώστε να εμφανίζεται ως δείκτης */
+        margin-right: 2px; /* Πλησιάζει στο σύμβολο */
       }
 
       #controls {
@@ -97,13 +98,13 @@
       }
 
       button { 
-        padding: 5px 10px; /* μικρότερη επένδυση για μικρότερα κουμπιά */
+        padding: 5px 10px; /* Μικρότερα κουμπιά */
         background-color: #4CAF50; 
         color: white; 
         border: none; 
         border-radius: 5px;
         cursor: pointer;
-        font-size: 0.8em; /* μικρότερη γραμματοσειρά */
+        font-size: 0.8em; /* Μικρότερη γραμματοσειρά */
       }
 
       button:hover {
@@ -113,11 +114,27 @@
   </head>
   <body>
     <div id="mainContainer">
-      <!-- Πίνακας εμφάνισης πληροφοριών με τον τίτλο και το σύμβολο του στοιχείου -->
+      <div id="controls">
+        <label for="atomicNumber" style="font-size: 16px;">Z:</label>
+        <input
+          type="number"
+          id="atomicNumber"
+          min="1"
+          max="118"
+          value="1"
+          style="padding: 5px;"
+        />
+        <button onclick="startFilling()">Έναρξη</button>
+        <button onclick="resetDiagram()">Reset</button>
+      </div>
+
+      <div id="canvasContainer"></div>
+
+      <!-- Ο πίνακας πληροφοριών μεταφέρεται κάτω από τον καμβά -->
       <table id="infoTable">
         <tr class="header-title">
           <td colspan="2">
-            Ηλεκτρονιακή δόμηση - <span id="elementSymbolText"></span>
+            Ηλεκτρονιακή δόμηση - <span id="elementSymbolText" class="element-symbol"></span>
           </td>
         </tr>
         <tr>
@@ -134,36 +151,22 @@
           <td id="finalConfig">-</td>
         </tr>
       </table>
-
-      <div id="controls">
-        <label for="atomicNumber" style="font-size: 16px;">Z:</label>
-        <input
-          type="number"
-          id="atomicNumber"
-          min="1"
-          max="118"
-          value="1"
-          style="padding: 5px;"
-        />
-        <button onclick="startFilling()">Έναρξη</button>
-        <button onclick="resetDiagram()">Reset</button>
-      </div>
-
-      <div id="canvasContainer"></div>
     </div>
 
     <script>
-      // Ρυθμίσεις διάταξης
+      // Ρυθμίσεις διάταξης:
       const boxWidth = 60,
-        boxHeight = 40,
-        verticalSpacing = 45,
-        horizontalGap = 5,
-        canvasWidth = 320, // μείωση πλάτους κατά 100px (από 420)
-        canvasHeight = 330,  // ύψος καμβά 330px (μείωση κατά 5px από 335)
-        periodLabelWidth = 50;
+            boxHeight = 40,
+            verticalSpacing = 45,
+            horizontalGap = 5,
+            canvasWidth = 320,    // Μειωμένο πλάτος καμβά κατά 100px
+            canvasHeight = 330,   // Μειωμένο ύψος καμβά κατά 5px
+            periodLabelWidth = 50;
+      
+      // Νέο xOffset ώστε να κεντράρεται το περιεχόμενο στο νέο πλάτος:
+      const xOffset = 8; // αντί για το προηγούμενο 60
       
       const startY = 10;  // Ξεκινάει κοντά στην κορυφή
-      const xOffset = 60; // Οριζόντια μετατόπιση
       
       const periods = [
         { label: "K", orbitals: ["1s"] },
@@ -176,7 +179,7 @@
       ];
       
       // Εξαιρέσεις για τα στοιχεία μετάπτωσης:
-      // Ορίζουμε το 'from' orbital, το 'to' orbital και το πλήθος των ηλεκτρονίων που μεταφέρονται.
+      // Καθορίζονται το 'from' orbital, το 'to' orbital και το πλήθος των ηλεκτρονίων που μεταφέρονται.
       const exceptions = {
         24: { from: "4s", to: "3d", amount: 1 },  // Cr
         29: { from: "4s", to: "3d", amount: 1 },  // Cu
@@ -234,7 +237,10 @@
       function updateTitleAndSymbol() {
         const Z = parseInt(document.getElementById("atomicNumber").value);
         const elementSymbol = elementSymbols[Z] || "";
+        // Ενημέρωση του πίνακα πληροφοριών
         document.getElementById("elementSymbolText").textContent = `${Z} ${elementSymbol}`;
+        // Μπορείτε επίσης να θέσετε και το data attribute αν χρειαστεί:
+        document.getElementById("elementSymbolText").setAttribute("data-z", Z);
       }
       
       function drawArrows() {
@@ -456,8 +462,9 @@
         document.getElementById("initialConfig").textContent = initial.join(" ");
         document.getElementById("finalConfig").textContent = final.join(" ");
       
-        const elementSymbol = elementSymbols[Z] || "";
-        document.getElementById("elementSymbolText").textContent = `${Z} ${elementSymbol}`;
+        const elementSymbol = elementSymbols[parseInt(document.getElementById("atomicNumber").value)] || "";
+        document.getElementById("elementSymbolText").textContent = `${document.getElementById("atomicNumber").value} ${elementSymbol}`;
+        document.getElementById("elementSymbolText").setAttribute("data-z", document.getElementById("atomicNumber").value);
       }
       
       function updatePeriodGroup(Z) {
@@ -476,7 +483,7 @@
       function predictGroup(valence, Z) {
         const currentPeriod = parseInt(valence.label);
         let sElectrons = 0,
-          dElectrons = 0;
+            dElectrons = 0;
         const sOrb = positions.find(
           (p) => p.type === "s" && parseInt(p.label) === currentPeriod
         );
