@@ -1,104 +1,588 @@
 <!DOCTYPE html>
 <html lang="el">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Δόμηση Στοιχείων</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Κανόνας Aufbau</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
+      body { 
+        text-align: center; 
+        font-family: Verdana, sans-serif; 
+        background-color: #f0f8ff;
+      }
 
-        /* Στυλ για τον τίτλο της σελίδας */
-        .page-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
+      #mainContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0 auto;
+        width: 400px; /* Ίδιο πλάτος με τον καμβά και τον πίνακα */
+      }
 
-        /* Στυλ για τον πίνακα "Δόμηση..." */
-        .structure-table {
-            font-size: 14px;
-            margin-bottom: 5px; /* Μειωμένο κενό */
-            width: 100%;
-            border-collapse: collapse;
-        }
+      h1 {
+        width: 100%;
+        text-align: center;
+        color: #2E8B57;
+      }
 
-        .structure-table th, .structure-table td {
-            padding: 5px;
-            border: 1px solid #ccc;
-            text-align: left;
-        }
+      #controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin: 10px 0;
+      }
 
-        /* Μορφοποίηση δεύτερης στήλης */
-        .structure-table td:nth-child(2) {
-            font-size: 20px;
-            font-weight: bold;
-        }
+      #controls label,
+      #controls input,
+      #controls button {
+        margin: 0 5px;
+      }
 
-        /* Στυλ για τον καμβά */
-        .canvas {
-            padding: 10px;
-            min-height: 165px; /* Μειωμένο ύψος καμβά */
-            border: 1px solid #ccc;
-            position: relative;
-        }
+      /* Μειωμένα πάνω και κάτω περιθώρια για τον καμβά */
+      #canvasContainer {
+        display: flex;
+        justify-content: center;
+        margin: 10px 0;
+      }
 
-        .content-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+      canvas { 
+        border: 2px solid #4CAF50;
+        border-radius: 10px;
+      }
 
-        .controls {
-            display: flex;
-            gap: 5px;
-        }
+      button { 
+        padding: 10px 20px; 
+        background-color: #4CAF50; 
+        color: white; 
+        border: none; 
+        border-radius: 5px;
+        cursor: pointer;
+      }
 
-        /* Στυλ για κουμπιά και επιλογέα Ζ */
-        .small-btn {
-            padding: 3px 6px;
-            font-size: 12px;
-        }
+      button:hover {
+        background-color: #45a049;
+      }
 
-        select {
-            font-size: 12px;
-            padding: 2px;
-        }
+      #infoTable {
+        margin: 20px 0;
+        border-collapse: collapse;
+        width: 100%;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        background-color: white;
+      }
+
+      #infoTable th,
+      #infoTable td {
+        border: 2px solid #4CAF50;
+        padding: 8px;
+        text-align: center;
+      }
+
+      #infoTable th {
+        background-color: #4CAF50;
+        color: white;
+        font-size: 14px;
+      }
+
+      #infoTable td {
+        font-size: 12px;
+      }
+
+      .element-symbol {
+        font-size: 24px;
+        font-weight: bold;
+        color: darkgreen;
+        margin-right: 10px;
+      }
+
+      .element-symbol::before {
+        content: attr(data-z);
+        font-size: 14px;
+        color: red;
+        vertical-align: baseline;
+        margin-right: 5px;
+      }
+
+      /* Μείωση του διαστήματος μεταξύ του πίνακα τίτλου και του καμβά */
+      #titleContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 5px;
+      }
+
+      /* Ο πίνακας τίτλου: το περιεχόμενο να έχει τη μορφοποίηση του τίτλου της σελίδας */
+      #titleText {
+        font-size: 1.4em;  /* Μειωμένο μέγεθος γραμματοσειράς */
+        font-weight: bold;
+        color: #2E8B57;
+      }
+
+      #elementSymbolText {
+        font-size: 1.4em;  /* Εφαρμογή της ίδιας μορφοποίησης */
+        font-weight: bold;
+        color: #2E8B57;
+        margin-left: 5px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <div id="mainContainer">
+      <h1>
+        Κανόνας Aufbau 
+        <span id="elementSymbol" class="element-symbol" data-z=""></span>
+      </h1>
+      <div id="controls">
+        <label for="atomicNumber" style="font-size: 16px;">Z:</label>
+        <input
+          type="number"
+          id="atomicNumber"
+          min="1"
+          max="118"
+          value="1"
+          style="padding: 5px;"
+        />
+        <button onclick="startFilling()">Έναρξη</button>
+        <button onclick="resetDiagram()">Reset</button>
+      </div>
 
-    <div class="page-title">Δόμηση Στοιχείων</div>
-
-    <table class="structure-table">
+      <table id="infoTable">
         <tr>
-            <th>Ιδιότητα</th>
-            <th>Σύμβολο</th>
+          <th colspan="2">
+            Περίοδος: <span id="periodValue">-</span> | Ομάδα:
+            <span id="groupValue">-</span>
+          </th>
         </tr>
         <tr>
-            <td>Ατομικός Αριθμός</td>
-            <td>H</td>
+          <td><strong>Αρχική Διαμόρφωση</strong></td>
+          <td id="initialConfig">-</td>
         </tr>
-        <!-- Περισσότερες γραμμές αν χρειάζεται -->
-    </table>
+        <tr>
+          <td><strong>Τελική Διαμόρφωση</strong></td>
+          <td id="finalConfig">-</td>
+        </tr>
+      </table>
 
-    <div class="canvas">
-        <div class="content-row">
-            <span class="content">[Περιεχόμενο]</span>
-            <div class="controls">
-                <label for="atomic-number">Z:</label>
-                <select id="atomic-number">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <!-- Περισσότερες επιλογές -->
-                </select>
-                <button class="small-btn">Προηγούμενο</button>
-                <button class="small-btn">Επόμενο</button>
-            </div>
-        </div>
+      <div id="titleContainer">
+        <table id="titleTable">
+          <tr>
+            <td id="titleText">Ηλεκτρονιακή δόμηση</td>
+            <td id="elementSymbolText"></td>
+          </tr>
+        </table>
+      </div>
+
+      <div id="canvasContainer"></div>
     </div>
 
-</body>
+    <script>
+      /* Ρυθμίσεις για συμπαγή διάταξη:
+         - canvasHeight μειώνεται κατά 35px (από 350 σε 315)
+         - startY παραμένει στο 10 για να ξεκινάει πολύ κοντά στην κορυφή του καμβά
+         - Οι οριζόντιες αποστάσεις παραμένουν αμετάβλητες */
+      const boxWidth = 60,
+        boxHeight = 40,
+        verticalSpacing = 45,
+        horizontalGap = 5,
+        canvasWidth = 420,
+        canvasHeight = 315,  // Μείωση ύψους καμβά κατά 35px
+        periodLabelWidth = 50;
+      
+      const startY = 10;  // Ξεκινάει πολύ κοντά στην κορυφή
+      const xOffset = 60; // Οριζόντιες αποστάσεις όπως ήταν
+
+      const periods = [
+        { label: "K", orbitals: ["1s"] },
+        { label: "L", orbitals: ["2s", "2p"] },
+        { label: "M", orbitals: ["3s", "3p", "3d"] },
+        { label: "N", orbitals: ["4s", "4p", "4d", "4f"] },
+        { label: "O", orbitals: ["5s", "5p", "5d", "5f"] },
+        { label: "P", orbitals: ["6s", "6p", "6d"] },
+        { label: "Q", orbitals: ["7s", "7p"] }
+      ];
+
+      const fillOrder = [0, 1, 2, 3, 4, 6, 5, 7, 10, 8, 11, 14, 9, 12, 15, 17, 13, 16, 18];
+
+      const exceptions = {
+        24: { from: "4s", to: "3d", amount: 1 }, // Cr
+        29: { from: "4s", to: "3d", amount: 1 }, // Cu
+        47: { from: "5s", to: "4d", amount: 1 }, // Ag
+        79: { from: "6s", to: "5d", amount: 1 }  // Au
+      };
+
+      const elementSymbols = {
+        1: "H", 2: "He", 3: "Li", 4: "Be", 5: "B", 6: "C", 7: "N", 8: "O", 9: "F", 10: "Ne",
+        11: "Na", 12: "Mg", 13: "Al", 14: "Si", 15: "P", 16: "S", 17: "Cl", 18: "Ar",
+        19: "K", 20: "Ca", 21: "Sc", 22: "Ti", 23: "V", 24: "Cr", 25: "Mn", 26: "Fe",
+        27: "Co", 28: "Ni", 29: "Cu", 30: "Zn", 31: "Ga", 32: "Ge", 33: "As", 34: "Se",
+        35: "Br", 36: "Kr", 37: "Rb", 38: "Sr", 39: "Y", 40: "Zr", 41: "Nb", 42: "Mo",
+        43: "Tc", 44: "Ru", 45: "Rh", 46: "Pd", 47: "Ag", 48: "Cd", 49: "In", 50: "Sn",
+        51: "Sb", 52: "Te", 53: "I", 54: "Xe", 55: "Cs", 56: "Ba", 57: "La", 58: "Ce",
+        59: "Pr", 60: "Nd", 61: "Pm", 62: "Sm", 63: "Eu", 64: "Gd", 65: "Tb", 66: "Dy",
+        67: "Ho", 68: "Er", 69: "Tm", 70: "Yb", 71: "Lu", 72: "Hf", 73: "Ta", 74: "W",
+        75: "Re", 76: "Os", 77: "Ir", 78: "Pt", 79: "Au", 80: "Hg", 81: "Tl", 82: "Pb",
+        83: "Bi", 84: "Po", 85: "At", 86: "Rn", 87: "Fr", 88: "Ra", 89: "Ac", 90: "Th",
+        91: "Pa", 92: "U", 93: "Np", 94: "Pu", 95: "Am", 96: "Cm", 97: "Bk", 98: "Cf",
+        99: "Es", 100: "Fm", 101: "Md", 102: "No", 103: "Lr", 104: "Rf", 105: "Db",
+        106: "Sg", 107: "Bh", 108: "Hs", 109: "Mt", 110: "Ds", 111: "Rg", 112: "Cn",
+        113: "Nh", 114: "Fl", 115: "Mc", 116: "Lv", 117: "Ts", 118: "Og"
+      };
+
+      let positions = [];
+      let columnColors = [];
+      let electronCounter = 0;
+
+      function setup() {
+        const canvas = createCanvas(canvasWidth, canvasHeight);
+        canvas.parent("canvasContainer");
+        textSize(12);
+        textFont("Verdana");
+        initColumnColors();
+        calculatePositions();
+        noLoop();
+      }
+
+      function draw() {
+        background(255);
+        drawPeriodLabels();
+        drawOrbitals();
+        drawArrows();
+        updateTitleAndSymbol();
+      }
+
+      function updateTitleAndSymbol() {
+        const Z = parseInt(document.getElementById("atomicNumber").value);
+        const elementSymbol = elementSymbols[Z] || "";
+        document.getElementById("elementSymbolText").textContent = `${Z} ${elementSymbol}`;
+      }
+
+      function drawArrows() {
+        stroke(150);
+        strokeWeight(2);
+        drawingContext.setLineDash([5, 5]);
+        for (let i = 0; i < fillOrder.length - 1; i++) {
+          let from = positions[fillOrder[i]];
+          let to = positions[fillOrder[i + 1]];
+          if (to.y > from.y) {
+            drawArrow(
+              from.x + boxWidth + xOffset,
+              from.y + 10,
+              to.x + boxWidth + xOffset,
+              to.y + 10
+            );
+          }
+        }
+        stroke(255, 0, 0);
+        drawingContext.setLineDash([]);
+        let lastFilledIndex = -1;
+        for (let i = fillOrder.length - 1; i >= 0; i--) {
+          let idx = fillOrder[i];
+          if (positions[idx].filled > 0) {
+            lastFilledIndex = i;
+            break;
+          }
+        }
+        for (let i = 0; i < lastFilledIndex; i++) {
+          setTimeout(() => {
+            let from = positions[fillOrder[i]];
+            let to = positions[fillOrder[i + 1]];
+            if (to.y > from.y) {
+              drawArrow(
+                from.x + boxWidth + xOffset,
+                from.y + 10,
+                to.x + boxWidth + xOffset,
+                to.y + 10
+              );
+            }
+          }, i * 500);
+        }
+      }
+
+      function drawArrow(x1, y1, x2, y2) {
+        line(x1, y1, x2, y2);
+        let angle = atan2(y2 - y1, x2 - x1);
+        push();
+        translate(x2, y2);
+        rotate(angle);
+        let arrowSize = 7;
+        triangle(-arrowSize, arrowSize / 2, -arrowSize, -arrowSize / 2, 0, 0);
+        pop();
+      }
+
+      function initColumnColors() {
+        columnColors = [
+          color("#FFCDD2"), // s
+          color("#C8E6C9"), // p
+          color("#BBDEFB"), // d
+          color("#FFF9C4")  // f
+        ];
+      }
+
+      function calculatePositions() {
+        positions = [];
+        for (let i = 0; i < periods.length; i++) {
+          let rowOrbitals = periods[i].orbitals;
+          let startX = periodLabelWidth;
+          let y = startY + i * verticalSpacing;
+          for (let j = 0; j < rowOrbitals.length; j++) {
+            let x = startX + j * (boxWidth + horizontalGap);
+            positions.push({
+              x: x,
+              y: y,
+              label: rowOrbitals[j],
+              type: rowOrbitals[j].slice(-1),
+              filled: 0,
+              col: j,
+              isGray: false,
+              actualElectrons: 0
+            });
+          }
+        }
+      }
+
+      function drawPeriodLabels() {
+        textAlign(RIGHT, CENTER);
+        fill(0);
+        textSize(14);
+        textStyle(BOLD);
+        const periodElectrons = new Array(periods.length).fill(0);
+        positions.forEach((pos) => {
+          const periodIndex = periods.findIndex((p) =>
+            p.orbitals.includes(pos.label)
+          );
+          if (periodIndex !== -1) {
+            periodElectrons[periodIndex] += pos.actualElectrons;
+          }
+        });
+        for (let i = 0; i < periods.length; i++) {
+          let y = startY + i * verticalSpacing;
+          const electrons = periodElectrons[i];
+          text(
+            `${periods[i].label}${electrons > 0 ? ` (${electrons})` : ""}`,
+            periodLabelWidth - 10 + xOffset,
+            y + 17
+          );
+        }
+        textStyle(NORMAL);
+      }
+
+      function drawOrbitals() {
+        noStroke();
+        textAlign(CENTER, CENTER);
+        positions.forEach((pos) => {
+          const boxWidthAdjusted = Math.max(
+            boxWidth,
+            textWidth(pos.label) + 20
+          );
+          fill(pos.isGray ? 200 : columnColors[pos.col]);
+          rect(pos.x + xOffset, pos.y, boxWidthAdjusted, boxHeight);
+          fill(0);
+          text(
+            pos.label,
+            pos.x + boxWidthAdjusted / 2 + xOffset,
+            pos.y + boxHeight / 2
+          );
+          if (pos.actualElectrons > 0) {
+            textSize(14);
+            textStyle(BOLD);
+            fill(
+              pos.isGray
+                ? 0
+                : {
+                    s: color(255, 0, 0),
+                    p: color(0, 100, 0),
+                    d: color(0, 0, 255),
+                    f: color(255, 165, 0)
+                  }[pos.type]
+            );
+            text(
+              numberToExponent(pos.actualElectrons),
+              pos.x + boxWidthAdjusted - 15 + xOffset,
+              pos.y + 10
+            );
+            textStyle(NORMAL);
+          }
+        });
+      }
+
+      function startFilling() {
+        resetDiagram();
+        const Z = parseInt(document.getElementById("atomicNumber").value);
+        electronCounter = Z;
+        fillOrder.forEach((idx) => {
+          const orb = positions[idx];
+          const capacity = { s: 2, p: 6, d: 10, f: 14 }[orb.type];
+          const fill = Math.min(electronCounter, capacity);
+          orb.filled = fill;
+          electronCounter -= fill;
+        });
+        positions.forEach((p) => (p.actualElectrons = p.filled));
+        updatePeriodGroup(Z);
+        if (exceptions[Z]) {
+          const { from, to, amount } = exceptions[Z];
+          const fromOrb = positions.find((p) => p.label === from);
+          const toOrb = positions.find((p) => p.label === to);
+          if (fromOrb && toOrb) {
+            fromOrb.actualElectrons -= amount;
+            toOrb.actualElectrons += amount;
+          }
+        }
+        markOuterShell();
+        updateDisplay(Z);
+        redraw();
+      }
+
+      function markOuterShell() {
+        const filled = positions.filter((p) => p.actualElectrons > 0);
+        const maxPeriod = Math.max(...filled.map((p) => parseInt(p.label)));
+        const lastOrbType = filled[filled.length - 1].type;
+        positions.forEach((pos) => {
+          const currentPeriod = parseInt(pos.label);
+          pos.isGray =
+            currentPeriod === maxPeriod &&
+            ((lastOrbType === "p" &&
+              (pos.type === "s" || pos.type === "p")) ||
+             (lastOrbType === "s" && pos.type === "s"));
+        });
+      }
+
+      function numberToExponent(num) {
+        const exponents = ["⁰", "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹"];
+        return num
+          .toString()
+          .split("")
+          .map((d) => exponents[d])
+          .join("");
+      }
+
+      function updateDisplay(Z) {
+        const initial = fillOrder
+          .map((idx) => positions[idx])
+          .filter((p) => p.filled > 0)
+          .map((p) => `${p.label}${numberToExponent(p.filled)}`);
+
+        const final = positions
+          .filter((p) => p.actualElectrons > 0)
+          .sort((a, b) => {
+            const aN = parseInt(a.label);
+            const bN = parseInt(b.label);
+            if (aN !== bN) return aN - bN;
+            const order = { s: 1, p: 2, d: 3, f: 4 };
+            return order[a.type] - order[b.type];
+          })
+          .map((p) => `${p.label}${numberToExponent(p.actualElectrons)}`);
+
+        document.getElementById("initialConfig").textContent = initial.join(" ");
+        document.getElementById("finalConfig").textContent = final.join(" ");
+
+        const elementSymbol = elementSymbols[Z] || "";
+        document.getElementById("elementSymbol").textContent = elementSymbol;
+        document.getElementById("elementSymbol").setAttribute("data-z", Z);
+      }
+
+      function updatePeriodGroup(Z) {
+        const filled = [];
+        for (const idx of fillOrder) {
+          const orb = positions[idx];
+          if (orb.filled > 0) filled.push(orb);
+        }
+        const valence = filled[filled.length - 1];
+        const period = Math.max(...filled.map((p) => parseInt(p.label)));
+        console.log(`updatePeriodGroup: Z=${Z}, valence=${valence.label}, period=${period}`);
+        document.getElementById("periodValue").textContent = period;
+        document.getElementById("groupValue").textContent = predictGroup(valence, Z);
+      }
+
+      function predictGroup(valence, Z) {
+        const currentPeriod = parseInt(valence.label);
+        let sElectrons = 0,
+          dElectrons = 0;
+        const sOrb = positions.find(
+          (p) => p.type === "s" && parseInt(p.label) === currentPeriod
+        );
+        sElectrons = sOrb ? sOrb.filled : 0;
+        if (valence.type === "d") {
+          dElectrons = positions
+            .filter(
+              (p) => p.type === "d" && parseInt(p.label) === currentPeriod - 1
+            )
+            .reduce((sum, p) => sum + p.filled, 0);
+        }
+        console.log(
+          `Element Z=${Z}: sElectrons=${sElectrons}, dElectrons=${dElectrons}, valenceType=${valence.type}, currentPeriod=${currentPeriod}`
+        );
+        if (valence.type === "s") {
+          return `${toRoman(sElectrons)}A ή ${sElectrons}`;
+        } else if (valence.type === "p") {
+          const pElectrons = positions
+            .filter(
+              (p) =>
+                p.type === "p" && parseInt(p.label) === currentPeriod
+            )
+            .reduce((sum, p) => sum + p.filled, 0);
+          return `${toRoman(sElectrons + pElectrons)}A ή ${sElectrons + pElectrons + 10}`;
+        } else if (valence.type === "d") {
+          const m = valence.filled;
+          const total = m + 2;
+          if (total < 8) {
+            return `${toRoman(total)}B ή ${total}`;
+          } else if (total >= 8 && total <= 10) {
+            return "VIIIB ή 8-10";
+          } else if (total > 10) {
+            return `${toRoman(total - 10)}B ή ${total}`;
+          }
+        } else if (valence.type === "f") {
+          const n = parseInt(valence.label.charAt(0));
+          if (n === 4) {
+            return `${valence.filled}ο μέλος Λανθανιδών`;
+          } else if (n === 5) {
+            return `${valence.filled}ο μέλος Ακτινιδών`;
+          }
+        }
+        return "-";
+      }
+
+      function toRoman(num) {
+        const roman = {
+          M: 1000,
+          CM: 900,
+          D: 500,
+          CD: 400,
+          C: 100,
+          XC: 90,
+          L: 50,
+          XL: 40,
+          X: 10,
+          IX: 9,
+          V: 5,
+          IV: 4,
+          I: 1
+        };
+        let str = "";
+        for (let i of Object.keys(roman)) {
+          let q = Math.floor(num / roman[i]);
+          num -= q * roman[i];
+          str += i.repeat(q);
+        }
+        return str;
+      }
+
+      function resetDiagram() {
+        positions.forEach((p) => {
+          p.filled = 0;
+          p.actualElectrons = 0;
+          p.isGray = false;
+        });
+        document.getElementById("periodValue").textContent = "-";
+        document.getElementById("groupValue").textContent = "-";
+        document.getElementById("initialConfig").textContent = "-";
+        document.getElementById("finalConfig").textContent = "-";
+        document.getElementById("elementSymbol").textContent = "";
+        document.getElementById("elementSymbol").setAttribute("data-z", "");
+        redraw();
+      }
+    </script>
+  </body>
 </html>
