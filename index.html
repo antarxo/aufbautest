@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Κανόνας Aufbau</title>
-    <!-- Χρήση της p5.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <style>
       body { 
@@ -13,7 +12,7 @@
         background-color: #f0f8ff;
       }
       
-      /* Το container ολόκληρης της εφαρμογής - αυξημένο πλάτος στο 450px */
+      /* Container ολόκληρης της εφαρμογής – πλάτος 450px */
       #mainContainer {
         display: flex;
         flex-direction: column;
@@ -22,50 +21,53 @@
         width: 450px; 
       }
       
-      /* Το container του καμβά ορίζεται ως relative για το overlay */
+      /* Container του καμβά με relative θέση για το overlay */
       #canvasContainer {
         position: relative;
         margin: 10px 0;
       }
       
-      /* Το overlay με τους ελέγχους, με περίγραμμα και σκίαση */
+      /* Overlay με τους ελέγχους – ύψος 40px, ελαχιστοποιημένα περιθώρια, flex για διάταξη σε σειρά */
       #controlsOverlay {
         position: absolute;
         left: 148px;
         top: 10px;
         z-index: 10;
         background-color: #fff;
-        padding: 5px;
+        padding: 2px;
         border: 1px solid #ccc;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        height: 40px;
+        display: flex;
+        align-items: center;
       }
       
-      /* Τίτλος μέσα στο overlay */
+      /* Τίτλος overlay – μικρό font */
       #controlsOverlay #controlsTitle {
-        font-size: 16px;
+        font-size: 10px;
         font-weight: bold;
-        margin-bottom: 5px;
-        text-align: center;
-      }
-      
-      /* Ο ετικετοδόχος για το "Ζ:" */
-      #controlsOverlay #zLabel {
-        font-size: 14px;
         margin-right: 4px;
       }
       
-      /* Ο επιλογέας του Z με μεγαλύτερο πλάτος */
-      #controlsOverlay input {
-        width: 60px;
-        font-size: 14px;
-        padding: 2px;
+      /* Ετικέτα "Ζ:" */
+      #controlsOverlay #zLabel {
+        font-size: 10px;
+        margin-right: 2px;
       }
       
-      /* Τα κουμπιά - περιβάλλονται από περίγραμμα και σκίαση */
+      /* Επιλογέας Ζ με μικρότερο πλάτος και font */
+      #controlsOverlay input {
+        width: 30px;
+        font-size: 10px;
+        padding: 2px;
+        margin: 0;
+      }
+      
+      /* Κουμπιά – μικρό font, padding και περιθώρια ελαχιστοποιημένα */
       #controlsOverlay button {
-        font-size: 12px;
-        padding: 3px 5px;
-        margin-left: 5px;
+        font-size: 10px;
+        padding: 2px 3px;
+        margin-left: 2px;
         background-color: #4CAF50; 
         color: white; 
         border: 1px solid #ccc;
@@ -78,7 +80,7 @@
         background-color: #45a049;
       }
       
-      /* Στυλ του πίνακα πληροφοριών – πλάτος 450px */
+      /* Πίνακας πληροφοριών – πλάτος 450px */
       #infoTable {
         margin: 5px 0; /* Διάστημα 5px ανάμεσα στον καμβά και τον πίνακα */
         border-collapse: collapse;
@@ -104,7 +106,7 @@
         font-size: 12px;
       }
       
-      /* Τίτλος του πίνακα - αυξημένο μέγεθος γραμματοσειράς */
+      /* Τίτλος του πίνακα – αυξημένο μέγεθος γραμματοσειράς */
       .header-title {
         font-size: 2em;
         font-weight: bold;
@@ -113,10 +115,8 @@
         padding: 5px;
       }
       
-      /* Μορφοποίηση του συμβόλου του στοιχείου: 
-         Το span εμφανίζει μόνο το σύμβολο, ενώ ο κόκκινος δείκτης (με το Z)
-         εμφανίζεται μέσω του ::before.
-      */
+      /* Μορφοποίηση του συμβόλου του στοιχείου: το span εμφανίζει μόνο το σύμβολο,
+         ενώ ο κόκκινος δείκτης (με το Ζ) εμφανίζεται μέσω του ::before. */
       .element-symbol {
         font-size: 32px;
         font-weight: bold;
@@ -257,7 +257,7 @@
       }
       
       // Ενημέρωση του στοιχείου του τίτλου: το span εμφανίζει μόνο το σύμβολο,
-      // ενώ το data-z περιέχει το Z (που θα εμφανιστεί ως κόκκινος δείκτης μέσω CSS)
+      // ενώ το data-z περιέχει το Z (που εμφανίζεται ως κόκκινος δείκτης μέσω CSS)
       function updateTitleAndSymbol() {
         const Z = parseInt(document.getElementById("atomicNumber").value);
         const elementSymbol = elementSymbols[Z] || "";
