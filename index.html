@@ -27,26 +27,35 @@
         margin: 10px 0;
       }
       
-      /* Overlay με τους ελέγχους – ύψος 40px, ελαχιστοποιημένα περιθώρια, flex για διάταξη σε σειρά */
+      /* Overlay – ενημερωμένο για δύο γραμμές, νέο πλάτος και θέση */
       #controlsOverlay {
         position: absolute;
-        left: 148px;
         top: 10px;
+        right: 0; /* Εφαπτόμενο στο δεξί περίγραμμα του καμβά */
+        width: calc(3 * 60px + 6px); /* 186px */
         z-index: 10;
         background-color: #fff;
-        padding: 2px;
+        padding: 4px;
         border: 1px solid #ccc;
-        box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-        height: 40px;
+        box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
         display: flex;
+        flex-direction: column;
         align-items: center;
       }
       
-      /* Τίτλος overlay – μικρό font */
+      /* Πρώτη γραμμή του overlay (τίτλος) */
       #controlsOverlay #controlsTitle {
         font-size: 10px;
         font-weight: bold;
-        margin-right: 4px;
+        margin-bottom: 4px;
+      }
+      
+      /* Δεύτερη γραμμή του overlay (εισαγωγή και κουμπιά) */
+      #controlsInputs {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        margin-top: 4px;
       }
       
       /* Ετικέτα "Ζ:" */
@@ -82,7 +91,7 @@
       
       /* Πίνακας πληροφοριών – πλάτος 450px */
       #infoTable {
-        margin: 5px 0; /* Διάστημα 5px ανάμεσα στον καμβά και τον πίνακα */
+        margin: 5px 0;
         border-collapse: collapse;
         width: 450px;
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
@@ -108,15 +117,14 @@
       
       /* Τίτλος του πίνακα – αυξημένο μέγεθος γραμματοσειράς */
       .header-title {
-        font-size: 2em;
+        font-size: 2.5em; /* Αυξημένο μέγεθος */
         font-weight: bold;
         color: #2E8B57;
         text-align: center;
         padding: 5px;
       }
       
-      /* Μορφοποίηση του συμβόλου του στοιχείου: το span εμφανίζει μόνο το σύμβολο,
-         ενώ ο κόκκινος δείκτης (με το Ζ) εμφανίζεται μέσω του ::before. */
+      /* Μορφοποίηση του συμβόλου του στοιχείου */
       .element-symbol {
         font-size: 32px;
         font-weight: bold;
@@ -146,11 +154,13 @@
         <!-- Ο καμβάς δημιουργείται δυναμικά από την p5.js -->
         <!-- Overlay με τους ελέγχους -->
         <div id="controlsOverlay">
-          <div id="controlsTitle">Επέλεξε Ζ</div>
-          <span id="zLabel">Ζ:</span>
-          <input type="number" id="atomicNumber" min="1" max="118" value="1" />
-          <button id="startButton" onclick="startFilling()">Έναρξη</button>
-          <button id="resetButton" onclick="resetDiagram()">Reset</button>
+          <div id="controlsTitle">Επέλεξε στοιχείο</div>
+          <div id="controlsInputs">
+            <span id="zLabel">Ζ:</span>
+            <input type="number" id="atomicNumber" min="1" max="118" value="1" />
+            <button id="startButton" onclick="startFilling()">Έναρξη</button>
+            <button id="resetButton" onclick="resetDiagram()">Reset</button>
+          </div>
         </div>
       </div>
       
