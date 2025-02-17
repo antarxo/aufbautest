@@ -28,7 +28,7 @@
         margin: 10px 0;
       }
       
-      /* Overlay ελέγχων - τοποθετείται στο επάνω περίγραμμα του καμβά */
+      /* Overlay ελέγχων - τοποθετείται στο επάνω μέρος του καμβά */
       #controlsOverlay {
         position: absolute;
         top: 0;              /* Ανεβασμένο στο επάνω περίγραμμα */
@@ -66,12 +66,15 @@
         margin-right: 4px;
       }
       
-      /* Επιλογέας Ζ */
+      /* Επιλογέας Ζ - αρχική τιμή 0, μεγαλύτερο font, πλάτος και padding */
       #atomicNumber {
         width: 40px;
         font-size: 14px;
         padding: 4px;
         margin: 0;
+        min: 0;
+        max: 118;
+        /* Ορίζουμε value="0" στο HTML παρακάτω */
       }
       
       /* Κουμπιά στο overlay */
@@ -149,7 +152,7 @@
         font-size: 12px;
       }
       
-      /* Τίτλος του πίνακα (συγχωνευμένα κελιά) - επιτρέπεται το wrapping */
+      /* Τίτλος του πίνακα (συγχωνευμένα κελιά) */
       .header-title {
         font-size: 4em;
         font-weight: bold;
@@ -200,7 +203,8 @@
           <div id="controlsTitle">Επιλογή Ζ στοιχείου</div>
           <div id="controlsInputs">
             <span id="zLabel">Ζ:</span>
-            <input type="number" id="atomicNumber" min="1" max="118" value="1" />
+            <!-- Αρχική τιμή Z=0 -->
+            <input type="number" id="atomicNumber" min="0" max="118" value="0" />
             <button id="startButton" onclick="startFilling()">Έναρξη</button>
             <button id="resetButton" onclick="resetDiagram()">Reset</button>
           </div>
@@ -211,7 +215,7 @@
       <table id="infoTable">
         <tr class="header-title">
           <td colspan="2">
-            Δομή & Θέση 
+            Ηλεκτρονιακή δόμηση 
             <span id="elementSymbolText" class="element-symbol"></span>
             <span id="elementNameText" class="element-name"></span>
           </td>
@@ -430,6 +434,7 @@
         updateTitleAndSymbol();
       }
       
+      // Ενημέρωση του τίτλου με το σύμβολο και το όνομα του στοιχείου
       function updateTitleAndSymbol() {
         const Z = parseInt(document.getElementById("atomicNumber").value);
         const elementSymbol = elementSymbols[Z] || "";
@@ -562,8 +567,14 @@
       }
       
       function startFilling() {
-        resetDiagram();
+        // Έλεγχος: αν Z > 118, κάνε reset και εμφάνισε μήνυμα
         const Z = parseInt(document.getElementById("atomicNumber").value);
+        if (Z > 118) {
+          alert("Ο αριθμός Z πρέπει να είναι μικρότερος ή ίσος με 118. Θα γίνει reset.");
+          resetDiagram();
+          return;
+        }
+        resetDiagram(); // Επαναφορά για καθαρό ξεκίνημα
         electronCounter = Z;
         fillOrder.forEach((idx) => {
           const orb = positions[idx];
@@ -689,6 +700,7 @@
         return str;
       }
       
+      // Συνάρτηση toggle για τον πίνακα πληροφοριών
       function toggleInfo() {
         const infoTable = document.getElementById("infoTable");
         const toggleButton = document.getElementById("infoToggleButton");
@@ -703,6 +715,7 @@
         }
       }
       
+      // Συνάρτηση reset - επανέρχεται και αν η τιμή του Z είναι > 118 ή μη έγκυρη, ορίζεται σε 0
       function resetDiagram() {
         positions.forEach((p) => {
           p.filled = 0;
@@ -719,6 +732,12 @@
         const toggleButton = document.getElementById("infoToggleButton");
         toggleButton.textContent = "Δες!";
         toggleButton.classList.remove("visible");
+        
+        // Έλεγχος τιμής Z: αν Z > 118, ορίζουμε τη τιμή σε 0
+        const atomicInput = document.getElementById("atomicNumber");
+        if (parseInt(atomicInput.value) > 118) {
+          atomicInput.value = 0;
+        }
         redraw();
       }
     </script>
