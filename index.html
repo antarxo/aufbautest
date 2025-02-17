@@ -105,25 +105,19 @@
         margin-right: 5px;
       }
 
+      /* Μείωση της απόστασης μεταξύ του πίνακα τίτλου και του καμβά */
       #titleContainer {
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-bottom: 20px;
+        margin-bottom: 5px;
       }
 
-      #titleTable {
-        border-collapse: collapse;
-      }
-
-      #titleTable td {
-        border: none;
-        padding: 0;
-      }
-
+      /* Το περιεχόμενο του πίνακα τίτλου να έχει τη μορφοποίηση του h1 */
       #titleText {
-        font-size: 20px;
+        font-size: 1.8em;
         font-weight: bold;
+        color: #2E8B57;
       }
 
       #elementSymbolText {
@@ -184,19 +178,19 @@
 
     <script>
       /* Ρυθμίσεις για συμπαγή διάταξη:
-         - Μείωση του πάνω περιθωρίου (startY) στο 10
-         - Μείωση του ύψους του καμβά (canvasHeight) στο 300
-         Οι οριζόντιες αποστάσεις (horizontalGap, xOffset) παραμένουν ως αρχικά. */
+         - canvasHeight αυξάνεται στο 350 (αύξηση κατά 50px)
+         - startY μειώνεται στο 10 ώστε το πλέγμα να εμφανίζεται πιο κοντά στην κορυφή του καμβά
+         - Οι οριζόντιες αποστάσεις παραμένουν αμετάβλητες */
       const boxWidth = 60,
         boxHeight = 40,
         verticalSpacing = 45,
         horizontalGap = 5,
         canvasWidth = 420,
-        canvasHeight = 300,
+        canvasHeight = 350,
         periodLabelWidth = 50;
       
       const startY = 10;  // Μειωμένο πάνω περιθώριο
-      const xOffset = 60; // Οριζόντιες αποστάσεις όπως ήταν αρχικά
+      const xOffset = 60; // Οριζόντιες αποστάσεις όπως ήταν
 
       const periods = [
         { label: "K", orbitals: ["1s"] },
