@@ -105,7 +105,7 @@
         margin-right: 5px;
       }
 
-      /* Μείωση της απόστασης μεταξύ του πίνακα τίτλου και του καμβά */
+      /* Μείωση του διαστήματος μεταξύ του πίνακα τίτλου και του καμβά */
       #titleContainer {
         display: flex;
         justify-content: center;
@@ -113,16 +113,17 @@
         margin-bottom: 5px;
       }
 
-      /* Το περιεχόμενο του πίνακα τίτλου να έχει τη μορφοποίηση του h1 */
+      /* Ο πίνακας τίτλου: το περιεχόμενο να έχει τη μορφοποίηση του τίτλου της σελίδας */
       #titleText {
-        font-size: 1.8em;
+        font-size: 1.4em;  /* Μειωμένο μέγεθος γραμματοσειράς */
         font-weight: bold;
         color: #2E8B57;
       }
 
       #elementSymbolText {
-        font-size: 16px;
+        font-size: 1.4em;  /* Εφαρμογή της ίδιας μορφοποίησης */
         font-weight: bold;
+        color: #2E8B57;
         margin-left: 5px;
       }
     </style>
@@ -178,18 +179,18 @@
 
     <script>
       /* Ρυθμίσεις για συμπαγή διάταξη:
-         - canvasHeight αυξάνεται στο 350 (αύξηση κατά 50px)
-         - startY μειώνεται στο 10 ώστε το πλέγμα να εμφανίζεται πιο κοντά στην κορυφή του καμβά
+         - canvasHeight μειώνεται κατά 35px (από 350 σε 315)
+         - startY παραμένει στο 10 για να ξεκινάει πολύ κοντά στην κορυφή του καμβά
          - Οι οριζόντιες αποστάσεις παραμένουν αμετάβλητες */
       const boxWidth = 60,
         boxHeight = 40,
         verticalSpacing = 45,
         horizontalGap = 5,
         canvasWidth = 420,
-        canvasHeight = 350,
+        canvasHeight = 315,  // Μείωση ύψους καμβά κατά 35px
         periodLabelWidth = 50;
       
-      const startY = 10;  // Μειωμένο πάνω περιθώριο
+      const startY = 10;  // Ξεκινάει πολύ κοντά στην κορυφή
       const xOffset = 60; // Οριζόντιες αποστάσεις όπως ήταν
 
       const periods = [
